@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "556610869141",
+    "firebase_url": "https://sacwallet.firebaseio.com",
+    "project_id": "sacwallet",
+    "storage_bucket": "sacwallet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556610869141:android:6456d108453d5f7155489c",
+        "android_client_info": {
+          "package_name": "com.sac_wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556610869141-0haq4lhog00jp4ate4or322abliq6bfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4DQd2Z49XjknWQNOOe1wsU7IZKmEMAJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556610869141-0haq4lhog00jp4ate4or322abliq6bfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
