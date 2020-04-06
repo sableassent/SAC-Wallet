@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import '../blocs/firebase_bloc.dart';
 import '../widget/loading.dart';
-import '../util/validator.dart';
+//import '../util/validator.dart';
 import 'register_page.dart';
 import 'dashboard_page.dart';
 

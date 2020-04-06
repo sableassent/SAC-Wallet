@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
 
-  double screenWidth, screenHeight;
+  
 
   @override
   Widget build(BuildContext context) {
-
+    double screenWidth, screenHeight;
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 

@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:sac_wallet/widget/loading.dart';
-import 'edit_account_page.dart';
+//import 'edit_account_page.dart';
 import '../../model/user.dart';
-import '../../util/global.dart';
+//import '../../util/global.dart';
 import '../../blocs/firebase_bloc.dart';
 
 FirebaseBloc bloc;
