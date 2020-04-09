@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:556610869141:android:6456d108453d5f7155489c",
+        "mobilesdk_app_id": "1:556610869141:android:1966417e70ffc76955489c",
         "android_client_info": {
           "package_name": "com.sac_wallet"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "556610869141-dm64ssms3peda350ghl04q5uj9nb63j9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sac_wallet",
+            "certificate_hash": "8c4c3686260ac144eacd44a0ddc0eaa6aba3d2e2"
+          }
+        },
         {
           "client_id": "556610869141-0haq4lhog00jp4ate4or322abliq6bfo.apps.googleusercontent.com",
           "client_type": 3
@@ -30,6 +38,13 @@
             {
               "client_id": "556610869141-0haq4lhog00jp4ate4or322abliq6bfo.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "556610869141-n950o4ueffpbj2vdl8kgje131933sdvo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sacWallet"
+              }
             }
           ]
         }
