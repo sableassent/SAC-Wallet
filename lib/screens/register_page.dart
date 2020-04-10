@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sac_wallet/client/firebase_client.dart';
 import 'package:toast/toast.dart';
 import 'user_agreement_page.dart';
 import '../blocs/firebase_bloc.dart';
@@ -11,7 +12,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
+  FirebaseClient client;
   double screenWidth, screenHeight;
   TextEditingController nameCT, emailCT, passwordCT;
   bool isUserAgreement = false;
@@ -37,9 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading = true;
     });
 
-    bool isSuccess = await bloc.register(name: name, email: email, password: password);
+    var isSuccess = await client.register(name: name, email: email, password: password);
     if(isSuccess){
-      Navigator.of(context).pop(true);
+      Navigator.pop(context);
       Toast.show("Successfully registered!", context);
     } else {
       setState(() {
@@ -218,6 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 InkWell(
                   onTap: () {
                     register();
+                    Navigator.pop(context);
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),

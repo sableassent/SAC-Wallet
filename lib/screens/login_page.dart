@@ -39,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
 
     bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route route) => false);
-      //print('$email, $password');
+      Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
+      
     } else {
       setState(() {
         isLoading = false;

@@ -78,6 +78,7 @@ class FirebaseClient {
       sharedPreferences = await SharedPreferences.getInstance();
       String privateKey = sharedPreferences.getString(firebaseUser.uid);
       GlobalValue.setPrivateKey = privateKey;
+      print(user);
       return isSuccess;
     } catch (error) {
       return false;
