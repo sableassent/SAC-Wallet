@@ -38,7 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading = true;
     });
 
-    var isSuccess = await client.register(name: name, email: email, password: password);
+    var isSuccess = await bloc.register(name: name, email: email, password: password);
     if(isSuccess){
       Navigator.pop(context);
       Toast.show("Successfully registered!", context);

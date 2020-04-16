@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: screenHeight * 0.01),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
+                    login();
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
