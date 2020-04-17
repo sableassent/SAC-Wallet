@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'add_token_page.dart';
+//import 'add_token_page.dart';
 import 'buy_token_page.dart';
 import 'send_token_page.dart';
 import '../../model/user.dart';

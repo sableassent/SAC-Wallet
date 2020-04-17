@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import '../blocs/firebase_bloc.dart';
 import '../widget/loading.dart';
-import '../util/validator.dart';
+//import '../util/validator.dart';
 import 'register_page.dart';
 import 'dashboard_page.dart';
 
@@ -39,7 +39,8 @@ class _LoginPageState extends State<LoginPage> {
 
     bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route route) => false);
+      Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
+      
     } else {
       setState(() {
         isLoading = false;
@@ -148,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: screenHeight * 0.01),
                 InkWell(
                   onTap: () {
-                    login();
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),

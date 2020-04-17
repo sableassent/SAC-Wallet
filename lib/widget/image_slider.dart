@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ImageSlider extends StatelessWidget {
 
-  List<String> images;
+  final List<String> images;
 
   ImageSlider(this.images);
 
