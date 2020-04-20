@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,20 @@ import '../model/company.dart';
 import '../model/profit.dart';
 import '../util/text_util.dart';
 import '../util/global.dart';
+
+Future<FirebaseApp> conf() async {
+  final FirebaseApp app = await FirebaseApp.configure(
+    name: 'sacwallet', 
+    options: FirebaseOptions(
+      googleAppID: '1:556610869141:android:1966417e70ffc76955489c',
+      apiKey:  'AIzaSyC4DQd2Z49XjknWQNOOe1wsU7IZKmEMAJE',
+      databaseURL: 'https://sacwallet.firebaseio.com'
+      )
+    
+    );
+  
+  return app;
+}
 
 class FirebaseClient {
   DatabaseReference userRef;

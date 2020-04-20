@@ -73,10 +73,9 @@ class _DashboardPageState extends State<DashboardPage> {
       children: <Widget>[
         Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
             title: getTitleFromIndex(navigation_current_index),
             centerTitle: true,
-            iconTheme: new IconThemeData(color: Colors.black),
+            iconTheme: new IconThemeData(color: Colors.white),
             actions: <Widget>[
               Visibility(
                 visible: navigation_current_index == 1,

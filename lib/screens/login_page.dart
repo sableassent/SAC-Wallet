@@ -39,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
     bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
+      print("loged in");
       Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
       
     } else {
@@ -149,7 +150,8 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: screenHeight * 0.01),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
+                    login();
+                    print("okkk");
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
