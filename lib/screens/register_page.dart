@@ -39,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     var isSuccess = await bloc.register(name: name, email: email, password: password);
+    print("Was registration successful ? ${isSuccess}");
     if(isSuccess){
       Navigator.pop(context);
       Toast.show("Successfully registered!", context);
@@ -219,7 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 InkWell(
                   onTap: () {
                     register();
-                    Navigator.pop(context);
+                    //Navigator.pop(context);
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),

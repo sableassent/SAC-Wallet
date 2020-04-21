@@ -23,7 +23,6 @@ Future<FirebaseApp> conf() async {
       )
     
     );
-  
   return app;
 }
 
@@ -42,6 +41,8 @@ class FirebaseClient {
     photoRef = FirebaseStorage.instance.ref();
     walletClient = new WalletClient();
   }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> register({@required String name, @required String email, @required String password}) async {
     try {
@@ -69,33 +70,40 @@ class FirebaseClient {
           linkedin_link: "",
           enabledChat: false
         );
-
         return await addUser(user: user);
       } else {
         return false;
       }
 
     } catch (error) {
+      print(error);
       return false;
     }
   }
 
   Future<bool> login({@required String email, @required String password}) async {
+    print("$email - $password");
     try {
-      AuthResult authResult = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = authResult.user;
       IdTokenResult userToken = await firebaseUser.getIdToken();
       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
-      User user = User.fromServer(snapshot);
-      user.token = userToken.token;
-      bool isSuccess = await updateUser(user: user);
-      GlobalValue.setCurrentUser = user;
-      sharedPreferences = await SharedPreferences.getInstance();
-      String privateKey = sharedPreferences.getString(firebaseUser.uid);
-      GlobalValue.setPrivateKey = privateKey;
-      print(user);
-      return isSuccess;
+      //print("Firebase db - ${db.}");
+      if(snapshot.value != null) {
+        User user = User.fromServer(snapshot);
+        user.token = userToken.token;
+        bool isSuccess = await updateUser(user: user);
+        GlobalValue.setCurrentUser = user;
+        sharedPreferences = await SharedPreferences.getInstance();
+        String privateKey = sharedPreferences.getString(firebaseUser.uid);
+        GlobalValue.setPrivateKey = privateKey;
+        print(user);
+        return isSuccess;
+      }else{
+        print("Snapshot was null");
+      }
     } catch (error) {
+      print(error.toString());
       return false;
     }
   }
@@ -119,7 +127,7 @@ class FirebaseClient {
 
   Future<bool> addUser({@required User user}) async {
     try {
-      await userRef.child(user.id).set(user.toMap());
+      await userRef.child(user.id).push().set(user.toMap());
       return true;
     } catch (error) {
       print(error);
