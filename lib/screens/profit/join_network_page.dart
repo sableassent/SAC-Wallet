@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import '../../model/company.dart';
+//import '../../model/company.dart';
 import '../../model/profit.dart';
 import '../../model/user.dart';
 import '../../blocs/firebase_bloc.dart';

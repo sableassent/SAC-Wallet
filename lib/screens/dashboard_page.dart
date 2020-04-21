@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'home/home_page.dart';
 import 'account/account_page.dart';
-import 'account/edit_account_page.dart';
+//import 'account/edit_account_page.dart';
 import 'wallet/wallet_page.dart';
 import 'registry/registry_page.dart';
 import 'profit/profit_page.dart';
@@ -73,16 +73,15 @@ class _DashboardPageState extends State<DashboardPage> {
       children: <Widget>[
         Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
             title: getTitleFromIndex(navigation_current_index),
             centerTitle: true,
-            iconTheme: new IconThemeData(color: Colors.black),
+            iconTheme: new IconThemeData(color: Colors.white),
             actions: <Widget>[
               Visibility(
                 visible: navigation_current_index == 1,
                 child: IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditAccountPage()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => null));
                   },
                   icon: Icon(Icons.edit, color: Colors.black, size: 25),
                 ),

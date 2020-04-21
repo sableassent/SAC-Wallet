@@ -24,7 +24,7 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
   int tokenIndex = 0;
 
   buyToken() async {
-    String tokenName = tokenOptions[tokenIndex];
+    //String tokenName = tokenOptions[tokenIndex];
     String purchaseUnit = unitCT.text;
 
     if(purchaseUnit.isEmpty){
