@@ -81,8 +81,10 @@ class FirebaseClient {
   }
 
   Future<bool> login({@required String email, @required String password}) async {
+    print('$email - $password');
     try {
       AuthResult authResult = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      print("authResult: $authResult");
       FirebaseUser firebaseUser = authResult.user;
       IdTokenResult userToken = await firebaseUser.getIdToken();
       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
