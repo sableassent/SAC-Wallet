@@ -6,6 +6,7 @@ class Transaction {
   String timeStamp;
 
   Transaction({this.from, this.to, this.amount, this.hash, this.timeStamp});
+  Transaction.name(this.from, this.to, this.amount, this.hash, this.timeStamp);
 
   factory Transaction.fromJSON(Map<String, dynamic> dataObj) => Transaction(
     from: dataObj["from"],

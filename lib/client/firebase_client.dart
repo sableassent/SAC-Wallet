@@ -82,22 +82,21 @@ class FirebaseClient {
   }
 
   Future<bool> login({@required String email, @required String password}) async {
-    print("$email - $password");
     try {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = authResult.user;
       IdTokenResult userToken = await firebaseUser.getIdToken();
       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
-      //print("Firebase db - ${db.}");
       if(snapshot.value != null) {
-        User user = User.fromServer(snapshot);
+        User user = User.create(snapshot);
         user.token = userToken.token;
         bool isSuccess = await updateUser(user: user);
         GlobalValue.setCurrentUser = user;
         sharedPreferences = await SharedPreferences.getInstance();
+        //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
         String privateKey = sharedPreferences.getString(firebaseUser.uid);
+        sharedPreferences.setString("private_key", privateKey);
         GlobalValue.setPrivateKey = privateKey;
-        print(user);
         return isSuccess;
       }else{
         print("Snapshot was null");
@@ -127,7 +126,7 @@ class FirebaseClient {
 
   Future<bool> addUser({@required User user}) async {
     try {
-      await userRef.child(user.id).push().set(user.toMap());
+      await userRef.child(user.id).set(user.toMap());
       return true;
     } catch (error) {
       print(error);
