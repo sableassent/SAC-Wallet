@@ -223,6 +223,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.4"
+  flutter_money_formatter:
+    dependency: "direct main"
+    description:
+      name: flutter_money_formatter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -295,7 +302,11 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "0.16.1"
+=======
+    version: "0.15.8"
+>>>>>>> a89410978f4d1c7f95ffc086149ad963a103b18a
   js:
     dependency: transitive
     description:

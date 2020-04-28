@@ -1,39 +1,103 @@
 import 'package:flutter/material.dart';
-
-class HomePage extends StatelessWidget {
-
-  
+import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
+import 'package:sac_wallet/model/transaction.dart';
+import 'package:sac_wallet/widget/transactions/TransactionHistory.dart';
+class HomePage extends StatelessWidget{
+  Future<List<Transaction>> transactions;
+  Future<String> currentBalance;
+  HomePage(this.transactions, this.currentBalance);
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth, screenHeight;
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
-    return Stack(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/main_background.jpg"),
-              fit: BoxFit.fill
+    // TODO: implement build
+    return SingleChildScrollView(
+      child: Container(
+       /* decoration: new BoxDecoration(
+            gradient: LinearGradient(
+              colors: AppColor.BACKGROUND_MAIN_GRADIENT,
             )
-          ),
+        ),*/
+        margin: EdgeInsets.all(0),
+        padding: EdgeInsets.all(0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              decoration: new BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: AppColor.PRIMARY_GRADIENT
+                  ),
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                )
+              ),
+              padding: EdgeInsets.all(20),
+              height: (MediaQuery.of(context).size.height / 5),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  FutureBuilder<String>(
+                      future: currentBalance,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String> snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                            return Text(' - ');
+                          case ConnectionState.active:
+                          case ConnectionState.waiting:
+                            return new Center(
+                              child: new Text("...."),
+                            );
+                          case ConnectionState.done:
+                            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+                            return Container(
+                              padding: EdgeInsets.all(0),
+                              child: Container(
+                                  child: Text("${FlutterMoneyFormatter(amount: BigInt.parse(snapshot.data.substring(0,6)).toDouble()).output.symbolOnLeft}", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),)),
+                            );
+                        }
+                        return null;
+                      }),
+                ],
+              ),
+            ),
+            SizedBox(height: 20,),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.only(left: 20),
+              child: Text("Transaction History", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black45),),
+            ),
+            SizedBox(height: 0,),
+            FutureBuilder<List<Transaction>>(
+                future: transactions,
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      return Text(' none ');
+                    case ConnectionState.active:
+                    case ConnectionState.waiting:
+                      return new Center(
+                        child: new CircularProgressIndicator(),
+                      );
+                    case ConnectionState.done:
+                      if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+                      return Container(
+                        padding: EdgeInsets.all(0),
+                        child: Container(
+                            child: TransactionHistory(snapshot.data)),
+                      );
+                  }
+                  return null;
+                }),
+
+          ],
         ),
-        Container(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/images/app_icon.png", width: screenWidth * 0.5, height: screenHeight * 0.2),
-              SizedBox(height: screenHeight * 0.1),
-              Text("ONE COMMUNITY", style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.07, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              Text("ONE GLOBAL ECONOMY", style: TextStyle(color: Colors.white.withAlpha(0x80), fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold))
-            ],
-          ),
-        )
-      ],
+      ),
     );
   }
+
 }

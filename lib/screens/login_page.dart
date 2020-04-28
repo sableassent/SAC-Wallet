@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailCT, passwordCT;
   bool isLoading = false;
 
+
   login() async {
 
     String email = emailCT.text;
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    emailCT = TextEditingController();
+    emailCT = TextEditingController(text: "ricardogaynorgaynor@gmail.com");
     passwordCT = TextEditingController();
     bloc = new FirebaseBloc();
   }
