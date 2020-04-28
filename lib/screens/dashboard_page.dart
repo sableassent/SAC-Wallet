@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
+import 'package:sac_wallet/model/transaction.dart';
+import 'package:sac_wallet/model/user.dart';
+import 'package:sac_wallet/repository/wallet_repository.dart';
+import 'package:sac_wallet/util/global.dart';
 import 'package:toast/toast.dart';
 import 'home/home_page.dart';
 import 'account/account_page.dart';
@@ -22,11 +27,23 @@ class _DashboardPageState extends State<DashboardPage> {
   double screenWidth, screenHeight;
   int navigation_current_index = 0;
   bool isLoading = false;
+  static User currentUser = GlobalValue.getCurrentUser;
+
+  Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: currentUser.eth_wallet_address, limit: 5);
+
+  Future<String> currentBalance = WalletRepository().getCurrentBalance(address: currentUser.eth_wallet_address);
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = new FirebaseBloc();
+  }
 
   Widget getPageFromIndex(int index) {
+
     switch(index) {
       case 0:
-        return HomePage();
+        return HomePage(transactions, currentBalance);
       case 1:
         return AccountPage();
       case 2:
@@ -36,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
       case 4:
         return ProfitPage();
       default:
-        return HomePage();
+        return HomePage(transactions, currentBalance);
     }
   }
 
@@ -57,11 +74,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    bloc = new FirebaseBloc();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +84,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Stack(
       children: <Widget>[
         Scaffold(
+          backgroundColor: AppColor.MAIN_BG,
           appBar: AppBar(
             title: getTitleFromIndex(navigation_current_index),
             centerTitle: true,
@@ -106,18 +119,18 @@ class _DashboardPageState extends State<DashboardPage> {
                   icon: Icon(Icons.payment),
                   title: Text("My Wallet")
               ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.assignment),
-                  title: Text("Registry")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.public),
-                  title: Text("Non-Profits")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.input),
-                  title: Text("Logout")
-              ),
+              /*BottomNavigationBarItem(
+                            icon: Icon(Icons.assignment),
+                            title: Text("Registry")
+                        ),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.public),
+                            title: Text("Non-Profits")
+                        ),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.input),
+                            title: Text("Logout")
+                        ),*/
             ],
             onTap: (index) async {
               if(index == 5){

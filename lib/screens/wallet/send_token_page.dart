@@ -73,7 +73,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
   void initState() {
     super.initState();
     walletBloc = new WalletBloc();
-    toAddressCT = new TextEditingController();
+    toAddressCT = new TextEditingController(text: "0xe106318E9B8218369ac9a16f64AC6da108FDE3dC");
     amountCT = new TextEditingController();
   }
 

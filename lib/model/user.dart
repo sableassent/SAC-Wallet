@@ -34,6 +34,23 @@ class User {
     enabledChat: snapshot.value[TextUtil.ENABLED_CHAT]
   );
 
+  User.create(DataSnapshot snapshot){
+      id = snapshot.key;
+      token = snapshot.value[TextUtil.TOKEN];
+      name = snapshot.value[TextUtil.NAME];
+      description = snapshot.value[TextUtil.DESCRIPTION];
+      email = snapshot.value[TextUtil.EMAIL];
+      photo = snapshot.value[TextUtil.PHOTO];
+      country = snapshot.value[TextUtil.COUNTRY];
+      eth_wallet_address = snapshot.value[TextUtil.ETH_WALLET_ADDRESS];
+      print("ETH address: $eth_wallet_address");
+      facebook_link = snapshot.value[TextUtil.FACEBOOK_LINK];
+      twitter_link = snapshot.value[TextUtil.TWITTER_LINK];
+      instagram_link = snapshot.value[TextUtil.INSTAGRAM_LINK];
+      linkedin_link = snapshot.value[TextUtil.LINKEDIN_LINK];
+      enabledChat = snapshot.value[TextUtil.ENABLED_CHAT];
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = new Map();
     map[TextUtil.ID] = id;

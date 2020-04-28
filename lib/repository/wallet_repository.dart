@@ -12,5 +12,5 @@ class WalletRepository {
 
   Future<bool> checkAddress({@required String address}) async => await walletClient.checkAddress(address: address);
 
-  Future<List<Transaction>> getTransactionHistory({@required String address, String searchWord}) async => await walletClient.getTransactionHistory(address: address, searchWord: searchWord);
+  Future<List<Transaction>> getTransactionHistory({@required String address, int limit, String searchWord}) async => await walletClient.getTransactionHistory(address: address, searchWord: searchWord);
 }

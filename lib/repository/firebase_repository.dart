@@ -21,6 +21,8 @@ class FirebaseRepository {
   Future<bool> updateUser({@required User user}) async => await firebaseClient.updateUser(user: user);
 
   Future<bool> addCompany({@required Company company, @required String userId}) async => await firebaseClient.addCompany(company: company, userId: userId);
+
+
   Future<bool> addNonProfit({@required Profit profit, @required String userId}) async => await firebaseClient.addNonProfit(profit: profit, userId: userId);
 
 }
