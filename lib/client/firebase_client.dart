@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -45,6 +46,7 @@ class FirebaseClient {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> register({@required String name, @required String email, @required String password}) async {
+    bool isSuccess = false ;
     try {
       sharedPreferences = await SharedPreferences.getInstance();
       AuthResult authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
@@ -70,15 +72,23 @@ class FirebaseClient {
           linkedin_link: "",
           enabledChat: false
         );
-        return await addUser(user: user);
+        isSuccess = await addUser(user: user); 
+        return isSuccess;
       } else {
         return false;
       }
 
-    } catch (error) {
-      print(error);
-      return false;
+    } catch (signUpError) {
+      if(signUpError is PlatformException) {
+        if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+           print('Email and password already in use');
+          isSuccess = false;
+          return isSuccess;
+        }
+      }
     }
+    print("isSuccess value: $isSuccess");
+   return isSuccess;
   }
 
   Future<bool> login({@required String email, @required String password}) async {
@@ -130,6 +140,7 @@ class FirebaseClient {
     try {
       await userRef.child(user.id).update(user.toMap());
       GlobalValue.setCurrentUser = user;
+      print("user: $user");
       return true;
     } catch (error) {
       print(error);

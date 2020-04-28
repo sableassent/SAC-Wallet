@@ -31,11 +31,13 @@ class _AccountPageState extends State<AccountPage> {
     return StreamBuilder<User>(
       stream: bloc.user,
       builder: (context, AsyncSnapshot<User> snapshot) {
+        print("snapshot value: $snapshot.toString()");
 
-        if(snapshot.hasError) print(snapshot.error);
+        if(snapshot.hasError) Text(snapshot.error);
 
         if(snapshot.hasData && snapshot.data != null){
           User currentUser = snapshot.data;
+          print("current user: $currentUser");
           return Container(
             padding: EdgeInsets.only(left: 10, right: 10, top: 10),
             child: SingleChildScrollView(
