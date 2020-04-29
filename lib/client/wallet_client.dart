@@ -78,30 +78,6 @@ class WalletClient {
 
   Future<List<Transaction>> getTransactionHistory({@required String address, String searchWord}) async {
     return getTransactionHistorySeeder();
-    String api_url = "${ApiConfig.API_GET_TRANSACTION_HISTORY}?module=account&action=tokentx&address=$address&startblock=0&endblock=999999999&sort=asc&apikey=DX4SADSQBSAYA6VI8NFUYE878QWNYMG181";
-    var response = await http.get(api_url);
-    var result = jsonDecode(response.body);
-
-    if(result[TextUtil.STATUS] == "1"){
-      print(result["result"]);
-      List<Transaction> transactions;
-      List<dynamic> histories = result["result"];
-      print("Transation hisory: ${histories.toString()}");
-      transactions = histories.map((item) {
-        if(searchWord != null && searchWord.isNotEmpty){
-          if(item["from"].toString().contains(searchWord) || item["to"].toString().contains(searchWord) || item["value"].toString().contains(searchWord) || item["hash"].toString().contains(searchWord)){
-            return Transaction.fromJSON(item);
-          } else {
-            return null;
-          }
-        } else {
-          return Transaction.fromJSON(item);
-        }
-      }).toList();
-      return transactions;
-    } else {
-      return new List();
-    }
   }
 
 }

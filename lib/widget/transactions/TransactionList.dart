@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sac_wallet/model/transaction.dart';
 class TransactionList extends StatefulWidget{
 
-  List<Transaction> transactions;
+  final List<Transaction> transactions;
   TransactionList(this.transactions);
 
   @override
@@ -20,7 +20,6 @@ class _TransactionList extends State<TransactionList>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
         child: Column(
             children: transactions.map((transaction) =>

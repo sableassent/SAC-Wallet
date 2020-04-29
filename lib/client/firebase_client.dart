@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -46,7 +45,6 @@ class FirebaseClient {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> register({@required String name, @required String email, @required String password}) async {
-    bool isSuccess = false ;
     try {
       sharedPreferences = await SharedPreferences.getInstance();
       AuthResult authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
@@ -72,37 +70,28 @@ class FirebaseClient {
           linkedin_link: "",
           enabledChat: false
         );
-        isSuccess = await addUser(user: user); 
-        return isSuccess;
+        return await addUser(user: user);
       } else {
         return false;
       }
 
-    } catch (signUpError) {
-      if(signUpError is PlatformException) {
-        if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-           print('Email and password already in use');
-          isSuccess = false;
-          return isSuccess;
-        }
-      }
+    } catch (error) {
+      print(error);
+      return false;
     }
-    print("isSuccess value: $isSuccess");
-   return isSuccess;
   }
 
   Future<bool> login({@required String email, @required String password}) async {
-    print("$email - $password");
+    bool isSuccess;
+    try {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = authResult.user;
       IdTokenResult userToken = await firebaseUser.getIdToken();
       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
-      print("Firebase db - ${snapshot.value.toString()}");
-        User user = User.fromServer(snapshot);
       if(snapshot.value != null) {
         User user = User.create(snapshot);
         user.token = userToken.token;
-        bool isSuccess = await updateUser(user: user);
+        isSuccess = await updateUser(user: user);
         GlobalValue.setCurrentUser = user;
         sharedPreferences = await SharedPreferences.getInstance();
         //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
@@ -110,6 +99,15 @@ class FirebaseClient {
         sharedPreferences.setString("private_key", privateKey);
         GlobalValue.setPrivateKey = privateKey;
         return isSuccess;
+      }else{
+        print("Snapshot was null");
+      }
+    } catch (error) {
+      print(error.toString());
+      return false;
+    }
+
+    return isSuccess;
   }
 
   Future<bool> logout() async {
@@ -143,7 +141,6 @@ class FirebaseClient {
     try {
       await userRef.child(user.id).update(user.toMap());
       GlobalValue.setCurrentUser = user;
-      print("user: $user");
       return true;
     } catch (error) {
       print(error);
@@ -171,5 +168,4 @@ class FirebaseClient {
     }
   }
 
-}
 }

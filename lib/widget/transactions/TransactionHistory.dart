@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sac_wallet/model/transaction.dart';
 import 'package:sac_wallet/widget/transactions/TransactionList.dart';
 class TransactionHistory extends StatelessWidget{
-  List<Transaction> transactions;
+  final List<Transaction> transactions;
   TransactionHistory(this.transactions);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       alignment: Alignment.topLeft,
       padding: EdgeInsets.all(10),

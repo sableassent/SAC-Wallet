@@ -4,13 +4,12 @@ import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/transaction.dart';
 import 'package:sac_wallet/widget/transactions/TransactionHistory.dart';
 class HomePage extends StatelessWidget{
-  Future<List<Transaction>> transactions;
-  Future<String> currentBalance;
+  final Future<List<Transaction>> transactions;
+  final Future<String> currentBalance;
   HomePage(this.transactions, this.currentBalance);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return SingleChildScrollView(
       child: Container(
        /* decoration: new BoxDecoration(
