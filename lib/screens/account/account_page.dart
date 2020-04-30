@@ -41,10 +41,17 @@ class _AccountPageState extends State<AccountPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 currentUser.photo == "" ?
-                CachedNetworkImage(
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    imageUrl: currentUser.photo)
-                  : Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill) ,
+                Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill)
+                : CachedNetworkImage(
+                    //placeholder: (context, url) => CircularProgressIndicator(),
+                  imageUrl: currentUser.photo,
+                  width: 100,
+                  height: 100,
+                  fadeInDuration: Duration(milliseconds: 300),
+                  fadeOutDuration: Duration(milliseconds: 300),
+                  placeholder: (context, url) => Image.asset("assets/images/loading.gif", width: 100, height: 100),
+                  fit: BoxFit.scaleDown,
+                  placeholderFadeInDuration: Duration(milliseconds: 300),),
                 // currentUser.photo == ""
                 //     ? Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill)
                 //     : CachedNetworkImage(
@@ -145,4 +152,12 @@ class _AccountPageState extends State<AccountPage> {
       ),
     );
   }
+
+  // _launchURL(String url) async {
+  //   if(await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 }

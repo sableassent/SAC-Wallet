@@ -1,7 +1,9 @@
-//import 'dart:io';
+import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:country_pickers/country_picker_cupertino.dart';
 import 'package:country_pickers/country.dart';
 import 'package:sac_wallet/blocs/firebase_bloc.dart';
@@ -41,7 +43,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
     String twitter = twitterCT.text;
     String instagram = instagramCT.text;
     String linkedin = linkedinCT.text;
-    //String photo = serverImageUrl;
+    String photo = serverImageUrl;
 
     user.country = country;
     user.description = description;
@@ -71,9 +73,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
         user.linkedin_link = linkedin;
       }
 
-      // if(photo.isNotEmpty){
-      //   user.photo = photo;
-      // }
+      if(photo.isNotEmpty){
+        user.photo = photo;
+      }
 
     setState(() {
       isLoading = true;
@@ -82,6 +84,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       user.twitter_link = twitter;
       user.instagram_link = instagram;
       user.linkedin_link = linkedin;
+      user.photo = photo;
     });
 
     bool isSuccess = await bloc.updateUser(user: user);
@@ -223,27 +226,27 @@ class _EditAccountPageState extends State<EditAccountPage> {
           ),
           SizedBox(height: 15),
           Container(
-              child: Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill),
-              // child: serverImageUrl.isEmpty
-              //     ? (isImageLoading ? Container(
-              //         width: double.infinity,
-              //         height: 450,
-              //         child: Image.asset("assets/images/loading.gif", width: 200, height: 200),
-              //       ) : Image.asset("assets/images/default_profile.png", width: double.infinity, height: 450, fit: BoxFit.fill))
-              //     : CachedNetworkImage(
-              //         imageUrl: serverImageUrl,
-              //         width: double.infinity,
-              //         height: 450,
-              //         fadeInDuration: Duration(milliseconds: 300),
-              //         fadeOutDuration: Duration(milliseconds: 300),
-              //         placeholder: (context, url) => Container(
-              //           width: double.infinity,
-              //           height: 450,
-              //           child: Image.asset("assets/images/loading.gif", width: 200, height: 200),
-              //         ),
-              //         fit: BoxFit.scaleDown,
-              //         placeholderFadeInDuration: Duration(milliseconds: 300),
-              //       ),
+              //child: Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill),
+              child: !isImageLoading
+                  ? (isImageLoading ? Container(
+                      width: double.infinity,
+                      height: 450,
+                      child: Image.asset("assets/images/loading.gif", width: 100, height: 100),
+                    ) : Image.asset("assets/images/default_profile.png", width: double.infinity, height: 250, fit: BoxFit.fill))
+                  : CachedNetworkImage(
+                      imageUrl: serverImageUrl,
+                      width: double.infinity,
+                      height: 450,
+                      fadeInDuration: Duration(milliseconds: 300),
+                      fadeOutDuration: Duration(milliseconds: 300),
+                      placeholder: (context, url) => Container(
+                        width: double.infinity,
+                        height: 450,
+                        child: Image.asset("assets/images/loading.gif", width: 100, height: 100),
+                      ),
+                      fit: BoxFit.scaleDown,
+                      placeholderFadeInDuration: Duration(milliseconds: 300),
+                    ),
           ),
           SizedBox(height: 10),
               InkWell(
@@ -535,7 +538,7 @@ class CustomDialog extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                //getImageData("gallery");
+                getImageData("gallery");
                 Navigator.of(context).pop(true);
               },
               leading: Icon(Icons.collections, color: Colors.blue, size: 25),
@@ -547,21 +550,21 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  // getImageData(String sourceName) async {
-  //   parent.setState(() {
-  //     parent.isImageLoading = true;
-  //   });
-  //   try {
-  //     File image = await ImagePicker.pickImage(source: sourceName == "camera" ? ImageSource.camera : ImageSource.gallery);
-  //     String downloadUrl = await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
-  //     parent.setState(() {
-  //       parent.serverImageUrl = downloadUrl;
-  //       parent.isImageLoading = false;
-  //     });
-  //   } catch (error) {
-  //     parent.setState(() {
-  //       parent.serverImageUrl = "";
-  //     });
-  //   }
-  // }
+  getImageData(String sourceName) async {
+    parent.setState(() {
+      parent.isImageLoading = true;
+    });
+    try {
+      File image = await ImagePicker.pickImage(source: sourceName == "camera" ? ImageSource.camera : ImageSource.gallery);
+      String downloadUrl = await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
+      parent.setState(() {
+        parent.serverImageUrl = downloadUrl;
+        parent.isImageLoading = false;
+      });
+    } catch (error) {
+      parent.setState(() {
+        parent.serverImageUrl = "";
+      });
+    }
+  }
 }
