@@ -1,4 +1,4 @@
-import 'dart:io';
+//import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,51 +41,68 @@ class _EditAccountPageState extends State<EditAccountPage> {
     String twitter = twitterCT.text;
     String instagram = instagramCT.text;
     String linkedin = linkedinCT.text;
-    String photo = serverImageUrl;
+    //String photo = serverImageUrl;
 
     user.country = country;
     user.description = description;
-    if(name.isNotEmpty){
+    print("description: $description");
+    print("facebook: $facebook");
+    print("twitter: $twitter");
+    print("linkedin: $linkedin");
+   
+    try {
+      if(name.isNotEmpty){
       user.name = name;
-    }
+      }
 
-    if(facebook.isNotEmpty){
-      user.facebook_link = facebook;
-    }
+      if(facebook.isNotEmpty){
+        user.facebook_link = facebook;
+      }
 
-    if(twitter.isNotEmpty){
-      user.twitter_link = twitter;
-    }
+      if(twitter.isNotEmpty){
+        user.twitter_link = twitter;
+      }
 
-    if(instagram.isNotEmpty){
-      user.instagram_link = instagram;
-    }
+      if(instagram.isNotEmpty){
+        user.instagram_link = instagram;
+      }
 
-    if(linkedin.isNotEmpty) {
-      user.linkedin_link = linkedin;
-    }
+      if(linkedin.isNotEmpty) {
+        user.linkedin_link = linkedin;
+      }
 
-    if(photo.isNotEmpty){
-      user.photo = photo;
-    }
+      // if(photo.isNotEmpty){
+      //   user.photo = photo;
+      // }
 
     setState(() {
       isLoading = true;
+      user.name = name;
+      user.facebook_link = facebook;
+      user.twitter_link = twitter;
+      user.instagram_link = instagram;
+      user.linkedin_link = linkedin;
     });
 
     bool isSuccess = await bloc.updateUser(user: user);
+    print("isSuccess value: $isSuccess");
     if(isSuccess){
       setState(() {
         isLoading = false;
       });
       Toast.show("Successfully updated!", context);
       Navigator.of(context).pop(true);
-    } else {
+    }
+
+    }catch(error) {
       setState(() {
         isLoading = false;
       });
       Toast.show("Failed!", context);
+      print("Error: $error");
     }
+
+     
   }
 
   @override
