@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:sac_wallet/util/global.dart';
 //import 'package:sac_wallet/widget/loading.dart';
 //import 'edit_account_page.dart';
@@ -99,7 +100,9 @@ class _AccountPageState extends State<AccountPage> {
                   Flexible(
                     flex: 1,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _launchURL(currentUser.facebook_link);
+                      },
                       child: Center(
                         child: SvgPicture.asset("assets/images/facebook.svg", color: Colors.white, width: 20, height: 20),
                       ),
@@ -108,7 +111,9 @@ class _AccountPageState extends State<AccountPage> {
                   Flexible(
                     flex: 1,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _launchURL(currentUser.twitter_link);
+                      },
                       child: Center(
                         child: SvgPicture.asset("assets/images/twitter.svg", color: Colors.white, width: 20, height: 20),
                       ),
@@ -117,7 +122,9 @@ class _AccountPageState extends State<AccountPage> {
                   Flexible(
                     flex: 1,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _launchURL(currentUser.instagram_link);
+                      },
                       child: Center(
                         child: SvgPicture.asset("assets/images/instagram.svg", color: Colors.white, width: 20, height: 20),
                       ),
@@ -126,7 +133,9 @@ class _AccountPageState extends State<AccountPage> {
                   Flexible(
                     flex: 1,
                     child: RawMaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _launchURL(currentUser.linkedin_link);
+                      },
                       child: Center(
                         child: SvgPicture.asset("assets/images/linkedin.svg", color: Colors.white, width: 20, height: 20),
                       ),
@@ -153,11 +162,11 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  // _launchURL(String url) async {
-  //   if(await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
+  Future<void> _launchURL(String url) async {
+    if(await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }
