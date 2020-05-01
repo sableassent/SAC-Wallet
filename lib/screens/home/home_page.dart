@@ -12,11 +12,12 @@ class HomePage extends StatelessWidget{
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-       /* decoration: new BoxDecoration(
-            gradient: LinearGradient(
-              colors: AppColor.BACKGROUND_MAIN_GRADIENT,
-            )
-        ),*/
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/home_background.jpg"),
+            fit: BoxFit.cover
+          )
+        ),
         margin: EdgeInsets.all(0),
         padding: EdgeInsets.all(0),
         child: Column(
@@ -26,13 +27,13 @@ class HomePage extends StatelessWidget{
                   gradient: LinearGradient(
                       colors: AppColor.PRIMARY_GRADIENT
                   ),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                )
+                // borderRadius: BorderRadius.only(
+                //   bottomRight: Radius.circular(20),
+                //   bottomLeft: Radius.circular(20),
+                // )
               ),
               padding: EdgeInsets.all(20),
-              height: (MediaQuery.of(context).size.height / 5),
+              height: (MediaQuery.of(context).size.height / 3.5),
               width: MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -67,7 +68,7 @@ class HomePage extends StatelessWidget{
             Container(
               alignment: Alignment.topLeft,
               padding: EdgeInsets.only(left: 20),
-              child: Text("Transaction History", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black45),),
+              child: Text("Transaction History", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),
             ),
             SizedBox(height: 0,),
             FutureBuilder<List<Transaction>>(
@@ -87,7 +88,7 @@ class HomePage extends StatelessWidget{
                       return Container(
                         padding: EdgeInsets.all(0),
                         child: Container(
-                            child: TransactionHistory(snapshot.data)),
+                          child: TransactionHistory(snapshot.data)),
                       );
                   }
                   return null;

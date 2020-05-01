@@ -9,6 +9,13 @@ class TransactionHistory extends StatelessWidget{
     return Container(
       alignment: Alignment.topLeft,
       padding: EdgeInsets.all(10),
+
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20),
+          topLeft: Radius.circular(20),
+        )
+      ),
       child: Column(
         children: <Widget>[
           TransactionList(transactions),

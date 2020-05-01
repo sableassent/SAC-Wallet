@@ -25,13 +25,13 @@ class _TransactionList extends State<TransactionList>{
             children: transactions.map((transaction) =>
                 Container(
                   child: Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                      elevation: 2,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(20),
+                      // ),
                       margin: EdgeInsets.all(7.0),
                       child: Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(10.0),
                         child: Column(
                           children: <Widget>[
                             Row(
