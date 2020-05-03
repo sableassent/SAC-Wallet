@@ -77,7 +77,7 @@ class WalletClient {
   }
 
   Future<List<Transaction>> getTransactionHistory({@required String address, String searchWord}) async {
-    return getTransactionHistorySeeder();
+    //return getTransactionHistorySeeder();
     String api_url = "${ApiConfig.API_GET_TRANSACTION_HISTORY}?module=account&action=tokentx&address=$address&startblock=0&endblock=999999999&sort=asc&apikey=DX4SADSQBSAYA6VI8NFUYE878QWNYMG181";
     var response = await http.get(api_url);
     var result = jsonDecode(response.body);

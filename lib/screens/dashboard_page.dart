@@ -29,7 +29,9 @@ class _DashboardPageState extends State<DashboardPage> {
   bool isLoading = false;
   static User currentUser = GlobalValue.getCurrentUser;
 
-  Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: currentUser.eth_wallet_address, limit: 5);
+  static String tempWalletAddress = "0xf641e24c4084eb0ec8496d6b5a3b91d29dfcf66a"; // currentUser.eth_wallet_address <- replace with
+
+  Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: tempWalletAddress, limit: 5);
 
   Future<String> currentBalance = WalletRepository().getCurrentBalance(address: currentUser.eth_wallet_address);
 
