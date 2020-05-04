@@ -3,6 +3,7 @@ import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/transaction.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/wallet_repository.dart';
+import 'package:sac_wallet/screens/account/edit_account_page.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:toast/toast.dart';
 import 'home/home_page.dart';
@@ -54,6 +55,8 @@ class _DashboardPageState extends State<DashboardPage> {
         return RegistryPage();
       case 4:
         return ProfitPage();
+      case 5:
+        return EditAccountPage();
       default:
         return HomePage(transactions, currentBalance);
     }
@@ -96,9 +99,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 visible: navigation_current_index == 1,
                 child: IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => null));
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => EditAccountPage()));
                   },
-                  icon: Icon(Icons.edit, color: Colors.black, size: 25),
+                  icon: Icon(Icons.edit, color: Colors.white, size: 25),
                 ),
               )
             ],

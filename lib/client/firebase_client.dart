@@ -82,6 +82,7 @@ class FirebaseClient {
   }
 
   Future<bool> login({@required String email, @required String password}) async {
+    bool isSuccess;
     try {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = authResult.user;
@@ -90,7 +91,7 @@ class FirebaseClient {
       if(snapshot.value != null) {
         User user = User.create(snapshot);
         user.token = userToken.token;
-        bool isSuccess = await updateUser(user: user);
+        isSuccess = await updateUser(user: user);
         GlobalValue.setCurrentUser = user;
         sharedPreferences = await SharedPreferences.getInstance();
         //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
@@ -105,6 +106,8 @@ class FirebaseClient {
       print(error.toString());
       return false;
     }
+
+    return isSuccess;
   }
 
   Future<bool> logout() async {
