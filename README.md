@@ -19,10 +19,11 @@ The blockchain network would be a private consortium of nodes located with our T
 # Our structure will look something like this
 
 Public SAC1 Coin:
-[Mobile Wallet (end user)] <==> [API Server (web hooks/html <==> postman<==> ethereum client)] <==> [Ethereum Network (solidity smart-contract)]
+[Mobile Wallet (end user)] <==> [API Server (web hooks/html <==> Infura API<==> ethereum client)] <==> [Ethereum Network (solidity smart-contract)]
 
 Private SAC2 Token:
-[Mobile Wallet (end user)] <==> [Central Server API (web application/javascript <==> web3 <==> ethereum client)] <==> [Private Ethereum Network (solidity code) <= = > (Token Ambassador Nodes)]
+
+[Mobile Wallet (end user)] <==> [API Server (web3 <==> SAC API<==> web hooks/html)]<==> [Private Ethereum Network (Token Ambassador Nodes) <= = > (web application/javascript)<==>solidity code<==> ethereum client)] <==> [ Master Node (web application/javascript)<==>(ethereum client) ]
 
 
 
@@ -43,7 +44,7 @@ Once downloaded a github folder directory will automatically be created. You wil
 
 New code is first created on personal team member workspaces then committed to his or her assigned github repository. Team members should notify the team when an update has been committed through the [Trello Board: Coding Workflow](https://trello.com/b/AQStNHQh/coding-workflow), or the [slack group](https://join.slack.com/t/sableassentco-utk2422/shared_invite/zt-d6ih1e9g-czWC8T7C76Rj8ykMzffyEw) (please request an invite from admin if this slack link is no longer valid). 
 
-Admins will then test new code and merge stable changes to the master branch once approved. Every developer is responsible for keeping a daily log of tasks and submitting that report to the project lead (Guillermo or Kiel) every Thursday night. Team Meetings (Sprints) will be conducted weekly, every Friday and Monday at 10am, or as needed, or upon request by the CEO; we use a google hangout group for these meetings. 
+Admins will then test new code and merge stable changes to the master branch once approved. Every developer is responsible for keeping a daily log of tasks and submitting that report to the project lead (Guillermo or Kiel) during Thursday night sprints. Administrative team meetings will be conducted weekly, every Friday and Monday at 10am, or as needed, or upon request by the CEO; we currentyl use a google hangout group for these meetings. 
 
 For a guide on how to get your local Ethereum development environment up and running click here: [Ethereum Dev Tutorial](https://drive.google.com/open?id=12XUnUY4FmL74sxisb02egOv7_VSovxpGCVXhXZ4QJ_A).
 
@@ -64,7 +65,7 @@ Email: kiel@sableassent.com
 
 Team Reporting Schedule:
 Daily task logs are submitted to lead every Thursday.
-Meetings and updates are held on Fridays, & Mondays.
+Admin meetings and updates are held on Fridays, & Mondays.
 New tasks, updates, and assisted coding is executed by leads on Tuesdays.
 Monthly reviews of all team members are done by corporate officers.
 
