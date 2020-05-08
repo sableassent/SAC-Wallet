@@ -530,7 +530,7 @@ class CustomDialog extends StatelessWidget {
             SizedBox(height: 30),
             ListTile(
               onTap: () {
-                //getImageData("camera");
+                getImageData("camera");
                 Navigator.of(context).pop(true);
               },
               leading: Icon(Icons.camera_alt, color: Colors.blue, size: 25),
