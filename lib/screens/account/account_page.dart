@@ -13,15 +13,13 @@ import '../../blocs/firebase_bloc.dart';
 FirebaseBloc bloc;
 
 class AccountPage extends StatefulWidget {
-
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
+  User currentUser = GlobalValue.getCurrentUser;
 
-   User currentUser = GlobalValue.getCurrentUser;
-  
   @override
   void initState() {
     super.initState();
@@ -31,142 +29,274 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                currentUser.photo == "" ?
-                Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill)
-                : CachedNetworkImage(
-                    //placeholder: (context, url) => CircularProgressIndicator(),
-                  imageUrl: currentUser.photo,
-                  width: 100,
-                  height: 100,
-                  fadeInDuration: Duration(milliseconds: 300),
-                  fadeOutDuration: Duration(milliseconds: 300),
-                  placeholder: (context, url) => Image.asset("assets/images/loading.gif", width: 100, height: 100),
-                  fit: BoxFit.scaleDown,
-                  placeholderFadeInDuration: Duration(milliseconds: 300),),
-                // currentUser.photo == ""
-                //     ? Image.asset("assets/images/default_profile.png", width: 100, height: 100, fit: BoxFit.fill)
-                //     : CachedNetworkImage(
-                //   imageUrl: currentUser.photo,
-                //   width: 100,
-                //   height: 100,
-                //   fadeInDuration: Duration(milliseconds: 300),
-                //   fadeOutDuration: Duration(milliseconds: 300),
-                //   placeholder: (context, url) => Image.asset("assets/images/loading.gif", width: 100, height: 100),
-                //   fit: BoxFit.scaleDown,
-                //   placeholderFadeInDuration: Duration(milliseconds: 300),
-                // ),
-                SizedBox(width: 20),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Ink(
+                height: 200,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: new AssetImage("assets/images/main_background.jpg"),
+                      fit: BoxFit.cover),
+                ),
+              ),
+              Ink(
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 160),
+                child: Column(
                   children: <Widget>[
-                    Text(currentUser.name, style: TextStyle(color: Colors.black, fontSize: 18)),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: AutoSizeText(
-                        "Wallet Address:\n${currentUser.eth_wallet_address}",
-                        style: TextStyle(color: Colors.black54, fontSize: 15),
-                        minFontSize: 10,
-                      ),
+                    Avatar(
+                      image: currentUser.photo == null ? new AssetImage("assests/images/default_profile.png") : CachedNetworkImageProvider(
+                          currentUser.photo),
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      borderColor: Colors.grey.shade300,
+                      borderWidth: 4.0,
+                    ),
+                    Text(
+                      currentUser.name,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    const SizedBox(height: 5.0),
+                    Text(
+                      " ",
+                      style: Theme.of(context).textTheme.subtitle,
                     ),
                   ],
-                )
-              ],
-            ),
-            SizedBox(height: 10),
-            Divider(height: 1, color: Colors.grey),
-            SizedBox(height: 10),
-            Text("Profile Description", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            Text(currentUser.description == null ? "" : currentUser.description, style: TextStyle(color: Colors.black, fontSize: 14)),
-            SizedBox(height: 20),
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                  color: Colors.greenAccent[700]
-              ),
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      onPressed: () {
-                        _launchURL(currentUser.facebook_link);
-                      },
-                      child: Center(
-                        child: SvgPicture.asset("assets/images/facebook.svg", color: Colors.white, width: 20, height: 20),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      onPressed: () {
-                        _launchURL(currentUser.twitter_link);
-                      },
-                      child: Center(
-                        child: SvgPicture.asset("assets/images/twitter.svg", color: Colors.white, width: 20, height: 20),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      onPressed: () {
-                        _launchURL(currentUser.instagram_link);
-                      },
-                      child: Center(
-                        child: SvgPicture.asset("assets/images/instagram.svg", color: Colors.white, width: 20, height: 20),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      onPressed: () {
-                        _launchURL(currentUser.linkedin_link);
-                      },
-                      child: Center(
-                        child: SvgPicture.asset("assets/images/linkedin.svg", color: Colors.white, width: 20, height: 20),
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: currentUser.enabledChat,
-                    child: Flexible(
-                      flex: 1,
-                      child: RawMaterialButton(
-                        onPressed: () {},
-                        child: Center(
-                          child: SvgPicture.asset("assets/images/chat.svg", color: Colors.white, width: 20, height: 20),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(height: 10.0),
+          UserInfo(currentUser),
+          SocialMedia(currentUser),
+        ],
       ),
     );
   }
+}
+
+class SocialMedia extends StatelessWidget {
+  final User currentUser;
+  SocialMedia(this.currentUser);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Social Media Information",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Card(
+              child: Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            child: ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
+                              leading: SvgPicture.asset(
+                                  "assets/images/facebook.svg",
+                                  color: Colors.grey,
+                                  width: 20,
+                                  height: 20),
+                              title: Text("Facebook"),
+                              subtitle: Text("${currentUser.facebook_link} "),
+                            ),
+                            onTap: () {
+                              if (currentUser.facebook_link != null)
+                                _launchURL(currentUser.facebook_link);
+                            },
+                          ),
+                          GestureDetector(
+                            child: ListTile(
+                              leading: SvgPicture.asset(
+                                  "assets/images/twitter.svg",
+                                  color: Colors.grey,
+                                  width: 20,
+                                  height: 20),
+                              title: Text("Twitter"),
+                              subtitle: Text("${currentUser.twitter_link} "),
+                            ),
+                            onTap: () {
+                              if (currentUser.twitter_link != null)
+                                _launchURL(currentUser.instagram_link);
+                            },
+                          ),
+                          GestureDetector(
+                            child: ListTile(
+                              leading: SvgPicture.asset(
+                                  "assets/images/instagram.svg",
+                                  color: Colors.grey,
+                                  width: 20,
+                                  height: 20),
+                              title: Text("Instagram"),
+                              subtitle: Text("${currentUser.instagram_link} "),
+                            ),
+                            onTap: () {
+                              if (currentUser.instagram_link != null)
+                                _launchURL(currentUser.instagram_link);
+                            },
+                          ),
+                          GestureDetector(
+                            child: ListTile(
+                              leading: SvgPicture.asset(
+                                  "assets/images/linkedin.svg",
+                                  color: Colors.grey,
+                                  width: 20,
+                                  height: 20),
+                              title: Text("LinkedIn"),
+                              subtitle: Text("${currentUser.linkedin_link} "),
+                            ),
+                            onTap: () {
+                              if (currentUser.linkedin_link != null)
+                                _launchURL(currentUser.linkedin_link);
+                            },
+                          )
+                        ],
+                      ),
+                    ],
+                  )),
+            ),
+          ],
+        ));
+  }
 
   Future<void> _launchURL(String url) async {
-    if(await canLaunch(url)) {
+    if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
+  }
+}
+
+class UserInfo extends StatelessWidget {
+  final User currentUser;
+  UserInfo(this.currentUser);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
+              alignment: Alignment.topLeft,
+              child: Text(
+                "User Information",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Card(
+              child: Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            leading: Icon(Icons.info_outline),
+                            title: Text("Wallet Address"),
+                            subtitle: Text(currentUser.eth_wallet_address == null
+                                ? "-"
+                                : currentUser.eth_wallet_address),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            leading: Icon(Icons.my_location),
+                            title: Text("Country"),
+                            subtitle: Text(currentUser.country == null
+                                ? "-"
+                                : currentUser.country),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.email),
+                            title: Text("Email"),
+                            subtitle: Text(currentUser.email == null
+                                ? "-"
+                                : currentUser.email),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.person),
+                            title: Text("Description"),
+                            subtitle: Text(currentUser.description == null
+                                ? "-"
+                                : currentUser.description),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+            ),
+          ],
+        ));
+  }
+}
+
+class Avatar extends StatelessWidget {
+  final ImageProvider<dynamic> image;
+  final Color borderColor;
+  final Color backgroundColor;
+  final double radius;
+  final double borderWidth;
+
+  const Avatar(
+      {Key key,
+      @required this.image,
+      this.borderColor = Colors.grey,
+      this.backgroundColor,
+      this.radius = 30,
+      this.borderWidth = 5})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: radius + borderWidth,
+      backgroundColor: borderColor,
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: backgroundColor != null
+            ? backgroundColor
+            : Theme.of(context).primaryColor,
+        child: CircleAvatar(
+          radius: radius - borderWidth,
+          backgroundImage: image,
+        ),
+      ),
+    );
   }
 }
