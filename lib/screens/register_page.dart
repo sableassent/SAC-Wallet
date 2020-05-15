@@ -72,8 +72,9 @@ class _RegisterPageState extends State<RegisterPage> {
     screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, 
       body: Stack(
-        overflow: Overflow.visible,
+        //overflow: Overflow.visible, 
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
