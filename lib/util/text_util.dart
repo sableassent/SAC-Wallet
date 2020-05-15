@@ -37,4 +37,21 @@ class TextUtil {
   static String MESSAGE = "message";
   static String PRIVATE_RESPONSE_KEY = "private_key";
   static String PRIVATE_BODY_KEY = "privateKey";
+
+  String formatAddressText(final String address){
+    if(address != null && address.length > 11){
+      final formattedAddress = "${address.substring(0, 5)}...${address.substring(address.length - 5, address.length-1)}";
+      return formattedAddress;
+    }
+    return address;
+  }
+
+
+  String formatText(final String text, final int len){
+    if(text != null && text.length > len){
+      return "${text.substring(0, len)}...";
+    }
+    return text;
+  }
+
 }
