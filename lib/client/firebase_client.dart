@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -75,9 +76,14 @@ class FirebaseClient {
         return false;
       }
 
-    } catch (error) {
-      print(error);
-      return false;
+    } catch (signUpError) {
+      if(signUpError is PlatformException) {
+        if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+          print("email already in user");
+          return false;
+        }
+      }
+
     }
   }
 

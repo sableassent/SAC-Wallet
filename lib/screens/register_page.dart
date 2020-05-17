@@ -17,22 +17,37 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController nameCT, emailCT, passwordCT;
   bool isUserAgreement = false;
   bool isLoading = false;
-  //bool isOk = false;
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
 
 
-  register() async {
+  register(BuildContext context) async {
 
     String name = nameCT.text;
     String email = emailCT.text;
     String password = passwordCT.text;
 
     if(name.isEmpty || email.isEmpty || password.isEmpty){
-      Toast.show("Fill all forms", context);
+      Toast.show(
+        "Fill all forms", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
       return;
     }
 
     if(!isUserAgreement){
-      Toast.show("You should agree to User Agreement.", context);
+      Toast.show(
+        "You should agree to User Agreement.", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
       return;
     }
 
@@ -45,7 +60,19 @@ class _RegisterPageState extends State<RegisterPage> {
     // if(isSuccess == false) {
     //   Toast.show("Email or password already in use", context);
     // }
-    if(isSuccess){
+    if(!isSuccess){
+      setState(() {
+        isLoading = false;
+      });
+      Toast.show(
+        "Email or Password already in use", 
+        context, 
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
+    } else if(isSuccess) {
       Navigator.pop(context);
       Toast.show("Successfully registered!", context);
     } else {
@@ -225,7 +252,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: screenHeight * 0.01),
                 InkWell(
                   onTap: () {
-                    register();
+                    register(context);
                     
                   },
                   child: Container(
@@ -273,5 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ],
       ),
     );
+
+  
   }
 }

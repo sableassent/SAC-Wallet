@@ -37,6 +37,7 @@ class TextUtil {
   static String MESSAGE = "message";
   static String PRIVATE_RESPONSE_KEY = "private_key";
   static String PRIVATE_BODY_KEY = "privateKey";
+  static String EMAIL_ALREADY_IN_USE = "email_already_in_use";
 
   String formatAddressText(final String address){
     if(address != null && address.length > 11){
