@@ -17,8 +17,6 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController nameCT, emailCT, passwordCT;
   bool isUserAgreement = false;
   bool isLoading = false;
-  var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
 
 
   register(BuildContext context) async {

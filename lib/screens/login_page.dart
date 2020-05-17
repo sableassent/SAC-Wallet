@@ -27,9 +27,23 @@ class _LoginPageState extends State<LoginPage> {
 
     if(email.isEmpty || password.isEmpty){
       if(email.isEmpty){
-        Toast.show("Enter your email", context);
+        Toast.show(
+          "Enter your email",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white
+          );
       } else {
-        Toast.show("Enter your password", context);
+        Toast.show(
+          "Enter your password", 
+          context,  
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white
+          );
       }
       return;
     }
