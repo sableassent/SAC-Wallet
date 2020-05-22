@@ -55,13 +55,21 @@ class _LoginPageState extends State<LoginPage> {
     bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
       print("success ...");
+      emailCT.clear();
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage(),), (route) => false);
       
     } else {
       setState(() {
         isLoading = false;
       });
-      Toast.show("Failed login!", context);
+      Toast.show(
+        "Failed login!", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
     }
 
   }
@@ -69,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    emailCT = TextEditingController(text: "ricardogaynorgaynor@gmail.com");
+    emailCT = TextEditingController();
     passwordCT = TextEditingController();
     bloc = new FirebaseBloc();
   }
