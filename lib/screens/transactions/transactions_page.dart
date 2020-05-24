@@ -23,12 +23,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
         automaticallyImplyLeading: true,
         backgroundColor: Colors.white,
         iconTheme: new IconThemeData(color: Colors.black),
-        title: Text("Send Tokens", style: TextStyle(color: Colors.black)),
+        title: Text("Transactions History", style: TextStyle(color: Colors.black)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
-             margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height / 4) - 100 ),
                child:  Column(
                  children: <Widget>[
                     SizedBox(height: 20,),

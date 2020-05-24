@@ -124,14 +124,14 @@ class HomePage extends StatelessWidget{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _sectionCard(context,"assets/images/buy_token.png", "Buy Token", BuyTokenPage()),
-                        _sectionCard(context,"assets/images/sell_token.png", "Send Token", SendTokenPage()),
+                        _sectionCard(context,"assets/images/receive.png", "Buy Token", BuyTokenPage()),
+                        _sectionCard(context,"assets/images/send_token.png", "Send Token", SendTokenPage()),
                     ],),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _sectionCard(context,"assets/images/transaction_history.png", "Transaction History", TransactionsPage()),
-                        _sectionCard(context,"assets/images/buy_token.png", "Affiliate", SendTokenPage()),
+                        _sectionCard(context,"assets/images/money.png", "Affiliate", SendTokenPage()),
                     ],)
                  ],
                )
