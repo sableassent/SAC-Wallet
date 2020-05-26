@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -75,29 +76,34 @@ class FirebaseClient {
         return false;
       }
 
-    } catch (error) {
-      print(error);
-      return false;
+    } catch (signUpError) {
+      if(signUpError is PlatformException) {
+        if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+          print("email already in user");
+          return false;
+        }
+      }
+
     }
   }
 
   Future<bool> login({@required String email, @required String password}) async {
-    print("$email - $password");
+    bool isSuccess;
     try {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = authResult.user;
       IdTokenResult userToken = await firebaseUser.getIdToken();
       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
-      //print("Firebase db - ${db.}");
       if(snapshot.value != null) {
-        User user = User.fromServer(snapshot);
+        User user = User.create(snapshot);
         user.token = userToken.token;
-        bool isSuccess = await updateUser(user: user);
+        isSuccess = await updateUser(user: user);
         GlobalValue.setCurrentUser = user;
         sharedPreferences = await SharedPreferences.getInstance();
+        //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
         String privateKey = sharedPreferences.getString(firebaseUser.uid);
+        sharedPreferences.setString("private_key", privateKey);
         GlobalValue.setPrivateKey = privateKey;
-        print(user);
         return isSuccess;
       }else{
         print("Snapshot was null");
@@ -106,6 +112,8 @@ class FirebaseClient {
       print(error.toString());
       return false;
     }
+
+    return isSuccess;
   }
 
   Future<bool> logout() async {
@@ -127,7 +135,7 @@ class FirebaseClient {
 
   Future<bool> addUser({@required User user}) async {
     try {
-      await userRef.child(user.id).push().set(user.toMap());
+      await userRef.child(user.id).set(user.toMap());
       return true;
     } catch (error) {
       print(error);

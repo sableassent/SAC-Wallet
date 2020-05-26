@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailCT, passwordCT;
   bool isLoading = false;
 
+
   login() async {
 
     String email = emailCT.text;
@@ -26,9 +27,23 @@ class _LoginPageState extends State<LoginPage> {
 
     if(email.isEmpty || password.isEmpty){
       if(email.isEmpty){
-        Toast.show("Enter your email", context);
+        Toast.show(
+          "Enter your email",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white
+          );
       } else {
-        Toast.show("Enter your password", context);
+        Toast.show(
+          "Enter your password", 
+          context,  
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white
+          );
       }
       return;
     }
@@ -39,14 +54,22 @@ class _LoginPageState extends State<LoginPage> {
 
     bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
-      print("loged in");
-      Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage()));
+      print("success ...");
+      emailCT.clear();
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage(),), (route) => false);
       
     } else {
       setState(() {
         isLoading = false;
       });
-      Toast.show("Failed login!", context);
+      Toast.show(
+        "Failed login!", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
     }
 
   }

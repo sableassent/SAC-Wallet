@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
+import 'package:sac_wallet/model/transaction.dart';
+import 'package:sac_wallet/model/user.dart';
+import 'package:sac_wallet/repository/wallet_repository.dart';
+import 'package:sac_wallet/screens/account/edit_account_page.dart';
+import 'package:sac_wallet/util/global.dart';
 import 'package:toast/toast.dart';
 import 'home/home_page.dart';
 import 'account/account_page.dart';
@@ -22,11 +28,25 @@ class _DashboardPageState extends State<DashboardPage> {
   double screenWidth, screenHeight;
   int navigation_current_index = 0;
   bool isLoading = false;
+  static User currentUser = GlobalValue.getCurrentUser;
+
+  static String tempWalletAddress = "0xf641e24c4084eb0ec8496d6b5a3b91d29dfcf66a"; // currentUser.eth_wallet_address <- replace with
+
+  Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: tempWalletAddress, limit: 5);
+
+  Future<String> currentBalance = WalletRepository().getCurrentBalance(address: currentUser.eth_wallet_address);
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = new FirebaseBloc();
+  }
 
   Widget getPageFromIndex(int index) {
+
     switch(index) {
       case 0:
-        return HomePage();
+        return HomePage(transactions, currentBalance);
       case 1:
         return AccountPage();
       case 2:
@@ -35,8 +55,10 @@ class _DashboardPageState extends State<DashboardPage> {
         return RegistryPage();
       case 4:
         return ProfitPage();
+      case 5:
+        return EditAccountPage();
       default:
-        return HomePage();
+        return HomePage(transactions, currentBalance);
     }
   }
 
@@ -57,11 +79,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    bloc = new FirebaseBloc();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +89,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Stack(
       children: <Widget>[
         Scaffold(
+          backgroundColor: AppColor.MAIN_BG,
           appBar: AppBar(
             title: getTitleFromIndex(navigation_current_index),
             centerTitle: true,
@@ -81,9 +99,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 visible: navigation_current_index == 1,
                 child: IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => null));
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => EditAccountPage()));
                   },
-                  icon: Icon(Icons.edit, color: Colors.black, size: 25),
+                  icon: Icon(Icons.edit, color: Colors.white, size: 25),
                 ),
               )
             ],
@@ -106,18 +124,18 @@ class _DashboardPageState extends State<DashboardPage> {
                   icon: Icon(Icons.payment),
                   title: Text("My Wallet")
               ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.assignment),
-                  title: Text("Registry")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.public),
-                  title: Text("Non-Profits")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.input),
-                  title: Text("Logout")
-              ),
+              /*BottomNavigationBarItem(
+                            icon: Icon(Icons.assignment),
+                            title: Text("Registry")
+                        ),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.public),
+                            title: Text("Non-Profits")
+                        ),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.input),
+                            title: Text("Logout")
+                        ),*/
             ],
             onTap: (index) async {
               if(index == 5){
@@ -158,44 +176,110 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: Container(
         height: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.green[900]
-        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(height: 30,),
-              Image.asset("assets/images/nav_header_image.png"),
-              SizedBox(height: 30),
-              Text(
-                "Sable Assent is dedicated to\nempowering black businesses,\ncommunities, governments, and\nnon profits.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-                textAlign: TextAlign.center,
+              Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/home_background.jpg"),
+                    fit: BoxFit.cover
+                     )
+                ),
+                child: Image.asset("assets/images/nav_header_image.png"),
               ),
               SizedBox(height: 30),
-              Text(
-                "We provide the diaspora with the\ntools needed to build wealth, and\nincentivize workforces.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-                textAlign: TextAlign.center,
+              Container(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 15.0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                      width: 1
+                    ) )
+                ),
+                child: _sideMenuRow(context,"Registry", Icon(Icons.assessment, size: 32.0), RegistryPage()),
               ),
               SizedBox(height: 30),
-              Text(
-                "The Sable Coin is the medium of\nexchange which facilitates\nmonetary transactions between\nindividuals worldwide.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-                textAlign: TextAlign.center,
+              Container(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 15.0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                      width: 1
+                    ) )
+                ),
+                child: _sideMenuRow(context, "Non-Profits", Icon(Icons.public, size: 32.0,),ProfitPage() ),
               ),
               SizedBox(height: 30),
-              Text(
-                "With the Sable Coin, Africans\nthroughout the diaspora can take\npride in owning their own currency.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-                textAlign: TextAlign.center,
+              Container(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Logout",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18
+                      ),  
+                    ),
+                    GestureDetector(
+                      child: Icon(Icons.exit_to_app, size: 32.0,),
+                      onTap:  () async {
+                        bool isSuccess = await bloc.logout();
+                        if(isSuccess){
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()), (Route route) => false);
+                      }
+                      },  
+                    )
+                ],),
               ),
+              SizedBox(height: 30),
+              SizedBox(height: 30),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 1
+                    )
+                  ) ),
+                child: Container(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Center(
+                    child: Text("BETA Version 1.0.0")
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _sideMenuRow( BuildContext context,String title, Icon icon, Widget widget) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18
+          ),  
+        ),
+        GestureDetector(
+          child: icon,
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => widget));
+          },  
+        )
+    ],);
   }
 }
 

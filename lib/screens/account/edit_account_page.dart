@@ -1,541 +1,536 @@
-// import 'dart:io';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:country_pickers/country_picker_cupertino.dart';
-// import 'package:country_pickers/country.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:sac_wallet/widget/loading.dart';
-// import 'package:toast/toast.dart';
-// import '../../model/user.dart';
-// import '../../util/global.dart';
-// import '../../blocs/firebase_bloc.dart';
+import 'dart:io';
 
-// FirebaseBloc bloc;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:country_pickers/country_picker_cupertino.dart';
+import 'package:country_pickers/country.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
+import 'package:sac_wallet/blocs/firebase_bloc.dart';
+import 'package:sac_wallet/model/user.dart';
+import 'package:sac_wallet/screens/account/account_page.dart';
+import 'package:sac_wallet/util/global.dart';
+import 'package:sac_wallet/widget/loading.dart';
+import 'package:toast/toast.dart';
 
-// class EditAccountPage extends StatefulWidget {
+FirebaseBloc bloc;
 
-//   @override
-//   _EditAccountPageState createState() => _EditAccountPageState();
-// }
+class EditAccountPage extends StatefulWidget {
+  EditAccountPage({Key key}) : super(key: key);
 
-// class _EditAccountPageState extends State<EditAccountPage> {
+  @override
+  _EditAccountPageState createState() => _EditAccountPageState();
+}
 
-//   double screenWidth, screenHeight;
-//   TextEditingController nameCT, descriptionCT, facebookCT, twitterCT, instagramCT, linkedinCT;
-//   bool enabledChat;
-//   String serverImageUrl;
-//   String country = "Africa";
-//   User user = GlobalValue.getCurrentUser;
-//   bool isImageLoading = false;
-//   bool isLoading = false;
+class _EditAccountPageState extends State<EditAccountPage> {
+  double screenWidth, screenHeight;
+  final nameCT = TextEditingController();
+  final descriptionCT = TextEditingController();
+  final facebookCT = TextEditingController();
+  final twitterCT = TextEditingController();
+  final instagramCT = TextEditingController();
+  final linkedinCT = TextEditingController();
+  bool enabledChat;
+  String serverImageUrl;
+  String country = "Africa";
+  User user = GlobalValue.getCurrentUser;
+  bool isImageLoading = false;
+  bool isLoading = false;
 
-//   changeProfile() async {
-//     String name = nameCT.text;
-//     String description = descriptionCT.text;
-//     String facebook = facebookCT.text;
-//     String twitter = twitterCT.text;
-//     String instagram = instagramCT.text;
-//     String linkedin = linkedinCT.text;
-//     String photo = serverImageUrl;
+  final TextStyle headerStyle = TextStyle(
+    color: Colors.grey.shade800,
+    fontWeight: FontWeight.bold,
+    fontSize: 20.0,
+  );
 
-//     user.country = country;
-//     user.description = description;
-//     if(name.isNotEmpty){
-//       user.name = name;
-//     }
+  changeProfile() async {
+    String name = nameCT.text;
+    String description = descriptionCT.text;
+    String facebook = facebookCT.text;
+    String twitter = twitterCT.text;
+    String instagram = instagramCT.text;
+    String linkedin = linkedinCT.text;
+    String photo = serverImageUrl;
 
-//     if(facebook.isNotEmpty){
-//       user.facebook_link = facebook;
-//     }
+    user.country = country;
+    user.description = description;
 
-//     if(twitter.isNotEmpty){
-//       user.twitter_link = twitter;
-//     }
+    try {
+      if (name.isNotEmpty) {
+        user.name = name;
+      }
 
-//     if(instagram.isNotEmpty){
-//       user.instagram_link = instagram;
-//     }
+      if (facebook.isNotEmpty) {
+        user.facebook_link = facebook;
+      }
 
-//     if(linkedin.isNotEmpty) {
-//       user.linkedin_link = linkedin;
-//     }
+      if (twitter.isNotEmpty) {
+        user.twitter_link = twitter;
+      }
 
-//     if(photo.isNotEmpty){
-//       user.photo = photo;
-//     }
+      if (instagram.isNotEmpty) {
+        user.instagram_link = instagram;
+      }
 
-//     setState(() {
-//       isLoading = true;
-//     });
+      if (linkedin.isNotEmpty) {
+        user.linkedin_link = linkedin;
+      }
 
-//     bool isSuccess = await bloc.updateUser(user: user);
-//     if(isSuccess){
-//       setState(() {
-//         isLoading = false;
-//       });
-//       Toast.show("Successfully updated!", context);
-//       Navigator.of(context).pop(true);
-//     } else {
-//       setState(() {
-//         isLoading = false;
-//       });
-//       Toast.show("Failed!", context);
-//     }
-//   }
+      if (photo.isNotEmpty) {
+        user.photo = photo;
+      }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     bloc = new FirebaseBloc();
-//     nameCT = TextEditingController();
-//     facebookCT = TextEditingController();
-//     twitterCT = TextEditingController();
-//     instagramCT = TextEditingController();
-//     linkedinCT = TextEditingController();
-//     nameCT.text = user.name;
-//     descriptionCT.text = user.description;
-//     facebookCT.text = user.facebook_link;
-//     twitterCT.text = user.twitter_link;
-//     instagramCT.text = user.instagram_link;
-//     linkedinCT.text = user.linkedin_link;
-//     enabledChat = user.enabledChat;
-//     serverImageUrl = user.photo;
-//   }
+      setState(() {
+        isLoading = true;
+        user.name = name;
+        user.facebook_link = facebook;
+        user.twitter_link = twitter;
+        user.instagram_link = instagram;
+        user.linkedin_link = linkedin;
+        user.photo = photo;
+      });
 
-//   @override
-//   Widget build(BuildContext context) {
+      bool isSuccess = await bloc.updateUser(user: user);
+      print("isSuccess value: $isSuccess");
+      if (isSuccess) {
+        setState(() {
+          isLoading = false;
+        });
+        Toast.show("Successfully updated!", context);
+        Navigator.of(context).pop(true);
+      }
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+      Toast.show("Failed!", context);
+      print("Error: $error");
+    }
+  }
 
-//     screenWidth = MediaQuery.of(context).size.width;
-//     screenHeight = MediaQuery.of(context).size.height;
+  @override
+  void initState() {
+    super.initState();
+    bloc = new FirebaseBloc();
+    // nameCT = TextEditingController();
+    // facebookCT = TextEditingController();
+    // twitterCT = TextEditingController();
+    // instagramCT = TextEditingController();
+    // linkedinCT = TextEditingController();
+    nameCT.text = user.name;
+    descriptionCT.text = user.description;
+    facebookCT.text = user.facebook_link;
+    twitterCT.text = user.twitter_link;
+    instagramCT.text = user.instagram_link;
+    linkedinCT.text = user.linkedin_link;
+    enabledChat = user.enabledChat;
+    serverImageUrl = user.photo;
+  }
 
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       appBar: AppBar(
-//         automaticallyImplyLeading: true,
-//         backgroundColor: Colors.white,
-//         iconTheme: new IconThemeData(color: Colors.black),
-//         title: Text("Edit My Profile", style: TextStyle(color: Colors.black)),
-//         centerTitle: true,
-//       ),
-//       body: Stack(
-//         children: <Widget>[
-//           Container(
-//             padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-//             child: SingleChildScrollView(
-//               child: Column(
-//                 children: <Widget>[
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Profile Name", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                       color: Colors.white,
-//                       border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Name:", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Container(
-//                           width: screenWidth * 0.65,
-//                           padding: EdgeInsets.only(top: 10),
-//                           child: TextField(
-//                             controller: nameCT,
-//                             decoration: InputDecoration(
-//                               border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                               ),
-//                               hintText: "Enter Name",
-//                             ),
-//                             keyboardType: TextInputType.text,
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("Country", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   InkWell(
-//                     onTap: () {
-//                       showCupertinoModalPopup<void>(
-//                         context: context,
-//                         builder: (context) {
-//                           return CountryPickerCupertino(
-//                             pickerSheetHeight: 300,
-//                             onValuePicked: (Country value) {
-//                               setState(() {
-//                                 country = value.name;
-//                               });
-//                             },
-//                           );
-//                         }
-//                       );
-//                     },
-//                     child: Container(
-//                       padding: EdgeInsets.only(left: 10, right: 10),
-//                       margin: EdgeInsets.only(left: 10, right: 10),
-//                       width: screenWidth,
-//                       height: 50,
-//                       decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           border: Border.all(color: Colors.grey[300])
-//                       ),
-//                       child: Center(
-//                         child: Text(country, style: TextStyle(color: Colors.black, fontSize: 16)),
-//                       )
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Profile Picture", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 15),
-//                   Container(
-//                     child: serverImageUrl.isEmpty
-//                         ? (isImageLoading ? Container(
-//                             width: double.infinity,
-//                             height: 450,
-//                             child: Image.asset("assets/images/loading.gif", width: 200, height: 200),
-//                           ) : Image.asset("assets/images/default_profile.png", width: double.infinity, height: 450, fit: BoxFit.fill))
-//                         : CachedNetworkImage(
-//                             imageUrl: serverImageUrl,
-//                             width: double.infinity,
-//                             height: 450,
-//                             fadeInDuration: Duration(milliseconds: 300),
-//                             fadeOutDuration: Duration(milliseconds: 300),
-//                             placeholder: (context, url) => Container(
-//                               width: double.infinity,
-//                               height: 450,
-//                               child: Image.asset("assets/images/loading.gif", width: 200, height: 200),
-//                             ),
-//                             fit: BoxFit.scaleDown,
-//                             placeholderFadeInDuration: Duration(milliseconds: 300),
-//                           ),
-//                   ),
-//                   SizedBox(height: 10),
-//                   InkWell(
-//                     onTap: () {
-//                       showDialog(
-//                         barrierDismissible: false,
-//                         context: context,
-//                         builder: (_) => CustomDialog(this)
-//                       );
-//                     },
-//                     child: Container(
-//                       width: screenWidth,
-//                       height: 50,
-//                       decoration: BoxDecoration(
-//                           color: Colors.green
-//                       ),
-//                       child: Center(
-//                         child: Text("Change Profile Picture", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-//                       ),
-//                     ),
-//                   ),
-//                   SizedBox(height: 40),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Profile Description", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: screenHeight * 0.3,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Container(
-//                       width: screenWidth,
-//                       padding: EdgeInsets.only(top: 10),
-//                       child: TextField(
-//                         controller: descriptionCT,
-//                         decoration: InputDecoration(
-//                           border: OutlineInputBorder(
-//                             borderSide: BorderSide.none,
-//                           ),
-//                           hintText: "Enter a profile description",
-//                         ),
-//                         keyboardType: TextInputType.text,
-//                       ),
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Facebook Page", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Enter Link:", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Container(
-//                           width: screenWidth * 0.65,
-//                           padding: EdgeInsets.only(top: 10),
-//                           child: TextField(
-//                             controller: facebookCT,
-//                             decoration: InputDecoration(
-//                               border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                               ),
-//                               hintText: "facebook.com/mypage",
-//                             ),
-//                             keyboardType: TextInputType.url,
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Instagram Page", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Enter Link:", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Container(
-//                           width: screenWidth * 0.65,
-//                           padding: EdgeInsets.only(top: 10),
-//                           child: TextField(
-//                             controller: instagramCT,
-//                             decoration: InputDecoration(
-//                               border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                               ),
-//                               hintText: "instagram.com/mypage",
-//                             ),
-//                             keyboardType: TextInputType.url,
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Twitter Page", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Enter Link:", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Container(
-//                           width: screenWidth * 0.65,
-//                           padding: EdgeInsets.only(top: 10),
-//                           child: TextField(
-//                             controller: twitterCT,
-//                             decoration: InputDecoration(
-//                               border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                               ),
-//                               hintText: "twitter.com/mypage",
-//                             ),
-//                             keyboardType: TextInputType.url,
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     alignment: Alignment.topLeft,
-//                     child: Text("My Linkedin Page", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Enter Link:", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Container(
-//                           width: screenWidth * 0.65,
-//                           padding: EdgeInsets.only(top: 10),
-//                           child: TextField(
-//                             controller: linkedinCT,
-//                             decoration: InputDecoration(
-//                               border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                               ),
-//                               hintText: "linkedin.com/mypage",
-//                             ),
-//                             keyboardType: TextInputType.url,
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   Container(
-//                     padding: EdgeInsets.only(left: 10, right: 10),
-//                     margin: EdgeInsets.only(left: 10, right: 10),
-//                     width: screenWidth,
-//                     height: 50,
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
-//                     ),
-//                     child: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         Text("Diable/Enable Chat", style: TextStyle(color: Colors.black87, fontSize: 15)),
-//                         Switch(
-//                           value: enabledChat,
-//                           onChanged: (value) {
-//                             setState(() {
-//                               enabledChat = value;
-//                             });
-//                           },
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-//                   InkWell(
-//                     onTap: () {
-//                       changeProfile();
-//                     },
-//                     child: Container(
-//                       width: screenWidth,
-//                       height: 50,
-//                       decoration: BoxDecoration(
-//                           color: Colors.blue
-//                       ),
-//                       child: Center(
-//                         child: Text("Save Changes", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-//                       ),
-//                     ),
-//                   ),
-//                   SizedBox(height: 40,)
-//                 ],
-//               ),
-//             ),
-//           ),
-//           LoadingScreen(
-//             inAsyncCall: isLoading,
-//             dismissible: false,
-//             mesage: "Changing profile...",
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
+  Container _buildDivider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 8.0,
+      ),
+      width: double.infinity,
+      height: 1.0,
+      color: Colors.grey.shade300,
+    );
+  }
 
-// class CustomDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: AppColor.MAIN_BG,
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        backgroundColor: Colors.white,
+        iconTheme: new IconThemeData(color: Colors.black),
+        title: Text("Edit My Profile", style: TextStyle(color: Colors.black)),
+        centerTitle: true,
+      ),
+      body: Stack(children: <Widget>[
+        Container(
+            padding: EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "PROFILE PICTURE",
+                      style: headerStyle,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Card(
+                        elevation: 0.5,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 0,
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: Container(
+                                child: isImageLoading
+                                        ? Avatar(
+                                            image: new AssetImage(
+                                                    "assets/images/loading.gif"),
+                                            radius: 40,
+                                            backgroundColor: Colors.white,
+                                            borderColor: Colors.grey.shade300,
+                                            borderWidth: 4.0,
+                                          )
+                                    : Avatar(
+                                        image: user.photo == null
+                                            ? new AssetImage(
+                                                "assests/images/default_profile.png")
+                                            : CachedNetworkImageProvider(
+                                                user.photo),
+                                        radius: 40,
+                                        backgroundColor: Colors.white,
+                                        borderColor: Colors.grey.shade300,
+                                        borderWidth: 4.0,
+                                      ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left:
+                                      (MediaQuery.of(context).size.width / 2) -
+                                          20,
+                                  top: 10),
+                              child: MaterialButton(
+                                color: Colors.white,
+                                shape: CircleBorder(),
+                                elevation: 0,
+                                child: Icon(Icons.edit),
+                                onPressed: () {
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (_) => CustomDialog(this));
+                                },
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 90),
+                              child: Column(
+                                children: <Widget>[
+                                  /* ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: user.photo != null
+                                      ? CachedNetworkImageProvider(user.photo)
+                                      : new AssetImage(
+                                      "assets/images/default_profile.png"),
+                                ),
+                                title: Text(user.name != null ? user.name : "-"),
+                                onTap: () {},
+                              ),*/
+                                  _buildDivider(),
+                                  SwitchListTile(
+                                    activeColor: Colors.blue,
+                                    value: true,
+                                    title: Text("Diable/Enable Chat"),
+                                    onChanged: (val) {},
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      "ACCOUNT INFORMATION",
+                      style: headerStyle,
+                    ),
+                    const SizedBox(height: 16.0),
+                    Card(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 0,
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text("Name:",
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Container(
+                              padding: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                controller: nameCT,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: "Enter Name",
+                                ),
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                            Text("Country:",
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Container(
+                                padding: EdgeInsets.only(top: 10),
+                                child: InkWell(
+                                  onTap: () {
+                                    showCupertinoModalPopup<void>(
+                                        context: context,
+                                        builder: (context) {
+                                          return CountryPickerCupertino(
+                                            pickerSheetHeight: 300,
+                                            onValuePicked: (Country value) {
+                                              setState(() {
+                                                country = value.name;
+                                              });
+                                            },
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: 10, right: 10),
+                                      margin:
+                                          EdgeInsets.only(left: 10, right: 10),
+                                      width: screenWidth,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.grey[300])),
+                                      child: Center(
+                                        child: Text(country,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16)),
+                                      )),
+                                )),
+                            const SizedBox(height: 16.0),
+                            Text("Decription:",
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Container(
+                              padding: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                controller: descriptionCT,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: "Enter a profile description",
+                                ),
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      "SOCIAL MEDIA INFORMATION",
+                      style: headerStyle,
+                    ),
+                    const SizedBox(height: 16.0),
+                    Card(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 0,
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text("My Facebook Page:",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: TextField(
+                                    controller: facebookCT,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "facebook.com/mypage",
+                                    ),
+                                    keyboardType: TextInputType.url,
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                                Text("My Instagram Page:",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: TextField(
+                                    controller: instagramCT,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "instagram.com/mypage",
+                                    ),
+                                    keyboardType: TextInputType.url,
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                                Text("My Twitter Page:",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: TextField(
+                                    controller: twitterCT,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "twitter.com/mypage",
+                                    ),
+                                    keyboardType: TextInputType.url,
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                                Text("My Linkedin Page:",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: TextField(
+                                    controller: linkedinCT,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "linkedin.com/mypage",
+                                    ),
+                                    keyboardType: TextInputType.url,
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                              ]),
+                        )),
+                    SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        print("Profile changed");
+                        changeProfile();
+                      },
+                      child: Container(
+                        width: screenWidth,
+                        height: 50,
+                        decoration: BoxDecoration(color: Colors.blue),
+                        child: Center(
+                          child: Text("Save Changes",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    )
+                  ]),
+            )),
+        LoadingScreen(
+          inAsyncCall: isLoading,
+          dismissible: false,
+          mesage: "Changing profile...",
+        )
+      ]),
+    );
+  }
+}
 
-//   final _EditAccountPageState parent;
+class CustomDialog extends StatelessWidget {
+  final _EditAccountPageState parent;
 
-//   CustomDialog(this.parent);
+  CustomDialog(this.parent);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//       backgroundColor: Colors.white,
-//       child: Container(
-//         padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 40),
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: <Widget>[
-//             Text("Choose..", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
-//             SizedBox(height: 30),
-//             ListTile(
-//               onTap: () {
-//                 getImageData("camera");
-//                 Navigator.of(context).pop(true);
-//               },
-//               leading: Icon(Icons.camera_alt, color: Colors.blue, size: 25),
-//               title: Text("Camera", style: TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.bold)),
-//             ),
-//             ListTile(
-//               onTap: () {
-//                 getImageData("gallery");
-//                 Navigator.of(context).pop(true);
-//               },
-//               leading: Icon(Icons.collections, color: Colors.blue, size: 25),
-//               title: Text("Gallery", style: TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.bold)),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("Choose..",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold)),
+            SizedBox(height: 30),
+            ListTile(
+              onTap: () {
+                getImageData("camera");
+                Navigator.of(context).pop(true);
+              },
+              leading: Icon(Icons.camera_alt, color: Colors.blue, size: 25),
+              title: Text("Camera",
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+            ),
+            ListTile(
+              onTap: () {
+                getImageData("gallery");
+                Navigator.of(context).pop(true);
+              },
+              leading: Icon(Icons.collections, color: Colors.blue, size: 25),
+              title: Text("Gallery",
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
-//   getImageData(String sourceName) async {
-//     parent.setState(() {
-//       parent.isImageLoading = true;
-//     });
-//     try {
-//       File image = await ImagePicker.pickImage(source: sourceName == "camera" ? ImageSource.camera : ImageSource.gallery);
-//       String downloadUrl = await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
-//       parent.setState(() {
-//         parent.serverImageUrl = downloadUrl;
-//         parent.isImageLoading = false;
-//       });
-//     } catch (error) {
-//       parent.setState(() {
-//         parent.serverImageUrl = "";
-//       });
-//     }
-//   }
-// }
+  getImageData(String sourceName) async {
+    parent.setState(() {
+      parent.isImageLoading = true;
+    });
+    try {
+      File image = await ImagePicker.pickImage(
+          source: sourceName == "camera"
+              ? ImageSource.camera
+              : ImageSource.gallery);
+      String downloadUrl =
+          await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
+      parent.setState(() {
+        parent.serverImageUrl = downloadUrl;
+        parent.isImageLoading = false;
+      });
+    } catch (error) {
+      parent.setState(() {
+        parent.serverImageUrl = "";
+      });
+    }
+  }
+}

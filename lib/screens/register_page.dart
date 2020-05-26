@@ -18,19 +18,34 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isUserAgreement = false;
   bool isLoading = false;
 
-  register() async {
+
+  register(BuildContext context) async {
 
     String name = nameCT.text;
     String email = emailCT.text;
     String password = passwordCT.text;
 
     if(name.isEmpty || email.isEmpty || password.isEmpty){
-      Toast.show("Fill all forms", context);
+      Toast.show(
+        "Fill all forms", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
       return;
     }
 
     if(!isUserAgreement){
-      Toast.show("You should agree to User Agreement.", context);
+      Toast.show(
+        "You should agree to User Agreement.", 
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
       return;
     }
 
@@ -40,7 +55,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var isSuccess = await bloc.register(name: name, email: email, password: password);
     print("Was registration successful ? ${isSuccess}");
-    if(isSuccess){
+    // if(isSuccess == false) {
+    //   Toast.show("Email or password already in use", context);
+    // }
+    if(!isSuccess){
+      setState(() {
+        isLoading = false;
+      });
+      Toast.show(
+        "Email or Password already in use", 
+        context, 
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white
+        );
+    } else if(isSuccess) {
       Navigator.pop(context);
       Toast.show("Successfully registered!", context);
     } else {
@@ -67,8 +97,9 @@ class _RegisterPageState extends State<RegisterPage> {
     screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, 
       body: Stack(
-        overflow: Overflow.visible,
+        //overflow: Overflow.visible, 
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
@@ -219,8 +250,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: screenHeight * 0.01),
                 InkWell(
                   onTap: () {
-                    register();
-                    //Navigator.pop(context);
+                    register(context);
+                    
                   },
                   child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
@@ -267,5 +298,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ],
       ),
     );
+
+  
   }
 }
