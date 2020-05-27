@@ -149,7 +149,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Select Token:", style: TextStyle(color: Colors.black, fontSize: 15)),
-                        Container(
+                        Container( 
 //                          child: DropdownButtonHideUnderline(
 //                            child: DropdownButton<String>(
 //                              items: tokenOptions.map((value){
