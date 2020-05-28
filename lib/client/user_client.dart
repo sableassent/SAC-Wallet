@@ -39,32 +39,45 @@ class UserClient {
   // final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> register({@required String username, @required String email, @required String password, @required String confirmed_password}) async {
-    var client = http.Client();
 
       sharedPreferences = await SharedPreferences.getInstance();
-      var authResult = await client.post('https://sableassent.net/api/public/api/register',  body:{ 
+      return await http.post('https://sableassent.net/api/public/api/register',  body:{ 
         'name': username,
         'email': email,
         'password': password,
         'password_confirmation': confirmed_password
-      });
-      
-      Map<String, dynamic> createWalletResult = await walletClient.createWallet();
+      }).then((data){
+        if(data.statusCode == 201) {
+          final jsonUser = convert.jsonDecode(data.body);
+        //final listUserData = List<Map<String, dynamic>>[];
+        // test if i got the user data back
+        print(jsonUser);
+        var userData;
+        for(var item in jsonUser) {
+          final user = User(
+            id: item['ID'],
+            token: item['access_token'],
+            name: item['user_nicename'],
+            description: item['user_url'],
+            email: item['user_email'],
+            photo: item['user_url'],
+            country: item['country'],
+            eth_wallet_address: item['eth_wallet_address'],
+            facebook_link: item['facebook_link'],
+            instagram_link: item['instagram_link'],
+            twitter_link: item['twitter_link'],
+            linkedin_link: item['linkedin_link'],
+            enabledChat: false
+          );
 
-      if(authResult.statusCode == 201) {
-        var jsonResponse = convert.jsonDecode(authResult.body);
-        print(jsonResponse);
-        return true;
-        
-      } else if(authResult.statusCode == 422) {
-        print("client side error");
-        print(authResult.body);
-        return false;
-      }
-       else {
-         print("registration failed");
-        return false;
-      }
+           print(user.token);
+        }
+          print(userData);
+          return true;
+        }
+      })
+      .catchError((_) => false);
+      
       
       // FirebaseUser firebaseUser = authResult.user;
       // IdTokenResult userToken = await firebaseUser.getIdToken();
