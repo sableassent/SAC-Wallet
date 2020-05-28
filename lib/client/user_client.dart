@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
+import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
@@ -40,18 +40,34 @@ class UserClient {
 
   Future<bool> register({@required String username, @required String email, @required String password, @required String confirmed_password}) async {
     var client = http.Client();
-    try {
+
       sharedPreferences = await SharedPreferences.getInstance();
-      var authResult = await client.post(ApiConfig.BASE_URL + '/register', headers: ApiConfig.headers, body:<String, String>{ 
-        'username': username,
+      var authResult = await client.post('https://sableassent.net/api/public/api/register',  body:{ 
+        'name': username,
         'email': email,
         'password': password,
-        'confirmed_password': confirmed_password
+        'password_confirmation': confirmed_password
       });
-      print(authResult.body.toString());
+      
+      Map<String, dynamic> createWalletResult = await walletClient.createWallet();
+
+      if(authResult.statusCode == 201) {
+        var jsonResponse = convert.jsonDecode(authResult.body);
+        print(jsonResponse);
+        return true;
+        
+      } else if(authResult.statusCode == 422) {
+        print("client side error");
+        print(authResult.body);
+        return false;
+      }
+       else {
+         print("registration failed");
+        return false;
+      }
+      
       // FirebaseUser firebaseUser = authResult.user;
       // IdTokenResult userToken = await firebaseUser.getIdToken();
-      // Map<String, dynamic> createWalletResult = await walletClient.createWallet();
       // if(authResult.statusCode == 201){
       //   String wallet_address = createWalletResult[TextUtil.ADDRESS];
       //   String privateKey = createWalletResult[TextUtil.PRIVATE_RESPONSE_KEY];
@@ -76,40 +92,56 @@ class UserClient {
       //   return false;
       // }
 
-    } catch (error) {
-     print(error);
-
-    }
   }
 
-//   Future<bool> login({@required String email, @required String password}) async {
-//     bool isSuccess;
-//     try {
-//       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
-//       FirebaseUser firebaseUser = authResult.user;
-//       IdTokenResult userToken = await firebaseUser.getIdToken();
-//       DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
-//       if(snapshot.value != null) {
-//         User user = User.create(snapshot);
-//         user.token = userToken.token;
-//         isSuccess = await updateUser(user: user);
-//         GlobalValue.setCurrentUser = user;
-//         sharedPreferences = await SharedPreferences.getInstance();
-//         //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
-//         String privateKey = sharedPreferences.getString(firebaseUser.uid);
-//         sharedPreferences.setString("private_key", privateKey);
-//         GlobalValue.setPrivateKey = privateKey;
-//         return isSuccess;
-//       }else{
-//         print("Snapshot was null");
-//       }
-//     } catch (error) {
-//       print(error.toString());
-//       return false;
-//     }
+  // Future<bool> login({@required String email, @required String password}) async {
+  //   var client = http.Client();
 
-//     return isSuccess;
-//   }
+  //    var authResult = await client.post('https://sableassent.net/api/public/api/register',  body:{ 
+  //       'email': email,
+  //       'password': password,
+  //     });
+  //     if(authResult.statusCode == 201) {
+  //       print(authResult.body);
+  //       return true;
+        
+  //     } else if(authResult.statusCode == 422) {
+  //       print("client side error");
+  //       print(authResult.body);
+  //       return false;
+  //     }
+  //      else {
+  //        print("registration failed");
+  //       return false;
+  //     }
+
+    //bool isSuccess;
+    // try {
+    //   AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    //   FirebaseUser firebaseUser = authResult.user;
+    //   IdTokenResult userToken = await firebaseUser.getIdToken();
+    //   DataSnapshot snapshot = await userRef.child(firebaseUser.uid).once();
+    //   if(snapshot.value != null) {
+    //     User user = User.create(snapshot);
+    //     user.token = userToken.token;
+    //     isSuccess = await updateUser(user: user);
+    //     GlobalValue.setCurrentUser = user;
+    //     sharedPreferences = await SharedPreferences.getInstance();
+    //     //sharedPreferences.setString("wallet_address", user.eth_wallet_address);
+    //     String privateKey = sharedPreferences.getString(firebaseUser.uid);
+    //     sharedPreferences.setString("private_key", privateKey);
+    //     GlobalValue.setPrivateKey = privateKey;
+    //     return isSuccess;
+    //   }else{
+    //     print("Snapshot was null");
+    //   }
+    // } catch (error) {
+    //   print(error.toString());
+    //   return false;
+    // }
+
+    // return isSuccess;
+  //}
 
 //   Future<bool> logout() async {
 //     try {

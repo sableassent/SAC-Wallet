@@ -54,8 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading = true;
     });
 
-    // var isSuccess = await bloc.register(name: name, email: email, password: password);
-    bool isSuccess = await true;
+    bool isSuccess = await bloc.register(username: name, email: email, password: password, confirmed_password: confPassword);
     print("Was registration successful ? ${isSuccess}");
     // if(isSuccess == false) {
     //   Toast.show("Email or password already in use", context);
