@@ -7,14 +7,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:country_pickers/country_picker_cupertino.dart';
 import 'package:country_pickers/country.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
-import 'package:sac_wallet/blocs/firebase_bloc.dart';
+import 'package:sac_wallet/blocs/user_bloc.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/screens/account/account_page.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/widget/loading.dart';
 import 'package:toast/toast.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class EditAccountPage extends StatefulWidget {
   EditAccountPage({Key key}) : super(key: key);
@@ -91,7 +91,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
         user.photo = photo;
       });
 
-      bool isSuccess = await bloc.updateUser(user: user);
+      // bool isSuccess = await  bloc.updateUser(user: user);
+      bool isSuccess = true;
       print("isSuccess value: $isSuccess");
       if (isSuccess) {
         setState(() {
@@ -112,7 +113,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
     // nameCT = TextEditingController();
     // facebookCT = TextEditingController();
     // twitterCT = TextEditingController();
@@ -521,8 +522,8 @@ class CustomDialog extends StatelessWidget {
           source: sourceName == "camera"
               ? ImageSource.camera
               : ImageSource.gallery);
-      String downloadUrl =
-          await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
+      // String downloadUrl = await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
+      String downloadUrl = "";
       parent.setState(() {
         parent.serverImageUrl = downloadUrl;
         parent.isImageLoading = false;

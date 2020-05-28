@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import '../blocs/firebase_bloc.dart';
+import '../blocs/user_bloc.dart';
 import '../widget/loading.dart';
 //import '../util/validator.dart';
 import 'register_page.dart';
 import 'dashboard_page.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -52,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    bool isSuccess = await bloc.login(email: email, password: password);
+    // bool isSuccess = await bloc.login(email: email, password: password);
+    bool isSuccess = await true;
     if(isSuccess){
       print("success ...");
       emailCT.clear();
@@ -79,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     emailCT = TextEditingController();
     passwordCT = TextEditingController();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
   }
 
   @override

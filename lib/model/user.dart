@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import '../util/text_util.dart';
 
 class User {
@@ -18,37 +18,37 @@ class User {
 
   User({this.id, this.token, this.name, this.description, this.email, this.photo, this.country, this.eth_wallet_address, this.facebook_link, this.twitter_link, this.instagram_link, this.linkedin_link, this.enabledChat});
 
-  factory User.fromServer(DataSnapshot snapshot) => User(
-    id: snapshot.key,
-    token: snapshot.value[TextUtil.TOKEN],
-    name: snapshot.value[TextUtil.NAME],
-    description: snapshot.value[TextUtil.DESCRIPTION],
-    email: snapshot.value[TextUtil.EMAIL],
-    photo: snapshot.value[TextUtil.PHOTO],
-    country: snapshot.value[TextUtil.COUNTRY],
-    eth_wallet_address: snapshot.value[TextUtil.ETH_WALLET_ADDRESS],
-    facebook_link: snapshot.value[TextUtil.FACEBOOK_LINK],
-    twitter_link: snapshot.value[TextUtil.TWITTER_LINK],
-    instagram_link: snapshot.value[TextUtil.INSTAGRAM_LINK],
-    linkedin_link: snapshot.value[TextUtil.LINKEDIN_LINK],
-    enabledChat: snapshot.value[TextUtil.ENABLED_CHAT]
+  factory User.fromServer(Map<String, dynamic> snapshot) => User(
+    id: snapshot["key"],
+    token: snapshot[TextUtil.TOKEN],
+    name: snapshot[TextUtil.NAME],
+    description: snapshot[TextUtil.DESCRIPTION],
+    email: snapshot[TextUtil.EMAIL],
+    photo: snapshot[TextUtil.PHOTO],
+    country: snapshot[TextUtil.COUNTRY],
+    eth_wallet_address: snapshot[TextUtil.ETH_WALLET_ADDRESS],
+    facebook_link: snapshot[TextUtil.FACEBOOK_LINK],
+    twitter_link: snapshot[TextUtil.TWITTER_LINK],
+    instagram_link: snapshot[TextUtil.INSTAGRAM_LINK],
+    linkedin_link: snapshot[TextUtil.LINKEDIN_LINK],
+    enabledChat: snapshot[TextUtil.ENABLED_CHAT]
   );
 
-  User.create(DataSnapshot snapshot){
-      id = snapshot.key;
-      token = snapshot.value[TextUtil.TOKEN];
-      name = snapshot.value[TextUtil.NAME];
-      description = snapshot.value[TextUtil.DESCRIPTION];
-      email = snapshot.value[TextUtil.EMAIL];
-      photo = snapshot.value[TextUtil.PHOTO];
-      country = snapshot.value[TextUtil.COUNTRY];
-      eth_wallet_address = snapshot.value[TextUtil.ETH_WALLET_ADDRESS];
+  User.create(Map<String, dynamic> snapshot){
+      id = snapshot["key"];
+      token = snapshot[TextUtil.TOKEN];
+      name = snapshot[TextUtil.NAME];
+      description = snapshot[TextUtil.DESCRIPTION];
+      email = snapshot[TextUtil.EMAIL];
+      photo = snapshot[TextUtil.PHOTO];
+      country = snapshot[TextUtil.COUNTRY];
+      eth_wallet_address = snapshot[TextUtil.ETH_WALLET_ADDRESS];
       print("ETH address: $eth_wallet_address");
-      facebook_link = snapshot.value[TextUtil.FACEBOOK_LINK];
-      twitter_link = snapshot.value[TextUtil.TWITTER_LINK];
-      instagram_link = snapshot.value[TextUtil.INSTAGRAM_LINK];
-      linkedin_link = snapshot.value[TextUtil.LINKEDIN_LINK];
-      enabledChat = snapshot.value[TextUtil.ENABLED_CHAT];
+      facebook_link = snapshot[TextUtil.FACEBOOK_LINK];
+      twitter_link = snapshot[TextUtil.TWITTER_LINK];
+      instagram_link = snapshot[TextUtil.INSTAGRAM_LINK];
+      linkedin_link = snapshot[TextUtil.LINKEDIN_LINK];
+      enabledChat = snapshot[TextUtil.ENABLED_CHAT];
   }
 
   Map<String, dynamic> toMap() {

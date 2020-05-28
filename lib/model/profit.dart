@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import '../util/text_util.dart';
 
 class Profit {
@@ -14,16 +14,16 @@ class Profit {
 
   Profit({this.id, this.profitName, this.userName, this.userWalletAddress, this.email, this.phone, this.organization, this.location, this.status});
 
-  factory Profit.fromServer(DataSnapshot snapshot) => Profit(
-    id: snapshot.value[TextUtil.ID],
-    profitName: snapshot.value[TextUtil.PROFIT_NAME],
-    userName: snapshot.value[TextUtil.USER_NAME],
-    userWalletAddress: snapshot.value[TextUtil.USER_WALLET_ADDRESS],
-    email: snapshot.value[TextUtil.EMAIL],
-    phone: snapshot.value[TextUtil.PHONE],
-    organization: snapshot.value[TextUtil.ORGANIZATION],
-    location: snapshot.value[TextUtil.LOCATION],
-    status: snapshot.value[TextUtil.STATUS]
+  factory Profit.fromServer(Map<String, dynamic> snapshot) => Profit(
+    id: snapshot[TextUtil.ID],
+    profitName: snapshot[TextUtil.PROFIT_NAME],
+    userName: snapshot[TextUtil.USER_NAME],
+    userWalletAddress: snapshot[TextUtil.USER_WALLET_ADDRESS],
+    email: snapshot[TextUtil.EMAIL],
+    phone: snapshot[TextUtil.PHONE],
+    organization: snapshot[TextUtil.ORGANIZATION],
+    location: snapshot[TextUtil.LOCATION],
+    status: snapshot[TextUtil.STATUS]
   );
 
   Map<String, dynamic> toMap() {

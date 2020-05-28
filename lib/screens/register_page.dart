@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:sac_wallet/client/firebase_client.dart';
+import 'package:sac_wallet/client/user_client.dart';
 import 'package:toast/toast.dart';
 import 'user_agreement_page.dart';
-import '../blocs/firebase_bloc.dart';
+import '../blocs/user_bloc.dart';
 import '../widget/loading.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  FirebaseClient client;
+  UserClient client;
   double screenWidth, screenHeight;
-  TextEditingController nameCT, emailCT, passwordCT;
+  TextEditingController nameCT, emailCT, passwordCT, confPasswordCT;
   bool isUserAgreement = false;
   bool isLoading = false;
 
@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
     String name = nameCT.text;
     String email = emailCT.text;
     String password = passwordCT.text;
+    String confPassword = confPasswordCT.text;
 
     if(name.isEmpty || email.isEmpty || password.isEmpty){
       Toast.show(
@@ -53,7 +54,8 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading = true;
     });
 
-    var isSuccess = await bloc.register(name: name, email: email, password: password);
+    // var isSuccess = await bloc.register(name: name, email: email, password: password);
+    bool isSuccess = await true;
     print("Was registration successful ? ${isSuccess}");
     // if(isSuccess == false) {
     //   Toast.show("Email or password already in use", context);
@@ -87,7 +89,8 @@ class _RegisterPageState extends State<RegisterPage> {
     nameCT = TextEditingController();
     emailCT = TextEditingController();
     passwordCT = TextEditingController();
-    bloc = new FirebaseBloc();
+    confPasswordCT = TextEditingController();
+    bloc = new UserBloc();
   }
 
   @override
@@ -202,6 +205,38 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide.none,
                             ),
                             hintText: "Enter Password",
+                            contentPadding: EdgeInsets.all(5)
+                          ),
+                          keyboardType: TextInputType.text,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Divider(height: 0.2, color: Colors.grey),
+                Container(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  width: screenWidth,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.white
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Confirmed Password", style: TextStyle(color: Colors.black87, fontSize: 17)),
+                      Container(
+                        width: screenWidth * 0.65,
+                        child: TextField(
+                          obscureText: true,
+                          controller: confPasswordCT,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: "Enter Confirmed Password",
                             contentPadding: EdgeInsets.all(5)
                           ),
                           keyboardType: TextInputType.text,

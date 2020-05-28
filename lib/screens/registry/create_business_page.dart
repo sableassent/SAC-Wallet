@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import '../../model/company.dart';
 import '../../model/user.dart';
-import '../../blocs/firebase_bloc.dart';
+import '../../blocs/user_bloc.dart';
 import '../../util/global.dart';
 import '../../widget/loading.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class CreateBusinessPage extends StatefulWidget {
   @override
@@ -91,7 +91,8 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
       instagramLink: instagram
     );
 
-    bool isSuccess = await bloc.addCompany(company: company, userId: user.id);
+    // bool isSuccess = await bloc.addCompany(company: company, userId: user.id);
+    bool isSuccess = await true;
     if(isSuccess){
       setState(() {
         isLoading = false;
@@ -109,7 +110,7 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
     nameCT = new TextEditingController();
     yearCT = new TextEditingController();
     phoneCT = new TextEditingController();

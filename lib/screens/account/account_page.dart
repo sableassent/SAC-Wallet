@@ -8,9 +8,9 @@ import 'package:sac_wallet/util/global.dart';
 //import 'edit_account_page.dart';
 import '../../model/user.dart';
 //import '../../util/global.dart';
-import '../../blocs/firebase_bloc.dart';
+import '../../blocs/user_bloc.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class AccountPage extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
     //bloc.getUser();
   }
 

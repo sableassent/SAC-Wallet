@@ -5,11 +5,11 @@ import 'package:toast/toast.dart';
 //import '../../model/company.dart';
 import '../../model/profit.dart';
 import '../../model/user.dart';
-import '../../blocs/firebase_bloc.dart';
+import '../../blocs/user_bloc.dart';
 import '../../util/global.dart';
 import '../../widget/loading.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class JoinNetworkPage extends StatefulWidget {
   @override
@@ -71,7 +71,8 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
       status: statusList[statusIndex]
     );
 
-    bool isSuccess = await bloc.addNonProfit(profit: profit, userId: user.id);
+    // bool isSuccess = await bloc.addNonProfit(profit: profit, userId: user.id);
+    bool isSuccess = true;
     if(isSuccess){
       setState(() {
         isLoading = false;
@@ -89,7 +90,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
     nameCT = new TextEditingController();
     emailCT = new TextEditingController();
     phoneCT = new TextEditingController();

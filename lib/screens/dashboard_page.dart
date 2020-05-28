@@ -14,9 +14,9 @@ import 'registry/registry_page.dart';
 import 'profit/profit_page.dart';
 import '../screens/login_page.dart';
 import '../widget/loading.dart';
-import '../blocs/firebase_bloc.dart';
+import '../blocs/user_bloc.dart';
 
-FirebaseBloc bloc;
+UserBloc bloc;
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -39,7 +39,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
+    bloc = new UserBloc();
   }
 
   Widget getPageFromIndex(int index) {
@@ -142,7 +142,8 @@ class _DashboardPageState extends State<DashboardPage> {
                 setState(() {
                   isLoading = true;
                 });
-                bool isSuccess = await bloc.logout();
+                // bool isSuccess = await bloc.logout();
+                bool isSuccess = await true;
                 if(isSuccess){
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()), (Route route) => false);
                 } else {
@@ -230,7 +231,8 @@ class CustomDrawer extends StatelessWidget {
                     GestureDetector(
                       child: Icon(Icons.exit_to_app, size: 32.0,),
                       onTap:  () async {
-                        bool isSuccess = await bloc.logout();
+                        // bool isSuccess = await bloc.logout();
+                        bool isSuccess = await true;
                         if(isSuccess){
                         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()), (Route route) => false);
                       }
