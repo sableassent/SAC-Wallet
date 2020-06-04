@@ -39,6 +39,11 @@ class TextUtil {
   static String PRIVATE_BODY_KEY = "privateKey";
   static String EMAIL_ALREADY_IN_USE = "email_already_in_use";
 
+  static String REGISTRATION_SUCCESSFUL_MSG = "Registration successful";
+  static String LOGIN_SUCCESSFUL_MSG = "Login successful";
+
+  static String PRIVATE_KEY = "privatekey";
+
   String formatAddressText(final String address){
     if(address != null && address.length > 11){
       final formattedAddress = "${address.substring(0, 5)}...${address.substring(address.length - 5, address.length-1)}";

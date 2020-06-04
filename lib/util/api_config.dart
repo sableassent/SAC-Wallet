@@ -1,5 +1,7 @@
 class ApiConfig {
   static final String BASE_URL = "https://sableassent.net/api/public/api/";
+  static final String REGISTRATION_URL = "${BASE_URL}register";
+  static final String LOGIN_URL = "${BASE_URL}login";
   static final headers = {'Content-Type': 'applicatin/json'};
   static final String API_BASE_URL = "https://evening-fjord-11708.herokuapp.com";
   static final String API_CREATE_WALLET = "${API_BASE_URL}/create_wallet";

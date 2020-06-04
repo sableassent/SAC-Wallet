@@ -5,6 +5,7 @@ import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/wallet_repository.dart';
 import 'package:sac_wallet/screens/account/edit_account_page.dart';
 import 'package:sac_wallet/util/global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'home/home_page.dart';
 import 'account/account_page.dart';
@@ -32,6 +33,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   static String tempWalletAddress = "0xf641e24c4084eb0ec8496d6b5a3b91d29dfcf66a"; // currentUser.eth_wallet_address <- replace with
 
+  var sharedPreferences;  
+
   Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: tempWalletAddress, limit: 5);
 
   Future<String> currentBalance = WalletRepository().getCurrentBalance(address: currentUser.eth_wallet_address);
@@ -40,6 +43,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     bloc = new UserBloc();
+    sharedPreferences =  SharedPreferences.getInstance();
   }
 
   Widget getPageFromIndex(int index) {

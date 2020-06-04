@@ -1,134 +1,102 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
+import 'package:sac_wallet/util/APIRequestHelper.dart';
+import 'package:sac_wallet/util/ResponseMap.dart';
 import 'package:sac_wallet/util/api_config.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_database/firebase_database.dart';
+import 'package:sac_wallet/util/global.dart';
+import 'package:sac_wallet/util/text_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'wallet_client.dart';
 import '../model/user.dart';
-import '../model/company.dart';
-import '../model/profit.dart';
-import '../util/text_util.dart';
-import '../util/global.dart';
 
 
 
 class UserClient {
-  // DatabaseReference userRef;
-  // DatabaseReference companyRef;
-  // DatabaseReference profitRef;
-  // StorageReference photoRef;
+  
   SharedPreferences sharedPreferences;
   WalletClient walletClient;
-  
-
-  // FirebaseClient() {
-  //   userRef = FirebaseDatabase.instance.reference().child(TextUtil.USER_REF_TITLE);
-  //   companyRef = FirebaseDatabase.instance.reference().child(TextUtil.COMPANY_REF_TITLE);
-  //   profitRef = FirebaseDatabase.instance.reference().child(TextUtil.PROFIT_REF_TITLE);
-  //   photoRef = FirebaseStorage.instance.ref();
-  //   walletClient = new WalletClient();
-  // }
-
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> register({@required String username, @required String email, @required String password, @required String confirmed_password}) async {
-
-      sharedPreferences = await SharedPreferences.getInstance();
-      return await http.post('https://sableassent.net/api/public/api/register',  body:{ 
+    bool isRegistrationsuccessful = false;
+    var requestBody = {
         'name': username,
         'email': email,
         'password': password,
         'password_confirmation': confirmed_password
-      }).then((data){
-        if(data.statusCode == 201) {
-          final jsonUser = convert.jsonDecode(data.body);
-        //final listUserData = List<Map<String, dynamic>>[];
-        // test if i got the user data back
-        print(jsonUser);
-        var userData;
-        for(var item in jsonUser) {
-          final user = User(
-            id: item['ID'],
-            token: item['access_token'],
-            name: item['user_nicename'],
-            description: item['user_url'],
-            email: item['user_email'],
-            photo: item['user_url'],
-            country: item['country'],
-            eth_wallet_address: item['eth_wallet_address'],
-            facebook_link: item['facebook_link'],
-            instagram_link: item['instagram_link'],
-            twitter_link: item['twitter_link'],
-            linkedin_link: item['linkedin_link'],
-            enabledChat: false
-          );
+      };
+      var body = json.encode(requestBody);
+      ResponseMap responseMap = await APIRequestHelper().doPostRequest(ApiConfig.REGISTRATION_URL, body);
+      sharedPreferences = await SharedPreferences.getInstance();
 
-           print(user.token);
-        }
-          print(userData);
-          return true;
-        }
-      })
-      .catchError((_) => false);
-      
-      
-      // FirebaseUser firebaseUser = authResult.user;
-      // IdTokenResult userToken = await firebaseUser.getIdToken();
-      // if(authResult.statusCode == 201){
-      //   String wallet_address = createWalletResult[TextUtil.ADDRESS];
-      //   String privateKey = createWalletResult[TextUtil.PRIVATE_RESPONSE_KEY];
-      //   sharedPreferences.setString(access_token, client.get(authResult.b));
-      //   GlobalValue.privateKey = privateKey;
-      //   User user = new User(
-      //     id: firebaseUser.uid,
-      //     token: userToken.token,
-      //     name: name,
-      //     email: email,
-      //     photo: "",
-      //     country: "",
-      //     eth_wallet_address: wallet_address,
-      //     facebook_link: "",
-      //     twitter_link: "",
-      //     instagram_link: "",
-      //     linkedin_link: "",
-      //     enabledChat: false
-      //   );
-      //   return await addUser(user: user);
-      // } else {
-      //   return false;
-      // }
+      if(responseMap.body != null){
+        final jsonResponse = convert.jsonDecode(responseMap.body);
+        if(jsonResponse["message"] == TextUtil.REGISTRATION_SUCCESSFUL_MSG) {
+          print("eth_wallet_address: ${jsonResponse["eth_wallet_address"]}");
+          isRegistrationsuccessful = true;
+          final userData = jsonResponse["user"];
+          final user = User.fromApi(userData, jsonResponse["token"]);
+          print(user.eth_wallet_address);
+          final privateKey = user.privateKey;
+          final currentUser = user;
+          sharedPreferences.setString(TextUtil.PRIVATE_KEY, user.token);
+          GlobalValue.privateKey = privateKey;
+          GlobalValue.setCurrentUser = currentUser;
 
+        }
+      }
+      return isRegistrationsuccessful;
   }
 
-  // Future<bool> login({@required String email, @required String password}) async {
-  //   var client = http.Client();
+  Future<bool> login({@required String email, @required String password}) async {
+    bool isLoginSuccessful = false;
 
-  //    var authResult = await client.post('https://sableassent.net/api/public/api/register',  body:{ 
-  //       'email': email,
-  //       'password': password,
-  //     });
-  //     if(authResult.statusCode == 201) {
-  //       print(authResult.body);
-  //       return true;
-        
-  //     } else if(authResult.statusCode == 422) {
-  //       print("client side error");
-  //       print(authResult.body);
-  //       return false;
-  //     }
-  //      else {
-  //        print("registration failed");
-  //       return false;
-  //     }
+    var requestBody = {
+      'email': email,
+      'password': password
+    };
 
-    //bool isSuccess;
+    var body = json.encode(requestBody);
+    ResponseMap responseMap = await APIRequestHelper().doPostRequest(ApiConfig.LOGIN_URL, body);
+    sharedPreferences = await SharedPreferences.getInstance();
+
+    if(responseMap != null) {
+      final jsonResponse = convert.jsonDecode(responseMap.body);
+      if(jsonResponse["message"] == TextUtil.LOGIN_SUCCESSFUL_MSG) {
+        isLoginSuccessful = true;
+        print("token: ${jsonResponse["token"]}");
+        final userData = jsonResponse["user"];
+        print(jsonResponse["user"]);
+        final user = User.fromApi(userData, jsonResponse["token"]);
+        final privateKey = user.privateKey;
+        final eth_wallet_address = user.eth_wallet_address;
+        print("eth_wallet address: ${eth_wallet_address}");
+        sharedPreferences.setString(TextUtil.PRIVATE_KEY, user.token);
+        sharedPreferences.setString(TextUtil.ETH_WALLET_ADDRESS, user.eth_wallet_address);
+        GlobalValue.privateKey = privateKey;
+        User currentUser = new User(
+          id: jsonResponse["ID"],
+          token: jsonResponse["token"],
+          name: jsonResponse["name"],
+          email: email,
+          photo: "",
+          country: "",
+          eth_wallet_address: jsonResponse["eth_wallet_address"],
+          facebook_link: "",
+          twitter_link: "",
+          instagram_link: "",
+          linkedin_link: "",
+          enabledChat: false
+        );
+        GlobalValue.setCurrentUser = currentUser;
+
+      }
+    }
+
+    return isLoginSuccessful;
     // try {
     //   AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
     //   FirebaseUser firebaseUser = authResult.user;
@@ -154,7 +122,7 @@ class UserClient {
     // }
 
     // return isSuccess;
-  //}
+  }
 
 //   Future<bool> logout() async {
 //     try {

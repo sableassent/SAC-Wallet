@@ -221,27 +221,29 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                       color: Colors.white
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Confirmed Password", style: TextStyle(color: Colors.black87, fontSize: 17)),
-                      Container(
-                        width: screenWidth * 0.65,
-                        child: TextField(
-                          obscureText: true,
-                          controller: confPasswordCT,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                  child: Expanded(
+                      child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Confirmed Password", style: TextStyle(color: Colors.black87, fontSize: 17)),
+                        Container(
+                          width: screenWidth * 0.65,
+                          child: TextField(
+                            obscureText: true,
+                            controller: confPasswordCT,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: "Enter Confirmed Password",
+                              contentPadding: EdgeInsets.all(5)
                             ),
-                            hintText: "Enter Confirmed Password",
-                            contentPadding: EdgeInsets.all(5)
+                            keyboardType: TextInputType.text,
                           ),
-                          keyboardType: TextInputType.text,
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Divider(height: 0.2, color: Colors.grey),

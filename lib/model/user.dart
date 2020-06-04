@@ -1,4 +1,3 @@
-// import 'package:firebase_database/firebase_database.dart';
 import '../util/text_util.dart';
 
 class User {
@@ -15,8 +14,9 @@ class User {
   String instagram_link;
   String linkedin_link;
   bool enabledChat;
+  String privateKey;
 
-  User({this.id, this.token, this.name, this.description, this.email, this.photo, this.country, this.eth_wallet_address, this.facebook_link, this.twitter_link, this.instagram_link, this.linkedin_link, this.enabledChat});
+  User({this.id, this.token, this.name, this.description, this.email, this.photo, this.country, this.eth_wallet_address, this.facebook_link, this.twitter_link, this.instagram_link, this.linkedin_link, this.enabledChat, this.privateKey});
 
   factory User.fromServer(Map<String, dynamic> snapshot) => User(
     id: snapshot["key"],
@@ -32,6 +32,16 @@ class User {
     instagram_link: snapshot[TextUtil.INSTAGRAM_LINK],
     linkedin_link: snapshot[TextUtil.LINKEDIN_LINK],
     enabledChat: snapshot[TextUtil.ENABLED_CHAT]
+  );
+
+
+  factory User.fromApi(Map<String, dynamic> snapshot, String token) => User(
+      id: BigInt.from(snapshot["ID"]).toString(),
+      token: token,
+      name: snapshot["display_name"],
+      email: snapshot["user_email"],
+      eth_wallet_address: snapshot["eth_wallet_address"],
+      privateKey: snapshot["privateKey"]
   );
 
   User.create(Map<String, dynamic> snapshot){
