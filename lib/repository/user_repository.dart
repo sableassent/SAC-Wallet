@@ -10,7 +10,7 @@ class UserRepository {
 
   Future<bool> register({@required String username, @required String email, @required String password, @required confirmed_password}) async => await userClient.register(username: username, email: email, password: password, confirmed_password: confirmed_password);
 
-  // Future<bool> login({@required String email, @required String password}) async => await userClient.login(email: email, password: password);
+  Future<bool> login({@required String email, @required String password}) async => await userClient.login(email: email, password: password);
 
   // Future<bool> logout() async => await userClient.logout();
 

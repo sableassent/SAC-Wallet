@@ -105,7 +105,7 @@ class HomePage extends StatelessWidget{
                                 return Container(
                                   padding: EdgeInsets.all(0),
                                   child: Container(
-                                      child: Text("${FlutterMoneyFormatter(amount: BigInt.parse(snapshot.data.substring(0,6)).toDouble()).output.symbolOnLeft}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)),
+                                      child: Text("${FlutterMoneyFormatter(amount: BigInt.parse(snapshot.data.substring(0,6)).toDouble()).output.symbolOnLeft}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),)),
                                 );
                             }
                             return null;

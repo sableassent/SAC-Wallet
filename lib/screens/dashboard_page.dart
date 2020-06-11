@@ -33,7 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   static String tempWalletAddress = "0xf641e24c4084eb0ec8496d6b5a3b91d29dfcf66a"; // currentUser.eth_wallet_address <- replace with
 
-  var sharedPreferences;  
+  //var sharedPreferences;  
 
   Future<List<Transaction>> transactions = WalletRepository().getTransactionHistory(address: tempWalletAddress, limit: 5);
 
@@ -43,7 +43,6 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     bloc = new UserBloc();
-    sharedPreferences =  SharedPreferences.getInstance();
   }
 
   Widget getPageFromIndex(int index) {

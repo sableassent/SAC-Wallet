@@ -52,8 +52,7 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    // bool isSuccess = await bloc.login(email: email, password: password);
-    bool isSuccess = await true;
+    bool isSuccess = await bloc.login(email: email, password: password);
     if(isSuccess){
       print("success ...");
       emailCT.clear();

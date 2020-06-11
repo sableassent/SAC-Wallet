@@ -21,9 +21,9 @@ class UserBloc {
     return await userRepository.register(username: username, email: email, password: password, confirmed_password: confirmed_password);
   }
 
-  // Future<bool> login({@required String email, @required String password}) async {
-  //   return await userRepository.login(email: email, password: password);
-  // }
+  Future<bool> login({@required String email, @required String password}) async {
+    return await userRepository.login(email: email, password: password);
+  }
 
   // Future<bool> logout() async {
   //   return await userRepository.logout();
