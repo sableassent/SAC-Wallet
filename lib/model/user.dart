@@ -1,72 +1,121 @@
-import 'package:firebase_database/firebase_database.dart';
-import '../util/text_util.dart';
+import 'package:sac_wallet/util/database_creator.dart';
 
 class User {
   String id;
-  String token;
+  String dbid;
+  String userAccessToken;
   String name;
   String description;
   String email;
+  String phoneNumber;
   String photo;
   String country;
-  String eth_wallet_address;
+  String walletAddress;
   String facebook_link;
   String twitter_link;
   String instagram_link;
   String linkedin_link;
   bool enabledChat;
+  String privateKey;
+  String publicKey;
+  String username;
+  String pin;
+  String mnemonic;
+  String incorrectAttemptsTime;
+  String incorrectAttempts;
+  String referralCode;
+  String phoneNumberVerified;
+  String emailVerified;
 
-  User({this.id, this.token, this.name, this.description, this.email, this.photo, this.country, this.eth_wallet_address, this.facebook_link, this.twitter_link, this.instagram_link, this.linkedin_link, this.enabledChat});
+  User(
+      this.id,
+      this.dbid,
+      this.userAccessToken,
+      this.name,
+      this.description,
+      this.email,
+      this.phoneNumber,
+      this.photo,
+      this.country,
+      this.walletAddress,
+      this.facebook_link,
+      this.twitter_link,
+      this.instagram_link,
+      this.linkedin_link,
+      this.enabledChat,
+      this.privateKey,
+      this.publicKey,
+      this.username,
+      this.pin,
+      this.mnemonic,
+      this.incorrectAttemptsTime,
+      this.incorrectAttempts,
+      this.referralCode,
+      this.phoneNumberVerified,
+      this.emailVerified);
 
-  factory User.fromServer(DataSnapshot snapshot) => User(
-    id: snapshot.key,
-    token: snapshot.value[TextUtil.TOKEN],
-    name: snapshot.value[TextUtil.NAME],
-    description: snapshot.value[TextUtil.DESCRIPTION],
-    email: snapshot.value[TextUtil.EMAIL],
-    photo: snapshot.value[TextUtil.PHOTO],
-    country: snapshot.value[TextUtil.COUNTRY],
-    eth_wallet_address: snapshot.value[TextUtil.ETH_WALLET_ADDRESS],
-    facebook_link: snapshot.value[TextUtil.FACEBOOK_LINK],
-    twitter_link: snapshot.value[TextUtil.TWITTER_LINK],
-    instagram_link: snapshot.value[TextUtil.INSTAGRAM_LINK],
-    linkedin_link: snapshot.value[TextUtil.LINKEDIN_LINK],
-    enabledChat: snapshot.value[TextUtil.ENABLED_CHAT]
-  );
+  factory User.fromJson(Map<String, dynamic> json) =>
+      User(
+        json[DatabaseCreator.id] as String,
+        json[DatabaseCreator.dbid] as String,
+        json[DatabaseCreator.userAccessToken] as String,
+        json[DatabaseCreator.name] as String,
+        json[DatabaseCreator.description] as String,
+        json[DatabaseCreator.email] as String,
+        json[DatabaseCreator.phoneNumber] as String,
+        json[DatabaseCreator.photo] as String,
+        json[DatabaseCreator.country] as String,
+        json[DatabaseCreator.walletAddress] as String,
+        json[DatabaseCreator.facebook_link] as String,
+        json[DatabaseCreator.twitter_link] as String,
+        json[DatabaseCreator.instagram_link] as String,
+        json[DatabaseCreator.linkedin_link] as String,
+        json[DatabaseCreator.enabledChat] as bool,
+        json[DatabaseCreator.privateKey] as String,
+        json[DatabaseCreator.publicKey] as String,
+        json[DatabaseCreator.username] as String,
+        json[DatabaseCreator.pin] as String,
+        json[DatabaseCreator.mnemonic] as String,
+        json[DatabaseCreator.incorrectAttemptsTime] as String,
+        json[DatabaseCreator.incorrectAttempts] as String,
+        json[DatabaseCreator.referralCode] as String,
+        json[DatabaseCreator.phoneNumberVerified].toString(),
+        json[DatabaseCreator.emailVerified].toString(),
+      );
 
-  User.create(DataSnapshot snapshot){
-      id = snapshot.key;
-      token = snapshot.value[TextUtil.TOKEN];
-      name = snapshot.value[TextUtil.NAME];
-      description = snapshot.value[TextUtil.DESCRIPTION];
-      email = snapshot.value[TextUtil.EMAIL];
-      photo = snapshot.value[TextUtil.PHOTO];
-      country = snapshot.value[TextUtil.COUNTRY];
-      eth_wallet_address = snapshot.value[TextUtil.ETH_WALLET_ADDRESS];
-      print("ETH address: $eth_wallet_address");
-      facebook_link = snapshot.value[TextUtil.FACEBOOK_LINK];
-      twitter_link = snapshot.value[TextUtil.TWITTER_LINK];
-      instagram_link = snapshot.value[TextUtil.INSTAGRAM_LINK];
-      linkedin_link = snapshot.value[TextUtil.LINKEDIN_LINK];
-      enabledChat = snapshot.value[TextUtil.ENABLED_CHAT];
+// db to class mapping
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'dbid': dbid,
+      'userAccessToken': userAccessToken,
+      'name': name,
+      'description': description,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'photo': photo,
+      'country': country,
+      'walletAddress': walletAddress,
+      'facebook_link': facebook_link,
+      'twitter_link': twitter_link,
+      'instagram_link': instagram_link,
+      'linkedin_link': linkedin_link,
+      'enabledChat': enabledChat,
+      'privateKey': privateKey,
+      'publicKey': publicKey,
+      'username': username,
+      'pin': pin,
+      'mnemonic': mnemonic,
+      'incorrectAttemptsTime': incorrectAttemptsTime,
+      'incorrectAttempts': incorrectAttempts,
+      'referralCode': referralCode,
+      'phoneNumberVerified': phoneNumberVerified,
+      'emailVerified': emailVerified
+    };
   }
 
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = new Map();
-    map[TextUtil.ID] = id;
-    map[TextUtil.TOKEN] = token;
-    map[TextUtil.NAME] = name;
-    map[TextUtil.DESCRIPTION] = description;
-    map[TextUtil.EMAIL] = email;
-    map[TextUtil.PHOTO] = photo;
-    map[TextUtil.COUNTRY] = country;
-    map[TextUtil.ETH_WALLET_ADDRESS] = eth_wallet_address;
-    map[TextUtil.FACEBOOK_LINK] = facebook_link;
-    map[TextUtil.TWITTER_LINK] = twitter_link;
-    map[TextUtil.INSTAGRAM_LINK] = instagram_link;
-    map[TextUtil.LINKEDIN_LINK] = linkedin_link;
-    map[TextUtil.ENABLED_CHAT] = enabledChat;
-    return map;
+  @override
+  String toString() {
+    return 'User{id: $id, dbid: $dbid, name: $name, description: $description, email: $email, photo: $photo, country: $country, walletAddress: $walletAddress, facebook_link: $facebook_link, twitter_link: $twitter_link, instagram_link: $instagram_link, linkedin_link: $linkedin_link, enabledChat: $enabledChat, privateKey: $privateKey, publicKey: $publicKey, username: $username, pin: $pin, mnemonic: $mnemonic, referralCode: $referralCode, phoneNumberVerified: $phoneNumberVerified, emailVerified: $emailVerified, phone: $phoneNumber, accessToken: $userAccessToken}';
   }
-
 }

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
 
 class UserAgreementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.NEW_MAIN_COLOR_SCHEME,
         automaticallyImplyLeading: true,
-        title: Text("Sable Assent User Agreement", style: TextStyle(color: Colors.black)),
+        title: Text("Sable Assent User Agreement", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
       body: Stack(

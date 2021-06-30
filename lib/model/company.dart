@@ -1,9 +1,9 @@
-import 'package:firebase_database/firebase_database.dart';
 import '../util/text_util.dart';
 
 class Company {
   String id;
   String companyName;
+  String description;
   String userName;
   String userWalletAddress;
   String industry;
@@ -18,20 +18,21 @@ class Company {
 
   Company({this.id, this.companyName, this.userName, this.userWalletAddress, this.industry, this.location, this.year, this.phone, this.email, this.website, this.facebookLink, this.twitterLink, this.instagramLink});
 
-  factory Company.fromServer(DataSnapshot snapshot) => Company(
-    id: snapshot.value[TextUtil.ID],
-    companyName: snapshot.value[TextUtil.COMPANY_NAME],
-    userName: snapshot.value[TextUtil.USER_NAME],
-    userWalletAddress: snapshot.value[TextUtil.USER_WALLET_ADDRESS],
-    industry: snapshot.value[TextUtil.INDUSTRY],
-    location: snapshot.value[TextUtil.LOCATION],
-    year: snapshot.value[TextUtil.YEAR],
-    phone: snapshot.value[TextUtil.PHONE],
-    email: snapshot.value[TextUtil.EMAIL],
-    website: snapshot.value[TextUtil.WEBSITE],
-    facebookLink: snapshot.value[TextUtil.FACEBOOK_LINK],
-    twitterLink: snapshot.value[TextUtil.TWITTER_LINK],
-    instagramLink: snapshot.value[TextUtil.INSTAGRAM_LINK]
+  
+  factory Company.fromServer(Map<String, dynamic> snapshot) => Company(
+    id: snapshot[TextUtil.ID],
+    companyName: snapshot[TextUtil.COMPANY_NAME],
+    userName: snapshot[TextUtil.USER_NAME],
+    userWalletAddress: snapshot[TextUtil.USER_WALLET_ADDRESS],
+    industry: snapshot[TextUtil.INDUSTRY],
+    location: snapshot[TextUtil.LOCATION],
+    year: snapshot[TextUtil.YEAR],
+    phone: snapshot[TextUtil.PHONE],
+    email: snapshot[TextUtil.EMAIL],
+    website: snapshot[TextUtil.WEBSITE],
+    facebookLink: snapshot[TextUtil.FACEBOOK_LINK],
+    twitterLink: snapshot[TextUtil.TWITTER_LINK],
+    instagramLink: snapshot[TextUtil.INSTAGRAM_LINK]
   );
 
   Map<String, dynamic> toMap() {

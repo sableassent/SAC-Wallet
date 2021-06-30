@@ -13,6 +13,5 @@ class GlobalValue {
   static set setPrivateKey(String key) {
     GlobalValue.privateKey = key;
   }
-
   static String get getPrivateKey => GlobalValue.privateKey;
 }

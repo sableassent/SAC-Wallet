@@ -1,18 +1,13 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_picker_cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:country_pickers/country_picker_cupertino.dart';
-import 'package:country_pickers/country.dart';
-import 'package:sac_wallet/blocs/firebase_bloc.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/widget/loading.dart';
 import 'package:toast/toast.dart';
-
-FirebaseBloc bloc;
 
 class EditAccountPage extends StatefulWidget {
   EditAccountPage({Key key}) : super(key: key);
@@ -93,17 +88,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
         user.photo = photo;
       });
 
-      bool isSuccess = await bloc.updateUser(user: user);
-      print("isSuccess value: $isSuccess");
-      if(isSuccess){
-        setState(() {
-          isLoading = false;
-        });
-        Toast.show("Successfully updated!", context);
-        Navigator.of(context).pop(true);
-      }
-
-    }catch(error) {
+    } catch(error) {
       setState(() {
         isLoading = false;
       });
@@ -117,12 +102,6 @@ class _EditAccountPageState extends State<EditAccountPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
-    // nameCT = TextEditingController();
-    // facebookCT = TextEditingController();
-    // twitterCT = TextEditingController();
-    // instagramCT = TextEditingController();
-    // linkedinCT = TextEditingController();
     nameCT.text = user.name;
     descriptionCT.text = user.description;
     facebookCT.text = user.facebook_link;
@@ -153,9 +132,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.white,
-        iconTheme: new IconThemeData(color: Colors.black),
-        title: Text("Edit My Profile", style: TextStyle(color: Colors.black)),
+        backgroundColor: AppColor.NEW_MAIN_COLOR_SCHEME,
+        iconTheme: new IconThemeData(color: Colors.white),
+        title: Text("Edit My Profile", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: Stack(
@@ -569,20 +548,5 @@ class CustomDialog extends StatelessWidget {
   }
 
   getImageData(String sourceName) async {
-    parent.setState(() {
-      parent.isImageLoading = true;
-    });
-    try {
-      File image = await ImagePicker.pickImage(source: sourceName == "camera" ? ImageSource.camera : ImageSource.gallery);
-      String downloadUrl = await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
-      parent.setState(() {
-        parent.serverImageUrl = downloadUrl;
-        parent.isImageLoading = false;
-      });
-    } catch (error) {
-      parent.setState(() {
-        parent.serverImageUrl = "";
-      });
-    }
   }
 }

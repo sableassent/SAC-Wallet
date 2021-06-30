@@ -1,16 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-//import 'package:auto_size_text/auto_size_text.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/util/global.dart';
-//import 'package:sac_wallet/widget/loading.dart';
-//import 'edit_account_page.dart';
-import '../../model/user.dart';
-//import '../../util/global.dart';
-import '../../blocs/firebase_bloc.dart';
+import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-FirebaseBloc bloc;
+import '../../model/user.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -23,8 +20,6 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
-    //bloc.getUser();
   }
 
   @override
@@ -54,8 +49,9 @@ class _AccountPageState extends State<AccountPage> {
                 child: Column(
                   children: <Widget>[
                     Avatar(
-                      image: currentUser.photo == null ? new AssetImage("assests/images/default_profile.png") : CachedNetworkImageProvider(
-                          currentUser.photo),
+                      image: currentUser.photo == null
+                          ? new AssetImage("assets/images/default_profile.png")
+                          : CachedNetworkImageProvider(currentUser.photo),
                       radius: 40,
                       backgroundColor: Colors.white,
                       borderColor: Colors.grey.shade300,
@@ -86,10 +82,13 @@ class _AccountPageState extends State<AccountPage> {
 
 class SocialMedia extends StatelessWidget {
   final User currentUser;
+
   SocialMedia(this.currentUser);
+
   @override
   Widget build(BuildContext context) {
     return Container(
+        color: AppColor.MAIN_BG,
         padding: EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
@@ -124,7 +123,7 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Facebook"),
-                              subtitle: Text("${currentUser.facebook_link} "),
+                              subtitle: Text("${currentUser.facebook_link == null ? "-" : currentUser.facebook_link} "),
                             ),
                             onTap: () {
                               if (currentUser.facebook_link != null)
@@ -139,7 +138,7 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Twitter"),
-                              subtitle: Text("${currentUser.twitter_link} "),
+                              subtitle: Text("${currentUser.twitter_link == null ? "-" : currentUser.twitter_link} "),
                             ),
                             onTap: () {
                               if (currentUser.twitter_link != null)
@@ -154,7 +153,7 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Instagram"),
-                              subtitle: Text("${currentUser.instagram_link} "),
+                              subtitle: Text("${currentUser.instagram_link == null ? "-" : currentUser.instagram_link} "),
                             ),
                             onTap: () {
                               if (currentUser.instagram_link != null)
@@ -169,7 +168,7 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("LinkedIn"),
-                              subtitle: Text("${currentUser.linkedin_link} "),
+                              subtitle: Text("${currentUser.linkedin_link == null ? "-" : currentUser.linkedin_link} "),
                             ),
                             onTap: () {
                               if (currentUser.linkedin_link != null)
@@ -194,12 +193,31 @@ class SocialMedia extends StatelessWidget {
   }
 }
 
-class UserInfo extends StatelessWidget {
+class UserInfo extends StatefulWidget {
   final User currentUser;
+
   UserInfo(this.currentUser);
+
+  @override
+  _UserInfoState createState() => _UserInfoState(currentUser: currentUser);
+}
+
+class _UserInfoState extends State<UserInfo> {
+  final User currentUser;
+
+  void copyToClipBoard(text) {
+    if (text != null) {
+      Clipboard.setData(ClipboardData(text: text));
+      Toast.show("Copied", context);
+    }
+  }
+
+  _UserInfoState({@required this.currentUser});
+
   @override
   Widget build(BuildContext context) {
     return Container(
+        color: AppColor.MAIN_BG,
         padding: EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
@@ -229,32 +247,34 @@ class UserInfo extends StatelessWidget {
                                 horizontal: 12, vertical: 4),
                             leading: Icon(Icons.info_outline),
                             title: Text("Wallet Address"),
-                            subtitle: Text(currentUser.eth_wallet_address == null
-                                ? "-"
-                                : currentUser.eth_wallet_address),
+                            subtitle: Text(
+                                widget.currentUser.walletAddress == null
+                                    ? "-"
+                                    : widget.currentUser.walletAddress),
                           ),
                           ListTile(
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
                             leading: Icon(Icons.my_location),
                             title: Text("Country"),
-                            subtitle: Text(currentUser.country == null
+                            subtitle: Text(widget.currentUser.country == null
                                 ? "-"
-                                : currentUser.country),
+                                : widget.currentUser.country),
                           ),
                           ListTile(
                             leading: Icon(Icons.email),
                             title: Text("Email"),
-                            subtitle: Text(currentUser.email == null
+                            subtitle: Text(widget.currentUser.email == null
                                 ? "-"
-                                : currentUser.email),
+                                : widget.currentUser.email),
                           ),
                           ListTile(
                             leading: Icon(Icons.person),
                             title: Text("Description"),
-                            subtitle: Text(currentUser.description == null
-                                ? "-"
-                                : currentUser.description),
+                            subtitle: Text(
+                                widget.currentUser.description == null
+                                    ? "-"
+                                    : widget.currentUser.description),
                           ),
                         ],
                       ),
@@ -273,13 +293,12 @@ class Avatar extends StatelessWidget {
   final double radius;
   final double borderWidth;
 
-  const Avatar(
-      {Key key,
-      @required this.image,
-      this.borderColor = Colors.grey,
-      this.backgroundColor,
-      this.radius = 30,
-      this.borderWidth = 5})
+  const Avatar({Key key,
+    @required this.image,
+    this.borderColor = Colors.grey,
+    this.backgroundColor,
+    this.radius = 30,
+    this.borderWidth = 5})
       : super(key: key);
 
   @override

@@ -58,6 +58,11 @@ Server Administrator, Database Administrator, Enterprise Architect
 Phone: 305-791-7491
 Email: guillermo@sableassent.com
 
+Co-Lead: Kiel Mansa
+Solidity Specialist, WebSite Administrator, Tech Support Manager
+Phone: 470-543-2860
+Email: kiel@sableassent.com
+
 Team Reporting Schedule:
 Daily task logs are submitted to lead every Thursday.
 Admin meetings and updates are held on Fridays, & Mondays.

@@ -1,20 +1,12 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_picker_cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:country_pickers/country_picker_cupertino.dart';
-import 'package:country_pickers/country.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
-import 'package:sac_wallet/blocs/firebase_bloc.dart';
 import 'package:sac_wallet/model/user.dart';
-import 'package:sac_wallet/screens/account/account_page.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/widget/loading.dart';
 import 'package:toast/toast.dart';
-
-FirebaseBloc bloc;
 
 class EditAccountPage extends StatefulWidget {
   EditAccountPage({Key key}) : super(key: key);
@@ -41,8 +33,13 @@ class _EditAccountPageState extends State<EditAccountPage> {
   final TextStyle headerStyle = TextStyle(
     color: Colors.grey.shade800,
     fontWeight: FontWeight.bold,
-    fontSize: 20.0,
+    fontSize: 14.0,
   );
+
+ final TextStyle inputLabelStyle = TextStyle(
+      color: Colors.black87,
+      fontSize: 12,
+      fontWeight: FontWeight.bold);
 
   changeProfile() async {
     String name = nameCT.text;
@@ -90,8 +87,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
         user.linkedin_link = linkedin;
         user.photo = photo;
       });
-
-      bool isSuccess = await bloc.updateUser(user: user);
+      bool isSuccess = true;
       print("isSuccess value: $isSuccess");
       if (isSuccess) {
         setState(() {
@@ -112,12 +108,6 @@ class _EditAccountPageState extends State<EditAccountPage> {
   @override
   void initState() {
     super.initState();
-    bloc = new FirebaseBloc();
-    // nameCT = TextEditingController();
-    // facebookCT = TextEditingController();
-    // twitterCT = TextEditingController();
-    // instagramCT = TextEditingController();
-    // linkedinCT = TextEditingController();
     nameCT.text = user.name;
     descriptionCT.text = user.description;
     facebookCT.text = user.facebook_link;
@@ -148,9 +138,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
       backgroundColor: AppColor.MAIN_BG,
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.white,
-        iconTheme: new IconThemeData(color: Colors.black),
-        title: Text("Edit My Profile", style: TextStyle(color: Colors.black)),
+        backgroundColor: AppColor.NEW_MAIN_COLOR_SCHEME,
+        iconTheme: new IconThemeData(color: Colors.white),
+        title: Text("Edit My Profile", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: Stack(children: <Widget>[
@@ -160,7 +150,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
+                  /*  Text(
                       "PROFILE PICTURE",
                       style: headerStyle,
                     ),
@@ -241,13 +231,13 @@ class _EditAccountPageState extends State<EditAccountPage> {
                               ),
                             )
                           ],
-                        )),
+                        )),*/
                     const SizedBox(height: 10.0),
                     Text(
                       "ACCOUNT INFORMATION",
                       style: headerStyle,
                     ),
-                    const SizedBox(height: 16.0),
+                     const SizedBox(height: 10.0),
                     Card(
                       margin: const EdgeInsets.symmetric(
                         vertical: 8.0,
@@ -261,10 +251,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text("Name:",
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                                 style: inputLabelStyle),
+                                     
                             Container(
                               padding: EdgeInsets.only(top: 10),
                               child: TextField(
@@ -278,10 +266,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                             ),
                             const SizedBox(height: 16.0),
                             Text("Country:",
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                               style: inputLabelStyle),
+                                     
                             Container(
                                 padding: EdgeInsets.only(top: 10),
                                 child: InkWell(
@@ -319,10 +305,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                                 )),
                             const SizedBox(height: 16.0),
                             Text("Decription:",
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                                  style: inputLabelStyle),
+                                    
                             Container(
                               padding: EdgeInsets.only(top: 10),
                               child: TextField(
@@ -344,7 +328,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       "SOCIAL MEDIA INFORMATION",
                       style: headerStyle,
                     ),
-                    const SizedBox(height: 16.0),
+                      const SizedBox(height: 10.0),
                     Card(
                         margin: const EdgeInsets.symmetric(
                           vertical: 8.0,
@@ -358,10 +342,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text("My Facebook Page:",
-                                    style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
+                                   style: inputLabelStyle),
+                                         
                                 Container(
                                   padding: EdgeInsets.only(top: 10),
                                   child: TextField(
@@ -375,10 +357,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 Text("My Instagram Page:",
-                                    style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
+                                   style: inputLabelStyle),
+                                         
                                 Container(
                                   padding: EdgeInsets.only(top: 10),
                                   child: TextField(
@@ -392,10 +372,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 Text("My Twitter Page:",
-                                    style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
+                                   style: inputLabelStyle),
+                                        
                                 Container(
                                   padding: EdgeInsets.only(top: 10),
                                   child: TextField(
@@ -409,10 +387,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 Text("My Linkedin Page:",
-                                    style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
+                                    style: inputLabelStyle),
+                                         
                                 Container(
                                   padding: EdgeInsets.only(top: 10),
                                   child: TextField(
@@ -476,61 +452,10 @@ class CustomDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text("Choose..",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            SizedBox(height: 30),
-            ListTile(
-              onTap: () {
-                getImageData("camera");
-                Navigator.of(context).pop(true);
-              },
-              leading: Icon(Icons.camera_alt, color: Colors.blue, size: 25),
-              title: Text("Camera",
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold)),
-            ),
-            ListTile(
-              onTap: () {
-                getImageData("gallery");
-                Navigator.of(context).pop(true);
-              },
-              leading: Icon(Icons.collections, color: Colors.blue, size: 25),
-              title: Text("Gallery",
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold)),
-            )
           ],
         ),
       ),
     );
   }
 
-  getImageData(String sourceName) async {
-    parent.setState(() {
-      parent.isImageLoading = true;
-    });
-    try {
-      File image = await ImagePicker.pickImage(
-          source: sourceName == "camera"
-              ? ImageSource.camera
-              : ImageSource.gallery);
-      String downloadUrl =
-          await bloc.uploadPhoto(uid: parent.user.id, imgFile: image);
-      parent.setState(() {
-        parent.serverImageUrl = downloadUrl;
-        parent.isImageLoading = false;
-      });
-    } catch (error) {
-      parent.setState(() {
-        parent.serverImageUrl = "";
-      });
-    }
-  }
 }

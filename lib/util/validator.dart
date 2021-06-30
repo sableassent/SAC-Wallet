@@ -34,4 +34,37 @@ class Validator {
     else
       return null;
   }
+
+  static String validateMnemonic(String value) {
+    // language=RegExp
+    Pattern pattern = r'^(([a-z]+)[ ]){11}[a-z]*$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Invalid Mnemonic.';
+    else
+      return null;
+  }
+
+  static bool recipientAddressValidityChecker(String address) {
+    address = address.toLowerCase();
+
+    // language=RegExp
+    RegExp regExp = RegExp(r"^0x[0-9a-f]{40}$");
+
+    return regExp.hasMatch(address);
+  }
+
+  static bool validateAmount(String amount) {
+    // language=RegExp
+    RegExp regExp = RegExp(r"^[0-9]+(\.[0-9]+)?$");
+
+    return regExp.hasMatch(amount);
+  }
+
+  static bool validateTransactionHash(String hash) {
+    // language=RegExp
+    RegExp regExp = RegExp(r"^0x([A-Fa-f0-9]{64})$");
+
+    return regExp.hasMatch(hash);
+  }
 }
