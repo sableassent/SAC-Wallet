@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-Database db;
+Database? db;
 
 class DatabaseCreator {
   static const userTable = 'users';
@@ -139,15 +139,15 @@ class DatabaseCreator {
 
 // For Database operations
   static void databaseLog(String functionName, String sql,
-      [List<Map<String, dynamic>> selectQueryResult,
-      int insertAndUpdateQueryResult,
-      List<dynamic> params]) {
+      [List<Map<String, dynamic>> selectQueryResult = const [],
+      int? insertAndUpdateQueryResult,
+      List<dynamic> params = const []]) {
     print(functionName);
     print(sql);
-    if (params != null) {
+    if (params != []) {
       print(params);
     }
-    if (selectQueryResult != null) {
+    if (selectQueryResult != []) {
       print(selectQueryResult);
     } else if (insertAndUpdateQueryResult != null) {
       print(insertAndUpdateQueryResult);

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:charge_wallet_sdk/charge_wallet_sdk.dart';
 import 'package:http/http.dart' as http;
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/util/validator.dart';
-import 'package:wallet_core/wallet_core.dart';
 import 'package:web3dart/crypto.dart';
-
 import 'api_config.dart';
+
 
 class EthUtil {
   static final ETH_PREAMBLE = "\x19Ethereum Signed Message:\n32";
@@ -23,7 +23,7 @@ class EthUtil {
 
   static Future<String> generateWalletAddress(String privateKey) async {
     // init web3 module
-    Web3 web3 = new Web3(approvalCallback);
+    Web3 web3 = new Web3();
 
     // set web3 credentials with private key
     await web3.setCredentials(privateKey);
@@ -39,7 +39,7 @@ class EthUtil {
     if (passphraseSplit.length != 12) {
       return "Mnemonic should have 12 words";
     }
-    return Validator.validateMnemonic(mnemonic);
+    return Validator.validateMnemonic(mnemonic) ?? '';
   }
 
   static String generateMnemonic() {
@@ -78,11 +78,11 @@ class EthUtil {
       obj["receipient"] = recipientAddress.toLowerCase();
       obj["amount"] = amount.toString();
       http.Response feesResult = await http
-          .get('${ApiConfig.getConfig().FEES_API}?amount=' + obj["amount"]);
+          .get(Uri.parse('${ApiConfig.getConfig().FEES_API}?amount=' + obj["amount"]));
       var feesResponse = jsonDecode(feesResult.body);
       obj["fees"] = feesResponse["value"];
       http.Response nonceResult = await http
-          .get('${ApiConfig.getConfig().NONCE_API}?sender=' + obj["sender"]);
+          .get(Uri.parse('${ApiConfig.getConfig().NONCE_API}?sender=' + obj["sender"]));
       var nonceResponse = jsonDecode(nonceResult.body);
       obj["nonce"] = nonceResponse["value"];
       obj["time"] = (DateTime.now().millisecondsSinceEpoch / 1000).truncate();
@@ -102,16 +102,14 @@ class EthUtil {
       message4 = Uint8List.fromList(message4 + message2);
       Uint8List message5 = keccak256(message4);
       MsgSignature signature = sign(
-          message5, hexToBytes(currentUser.privateKey));
+          message5, hexToBytes(currentUser.privateKey!));
 
       obj["signature"] = "0x" +
           padByZero(signature.r.toRadixString(16), 64) +
           padByZero(signature.s.toRadixString(16), 64) +
           padByZero(signature.v.toRadixString(16), 2);
       http.Response response = await http.post(
-          ApiConfig
-              .getConfig()
-              .ETHERLESS_TRANSFER,
+          Uri.parse(ApiConfig.getConfig().ETHERLESS_TRANSFER.toString()),
           body: jsonEncode(obj),
           headers: {
             "Authorization": "",

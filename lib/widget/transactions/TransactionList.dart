@@ -18,10 +18,10 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionList extends State<TransactionList> {
-  List<TransactionsModel> transactions, transactionsWithoutFees;
-  List<TransactionsModel> NewTransactions;
+  List<TransactionsModel> transactions = const [], transactionsWithoutFees = const [];
+  List<TransactionsModel> NewTransactions = const [];
   User currentUser = GlobalValue.getCurrentUser;
-  double screenWidth, screenHeight;
+  double screenWidth = 10.0, screenHeight = 20.0;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _TransactionList extends State<TransactionList> {
 
   newTransactionFetcher() async {
     NewTransactions = await EthereumRepository()
-        .getTransactionHistory(address: currentUser.walletAddress);
+        .getTransactionHistory(address: currentUser.walletAddress!);
     transactions = NewTransactions;
     transactionAssigner();
   }

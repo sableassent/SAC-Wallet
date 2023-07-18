@@ -1,4 +1,4 @@
-import 'package:carousel_pro/carousel_pro.dart';
+import 'package:carousel_pro_nullsafety/carousel_pro_nullsafety.dart';
 import 'package:flutter/material.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
@@ -14,9 +14,9 @@ class ImageSlider extends StatelessWidget {
       height: 250,
       child: FutureBuilder(
         future: UserRepository().getUser(),
-        builder: (context, user) {
+        builder: (context, AsyncSnapshot<User?> user) {
           if (user.hasData) {
-            User currentUser = user.data;
+            User currentUser = user.data!;
             List<Widget> imagesList = getImageList(images, currentUser);
             if (imagesList.length > 0) {
               return Carousel(

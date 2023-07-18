@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/ethereum_repository.dart';
@@ -19,9 +18,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final User currentUser = GlobalValue.getCurrentUser;
-  String currentBalance;
+  String currentBalance = '';
 
-  Timer _timer;
+  Timer? _timer;
 
   @override
   void setState(fn) {
@@ -32,18 +31,18 @@ class _HomePageState extends State<HomePage> {
 
   void startTimer() async {
     EthereumRepository()
-        .getBalance(address: currentUser.walletAddress)
+        .getBalance(address: currentUser.walletAddress!)
         .then((value) {
       setState(() {
         currentBalance = value;
       });
     });
     const oneSec = const Duration(seconds: 15);
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       _timer = new Timer.periodic(oneSec, (Timer timer) async {
         try {
           String value = await EthereumRepository()
-              .getBalance(address: currentUser.walletAddress);
+              .getBalance(address: currentUser.walletAddress!);
           if (value != currentBalance) {
             setState(() {
               currentBalance = value;
@@ -57,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     if (_timer != null) {
-      _timer.cancel();
+      _timer!.cancel();
       _timer = null;
     }
     super.dispose();
@@ -113,9 +112,11 @@ class _HomePageState extends State<HomePage> {
                     Center(child: Container(
                         child: Text(
                           currentBalance == null ? "...." :
-                          "${FlutterMoneyFormatter(
+                          /* "${FlutterMoneyFormatter(
                               amount: SACToUSD().SACToUSDConvert(
-                                  currentBalance)).output.symbolOnLeft}",
+                                  currentBalance)).output.symbolOnLeft}", */
+                          "${SACToUSD().SACToUSDConvert(
+                                  currentBalance)}",
                           style: TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
@@ -133,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Container(
                       child: Text(
-                        "S@" + currentUser.username,
+                        "S@${currentUser.username}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

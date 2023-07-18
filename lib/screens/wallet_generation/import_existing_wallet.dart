@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/client/user_client.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/util/eth_util.dart';
 import 'package:sac_wallet/util/keyboard.dart';
 import 'package:sac_wallet/widget/loading.dart';
-import 'package:toast/toast.dart';
 
 import '../pin/create_pin.dart';
 
@@ -16,7 +16,7 @@ class ImportExistingWallet extends StatefulWidget {
 }
 
 class _ImportExistingWalletPageState extends State<ImportExistingWallet> {
-  TextEditingController passphrase;
+  late TextEditingController passphrase;
 
   // Show/Hide the visibility of generate button
   bool isGenerateVisible = true;
@@ -34,7 +34,7 @@ class _ImportExistingWalletPageState extends State<ImportExistingWallet> {
       String validationError = EthUtil.verifyMnemonic(passphrase.text);
 
       if (validationError != null) {
-        Toast.show(validationError, context);
+        Fluttertoast.showToast(msg: validationError);
       } else {
         String privateKey = EthUtil.generatePrivateKey(passphrase.text);
         String walletAddress = await EthUtil.generateWalletAddress(privateKey);
@@ -51,7 +51,7 @@ class _ImportExistingWalletPageState extends State<ImportExistingWallet> {
             .push(MaterialPageRoute(builder: (context) => CreatePin()));
       }
     } catch (Exception) {
-      Toast.show("Error importing wallet", context);
+      Fluttertoast.showToast(msg: "Error importing wallet");
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ class _ImportExistingWalletPageState extends State<ImportExistingWallet> {
 
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -75,7 +75,7 @@ class _ImportExistingWalletPageState extends State<ImportExistingWallet> {
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
-        body: Stack(overflow: Overflow.visible, children: <Widget>[
+        body: Stack(/* overflow: Overflow.visible, */ children: <Widget>[
           Container(
             alignment: Alignment.center,
             child: Column(

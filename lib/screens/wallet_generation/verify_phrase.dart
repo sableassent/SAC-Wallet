@@ -2,23 +2,21 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/util/eth_util.dart';
 import 'package:sac_wallet/widget/loading.dart';
-import 'package:toast/toast.dart';
 
 import '../pin/create_pin.dart';
 
 class VerifyPhrase extends StatefulWidget {
   final String passphrase;
 
-  VerifyPhrase({Key key, @required this.passphrase}) : super(key: key);
+  VerifyPhrase({Key? key, required this.passphrase}) : super(key: key);
 
   @override
-  State<VerifyPhrase> createState() =>
-      _VerifyPhrasePageState(passphrase: passphrase);
+  State<VerifyPhrase> createState() => _VerifyPhrasePageState();
 }
 
 class _MnemonicObject {
@@ -40,21 +38,21 @@ class _MnemonicObject {
     return element;
   }
 
-  @override
+  /* @override
   bool operator ==(other) {
     return other.element == element && other.index == index;
-  }
+  } */
 }
 
 class _VerifyPhrasePageState extends State<VerifyPhrase> {
-  double screenWidth, screenHeight;
+  double screenWidth = 0.0, screenHeight = 0.0;
   String passphrase = "";
 
-  List<_MnemonicObject> passphraseArray;
+  List<_MnemonicObject> passphraseArray = [];
 
-  List<_MnemonicObject> enteredPassphraseArray;
+  List<_MnemonicObject> enteredPassphraseArray = [];
 
-  String passphraseCT;
+  String? passphraseCT;
   bool isNextButtonVisible = false;
 
   bool isLoading = false;
@@ -62,8 +60,6 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
   void setLoading(loading) => setState(() {
         isLoading = loading;
       });
-
-  _VerifyPhrasePageState({@required this.passphrase}) : super();
 
   // Shuffle list randomly O(n)
   void shuffleList(List<dynamic> list) {
@@ -100,16 +96,15 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
       setState(() {
         isNextButtonVisible = true;
       });
-      Toast.show("Backup Mnemonic Match!", context);
+      Fluttertoast.showToast(msg: "Backup Mnemonic Match!");
     } else {
       setState(() {
         enteredPassphraseArray.clear();
         passphraseCT = enteredPassphraseArray.toString();
       });
-      Toast.show("Invalid Mnemonic, please try again.", context);
+      Fluttertoast.showToast(msg: "Invalid Mnemonic, please try again.");
     }
   }
-
 
   void onClickNextButton() async {
     try {
@@ -122,11 +117,10 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
       await userRepository.addPrivateKey(privateKey: privateKey);
       await userRepository.addWalletAddress(walletAddress: walletAddress);
 
-
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => CreatePin()));
     } catch (Exception) {
-      Toast.show("An error occurred", context);
+      Fluttertoast.showToast(msg: "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -169,7 +163,7 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
                         height: 100,
                         padding: EdgeInsets.only(left: 20, right: 20),
                         child: Card(
-                          // borderOnForeground: true,
+                            // borderOnForeground: true,
                             shadowColor: Colors.black87,
                             child: Center(
                               child: Text(
@@ -197,14 +191,23 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
                           mainAxisSpacing: 8.0,
                           padding: const EdgeInsets.all(1.0),
                           children:
-                          List.generate(passphraseArray.length, (index) {
+                              List.generate(passphraseArray.length, (index) {
                             _MnemonicObject element = passphraseArray[index];
-                            return RaisedButton(
-                              textColor: Colors.black,
+                            return ElevatedButton(
                               key: ValueKey(element),
-                              color: enteredPassphraseArray.contains(element)
-                                  ? Color.fromRGBO(211, 211, 211, 1) //0,50,254
-                                  : Color.fromRGBO(255, 255, 255, 1),
+                              style: ElevatedButton.styleFrom(
+                                textStyle: TextStyle(
+                                  color: Colors.black,
+                                ),
+                                backgroundColor:
+                                    enteredPassphraseArray.contains(element)
+                                        ? Color.fromRGBO(
+                                            211, 211, 211, 1) //0,50,254
+                                        : Color.fromRGBO(255, 255, 255, 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
                               onPressed: () {
                                 setState(() {
                                   if (!enteredPassphraseArray
@@ -316,12 +319,7 @@ class _VerifyPhrasePageState extends State<VerifyPhrase> {
             ),
           ),
           LoadingScreen(
-              inAsyncCall: isLoading,
-              mesage: "Loading",
-              dismissible: false
-          )
-        ]
-        )
-    );
+              inAsyncCall: isLoading, mesage: "Loading", dismissible: false)
+        ]));
   }
 }

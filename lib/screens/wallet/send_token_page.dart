@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
 import 'package:sac_wallet/screens/transactions/confirmation_screen.dart';
@@ -7,16 +8,15 @@ import 'package:sac_wallet/screens/user_list.dart';
 import 'package:sac_wallet/util/eth_util.dart';
 import 'package:sac_wallet/util/keyboard.dart';
 import 'package:sac_wallet/util/validator.dart';
-import 'package:toast/toast.dart';
 
 import '../../model/user.dart';
 import '../../util/global.dart';
 import '../../widget/loading.dart';
 
-String address;
+//String address;
 
 class SendTokenPage extends StatefulWidget {
-  final String walletAddress;
+  final String? walletAddress;
 
   SendTokenPage({this.walletAddress});
 
@@ -25,9 +25,9 @@ class SendTokenPage extends StatefulWidget {
 }
 
 class _SendTokenPageState extends State<SendTokenPage> {
-  double screenWidth, screenHeight;
+  double screenWidth = 0.0, screenHeight = 0.0;
   User currentUser = GlobalValue.getCurrentUser;
-  TextEditingController toAddressCT, amountCT;
+  late TextEditingController toAddressCT, amountCT;
   bool isCertified = true;
   bool isLoading = false;
 
@@ -59,7 +59,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
       });
     } else {
       setState(() {
-        Toast.show("Invalid Address!!", context);
+        Fluttertoast.showToast(msg: "Invalid Address!!");
       });
     }
   }
@@ -74,13 +74,13 @@ class _SendTokenPageState extends State<SendTokenPage> {
   void doTransfer() async {
     String amount = amountCT.text.trim();
     if (!Validator.validateAmount(amount)) {
-      Toast.show("Incorrect amount ${amount}", context);
+      Fluttertoast.showToast(msg: "Incorrect amount ${amount}");
       return;
     }
     String toAddress = toAddressCT.text.trim();
 
     if (!Validator.recipientAddressValidityChecker(toAddress)) {
-      Toast.show("Invalid recipient address: ${toAddress}", context);
+      Fluttertoast.showToast(msg: "Invalid recipient address: ${toAddress}");
       return;
     }
 
@@ -88,16 +88,16 @@ class _SendTokenPageState extends State<SendTokenPage> {
       setLoading(true);
       String txHash = await EthUtil.doTransfer(currentUser, amount, toAddress);
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              ConfirmationScreen(
+          builder: (context) => ConfirmationScreen(
                 txHash: txHash,
               )));
     } on InsufficientBalanceException {
-      Toast.show("You have insufficient funds for this transaction", context);
+      Fluttertoast.showToast(
+          msg: "You have insufficient funds for this transaction");
     } on UnExpectedResponseException catch (e) {
-      Toast.show(e.cause, context);
+      Fluttertoast.showToast(msg: e.cause);
     } catch (e) {
-      Toast.show("Could not process", context);
+      Fluttertoast.showToast(msg: "Could not process");
     } finally {
       setLoading(false);
     }
@@ -245,7 +245,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                             ),
                             Expanded(
                               flex: 20,
-                              child: FlatButton(
+                              child: ElevatedButton(
                                 child: ImageIcon(
                                   AssetImage("assets/images/qr-code.png"),
                                   semanticLabel: 'Scan QR',
@@ -253,6 +253,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                                 onPressed: () {
                                   scanBarcodeNormal();
                                 },
+                                style: ElevatedButton.styleFrom(elevation: 0),
                               ),
                             ),
                             Expanded(
@@ -261,9 +262,10 @@ class _SendTokenPageState extends State<SendTokenPage> {
                                 icon: Icon(Icons.contacts),
                                 iconSize: 30,
                                 onPressed: () async {
-                                  String result = await Navigator.of(context)
+                                  String? result = await Navigator.of(context)
                                       .push(MaterialPageRoute(
-                                      builder: (context) => UserListPage()));
+                                          builder: (context) =>
+                                              UserListPage()));
                                   if (result != null) {
                                     setState(() {
                                       toAddressCT.text = result;
@@ -389,7 +391,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
 //                     height: 70,
 //                     decoration: BoxDecoration(
 //                         color: Colors.white,
-//                         border: Border.all(color: Colors.grey[300])
+//                         border: Border.all(color: Colors.grey.shade300)
 //                     ),
 //                     child: Row(
 //                       mainAxisSize: MainAxisSize.max,
@@ -443,7 +445,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])
+                          border: Border.all(color: Colors.grey.shade300)
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -474,7 +476,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
 //                    height: 50,
 //                    decoration: BoxDecoration(
 //                        color: Colors.white,
-//                        border: Border.all(color: Colors.grey[300])
+//                        border: Border.all(color: Colors.grey.shade300)
 //                    ),
 //                    child: Row(
 //                      mainAxisSize: MainAxisSize.max,
@@ -495,7 +497,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                     //   height: 50,
                     //   decoration: BoxDecoration(
                     //       color: Colors.white,
-                    //       border: Border.all(color: Colors.grey[300])
+                    //       border: Border.all(color: Colors.grey.shade300)
                     //   ),
                     //   child: Row(
                     //     mainAxisSize: MainAxisSize.max,
@@ -536,7 +538,7 @@ class _SendTokenPageState extends State<SendTokenPage> {
                     //   height: 50,
                     //   decoration: BoxDecoration(
                     //       color: Colors.white,
-                    //       border: Border.all(color: Colors.grey[300])),
+                    //       border: Border.all(color: Colors.grey.shade300)),
                     //   child: Row(
                     //     mainAxisSize: MainAxisSize.max,
                     //     mainAxisAlignment: MainAxisAlignment.spaceBetween,

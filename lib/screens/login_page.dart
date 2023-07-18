@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/screens/forgot_password.dart';
@@ -6,7 +7,6 @@ import 'package:sac_wallet/screens/onboarding_page.dart';
 import 'package:sac_wallet/screens/register_page.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/util/keyboard.dart';
-import 'package:toast/toast.dart';
 
 import '../widget/loading.dart';
 
@@ -16,16 +16,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  double screenWidth, screenHeight;
-  TextEditingController emailCT, passwordCT;
+  double screenWidth = 0.0, screenHeight = 0.0;
+  late TextEditingController emailCT, passwordCT;
   bool isLoading = false;
-  String emailError, passwordError;
+  String? emailError, passwordError;
 
   bool validateEmail() {
     if (emailCT.text.isEmpty) {
-      Toast.show("Enter your email", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your email",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       setState(() {
@@ -48,9 +49,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool validatePassword() {
     if (passwordCT.text.isEmpty) {
-      Toast.show("Enter your password", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your password",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       setState(() {
@@ -83,16 +85,18 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (_) => OnBoardingScreen()),
           );
         } else {
-          Toast.show("Failed login!", context,
-              duration: Toast.LENGTH_LONG,
-              gravity: Toast.CENTER,
+          Fluttertoast.showToast(
+              msg: "Failed login!",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
               backgroundColor: Colors.red,
               textColor: Colors.white);
         }
       } catch (e) {
-        Toast.show("Failed login! ${e.message}", context,
-            duration: Toast.LENGTH_LONG,
-            gravity: Toast.CENTER,
+        Fluttertoast.showToast(
+            msg: "Failed login! ${e}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
             backgroundColor: Colors.red,
             textColor: Colors.white);
       } finally {
@@ -118,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        /* overflow: Overflow.visible, */
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -153,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.black12, width: 1.0),
+                            BorderSide(color: Colors.black12, width: 1.0),
                       ),
                     ),
                   ),
@@ -182,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.black12, width: 1.0),
+                            BorderSide(color: Colors.black12, width: 1.0),
                       ),
                     ),
                   ),

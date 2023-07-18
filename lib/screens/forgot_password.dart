@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/client/user_client.dart';
 import 'package:sac_wallet/exceptions/validation_exception.dart';
@@ -9,26 +9,23 @@ import 'package:sac_wallet/util/keyboard.dart';
 import 'package:sac_wallet/util/time_util.dart';
 import 'package:sac_wallet/util/validator.dart';
 import 'package:sac_wallet/widget/loading.dart';
-import 'package:toast/toast.dart';
 
 class ForgotPassword extends StatefulWidget {
   final String email;
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState(email ?? "");
+  _ForgotPasswordState createState() => _ForgotPasswordState();
 
-  ForgotPassword({this.email});
+  ForgotPassword({required this.email});
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  TextEditingController emailCT, passwordCT, confirmPasswordCT, otpCT;
+  late TextEditingController emailCT, passwordCT, confirmPasswordCT, otpCT;
 
   // receive email from login page if present
-  final String email;
+  String email = '';
 
-  _ForgotPasswordState(this.email);
-
-  UserClient userClient;
+  UserClient? userClient;
 
   bool isLoading = false;
 
@@ -48,13 +45,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         sendOTPDisabled = loading;
       });
 
-  Timer _timer;
+  Timer? _timer = Timer.periodic(Duration(seconds: 10), (t) {});
   int _start = 0;
 
   void startTimer(int start) {
     _start = start;
-    const oneSec = const Duration(seconds: 1);
-    if (_timer == null || !_timer.isActive) {
+    const oneSec = const Duration(seconds: 10);
+    if (_timer == null || !_timer!.isActive) {
       _timer = new Timer.periodic(
         oneSec,
         (Timer timer) => setState(
@@ -73,7 +70,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   void dispose() {
-    if (_timer != null) _timer.cancel();
+    if (_timer != null) _timer!.cancel();
     super.dispose();
   }
 
@@ -81,7 +78,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void initState() {
     super.initState();
     emailCT = new TextEditingController();
-    emailCT.text = email;
+    emailCT.text = widget.email;
     passwordCT = new TextEditingController();
     confirmPasswordCT = new TextEditingController();
     otpCT = new TextEditingController();
@@ -91,8 +88,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void sendOTP() async {
     String emailText = emailCT.text;
-    if (emailText == null || Validator.validateEmail(emailText) != null) {
-      Toast.show("Invalid email", context);
+    if (emailText == "" || Validator.validateEmail(emailText) != null) {
+      print("Invalid email");
       return;
     }
     emailText = emailText.trim();
@@ -103,10 +100,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       incrementOTPAttempts();
       await UserClient().forgotPassword(email: emailCT.text);
     } on ValidationException catch (e) {
-      Toast.show("Error: ${e.cause}", context);
+      print("Error: ${e.cause}");
       setOTPDisabled(false);
     } catch (e) {
-      Toast.show("Server Error: ${e}", context);
+      print("Server Error: ${e}");
       setOTPDisabled(false);
     } finally {
       setLoading(false);
@@ -126,12 +123,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           password: password,
           passwordConfirm: confirmPassword);
 
-      Toast.show("Password reset successful", context);
+      Fluttertoast.showToast(msg: "Password reset successful");
       Navigator.of(context).pop();
     } on ValidationException catch (e) {
-      Toast.show("Error: ${e.cause}", context);
+      Fluttertoast.showToast(msg: "Error: ${e.cause}");
     } catch (e) {
-      Toast.show("Server Error: ${e}", context);
+      Fluttertoast.showToast(msg: "Server Error: ${e}");
     } finally {
       setLoading(false);
     }
@@ -147,7 +144,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        /* overflow: Overflow.visible, */
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -179,11 +176,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                                  BorderSide(color: Colors.blue, width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.black12, width: 1.0),
+                                  BorderSide(color: Colors.black12, width: 1.0),
                             ),
                             hintText: 'Enter Email',
                           ),
@@ -197,7 +194,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         child: RawMaterialButton(
                           onPressed: sendOTPDisabled ? null : sendOTP,
                           child: Text(
-                              _timer != null && _timer.isActive
+                              _timer != null && _timer!.isActive
                                   ? "${TimeUtil.getMinutesSeconds(_start)}"
                                   : (numOTPAttempts > 0
                                       ? "Resend Verification Code"
@@ -234,11 +231,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                                  BorderSide(color: Colors.blue, width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.black12, width: 1.0),
+                                  BorderSide(color: Colors.black12, width: 1.0),
                             ),
                             hintText: 'Enter 6 digit code from email',
                           ),
@@ -262,11 +259,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                                  BorderSide(color: Colors.blue, width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.black12, width: 1.0),
+                                  BorderSide(color: Colors.black12, width: 1.0),
                             ),
                             hintText: 'Enter Password',
                           ),
@@ -290,11 +287,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                                  BorderSide(color: Colors.blue, width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.black12, width: 1.0),
+                                  BorderSide(color: Colors.black12, width: 1.0),
                             ),
                             hintText: 'Confirm Password',
                           ),

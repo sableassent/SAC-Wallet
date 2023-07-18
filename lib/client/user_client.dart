@@ -25,11 +25,11 @@ class UserClient {
   }
 
   Future<bool> register(
-      {@required String name,
-      @required String username,
-      @required String email,
-      @required String phoneNumber,
-      @required String password}) async {
+      {required String name,
+      required String username,
+      required String email,
+      required String phoneNumber,
+      required String password}) async {
     bool isRegistrationsuccessful = false;
     var requestBody = {
       'name': name,
@@ -40,7 +40,7 @@ class UserClient {
     };
 
     ResponseMap response = await APIRequestHelper().doPostRequest(
-        ApiConfig.getConfig().REGISTRATION_URL, jsonEncode(requestBody));
+        ApiConfig.getConfig().REGISTRATION_URL ?? '', jsonEncode(requestBody));
 
     if (response.responseCode == 200) {
       if (response.body != null) {
@@ -50,27 +50,24 @@ class UserClient {
     return isRegistrationsuccessful;
   }
 
-  Future<bool> login(
-      {@required String email, @required String password}) async {
+  Future<bool> login({required String email, required String password}) async {
     bool isLoginSuccessful = false;
     var requestBody = {'email': email, 'password': password};
 
-    ResponseMap response = await APIRequestHelper()
-        .doPostRequest(ApiConfig
-        .getConfig()
-        .LOGIN_URL, jsonEncode(requestBody));
+    ResponseMap response = await APIRequestHelper().doPostRequest(
+        ApiConfig.getConfig().LOGIN_URL ?? '', jsonEncode(requestBody));
 
     if (response.responseCode == 200) {
       final resp = json.decode(response.body);
       final user = resp["user"];
       print(user["phoneNumberVerified"].runtimeType);
       final userAccessToken = resp["userAccessToken"];
+      user['dbid'] = "1";
+      user['userAccessToken'] = userAccessToken;
+      user['enabledChat'] = true;
       User currentUser = User.fromJson(user);
-      currentUser.dbid = "1";
-      currentUser.userAccessToken = userAccessToken;
       await RepositoryServiceUser.addUser(currentUser);
       GlobalValue.setCurrentUser = currentUser;
-      print(GlobalValue.getCurrentUser.toString());
       isLoginSuccessful = true;
       print(currentUser.toString());
     } else {
@@ -79,84 +76,79 @@ class UserClient {
     return isLoginSuccessful;
   }
 
-  Future<User> getUser() async {
-    User currentUser = await RepositoryServiceUser.getUser();
+  Future<User?> getUser() async {
+    User? currentUser = await RepositoryServiceUser.getUser();
     return currentUser;
   }
 
-  Future<bool> addPin({@required String pin}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
-    bool result = await RepositoryServiceUser.updatePin(currentUser, pin);
+  Future<bool> addPin({required String pin}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
+    bool result = await RepositoryServiceUser.updatePin(currentUser!, pin);
     return result;
   }
 
-  Future<bool> verifyPin({@required String pin}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
-    return pin == currentUser.pin;
+  Future<bool> verifyPin({required String pin}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
+    return pin == currentUser!.pin;
   }
 
-  Future<bool> addPrivateKey({@required String privateKey}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
+  Future<bool> addPrivateKey({required String privateKey}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result =
-    await RepositoryServiceUser.updatePrivateKey(currentUser, privateKey);
+        await RepositoryServiceUser.updatePrivateKey(currentUser!, privateKey);
     return result;
   }
 
-  Future<bool> addWalletAddress({@required String walletAddress}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
+  Future<bool> addWalletAddress({required String walletAddress}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result = await RepositoryServiceUser.updateWalletAddress(
-        currentUser, walletAddress);
+        currentUser!, walletAddress);
     return result;
   }
 
-  Future<bool> updateMnemonic({@required String mnemonicText}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
+  Future<bool> updateMnemonic({required String mnemonicText}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result =
-    await RepositoryServiceUser.updateMnemonic(currentUser, mnemonicText);
+        await RepositoryServiceUser.updateMnemonic(currentUser!, mnemonicText);
     return result;
   }
 
   Future<bool> updateIncorrectAttempts(
-      {@required int attempts, @required String time}) async {
-    User currentUser = await RepositoryServiceUser.getUser();
+      {required int attempts, required String time}) async {
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result = await RepositoryServiceUser.updateIncorrectAttempt(
-        currentUser, attempts, time);
+        currentUser!, attempts, time);
     return result;
   }
 
   Future<bool> incrementIncorrectAttempts() async {
-    User currentUser = await RepositoryServiceUser.getUser();
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result = await RepositoryServiceUser.incrementIncorrectAttempts(
-        currentUser, DateTime
-        .now()
-        .millisecondsSinceEpoch
-        .toString());
+        currentUser!, DateTime.now().millisecondsSinceEpoch.toString());
     return result;
   }
 
   Future<bool> updatePhoneVerificationStatus() async {
-    User currentUser = await RepositoryServiceUser.getUser();
+    User? currentUser = await RepositoryServiceUser.getUser();
     bool result = await RepositoryServiceUser.updatePhoneVerificationStatus(
-        currentUser, "1");
+        currentUser!, "1");
     return result;
   }
 
-//   Future<String> uploadPhoto({@required String uid, File imgFile}) async {
+//   Future<String> uploadPhoto({required String uid, File imgFile}) async {
 //     StorageUploadTask task = photoRef.child(uid + ".jpg").putFile(imgFile);
 //     await task.onComplete;
 //     String downloadUrl = await photoRef.child(uid + ".jpg").getDownloadURL();
 //     return downloadUrl;
 //   }
-  Future<bool> forgotPassword({@required String email}) async {
+  Future<bool> forgotPassword({required String email}) async {
     if (email == null) throw new Exception("Invalid email");
     var requestBody = {
       'email': email,
     };
     var body = json.encode(requestBody);
     ResponseMap responseMap = await APIRequestHelper()
-        .doPostRequest(ApiConfig
-        .getConfig()
-        .USER_RESET_PASSWORD, body);
+        .doPostRequest(ApiConfig.getConfig().USER_RESET_PASSWORD!, body);
     if (responseMap.responseCode == 200) {
       return true;
     } else {
@@ -164,10 +156,11 @@ class UserClient {
     }
   }
 
-  Future<bool> setNewPasswordWithOTP({@required String email,
-    @required String otp,
-    @required String password,
-    @required String passwordConfirm}) async {
+  Future<bool> setNewPasswordWithOTP(
+      {required String email,
+      required String otp,
+      required String password,
+      required String passwordConfirm}) async {
     if (email == null) throw new ValidationException("Invalid email");
     if (otp == null || otp.length != 6)
       throw new ValidationException("Invalid Verification Code");
@@ -177,9 +170,7 @@ class UserClient {
     var requestBody = {'email': email, 'otp': otp, 'newPassword': password};
     var body = json.encode(requestBody);
     ResponseMap responseMap = await APIRequestHelper()
-        .doPostRequest(ApiConfig
-        .getConfig()
-        .USER_NEW_PASSWORD, body);
+        .doPostRequest(ApiConfig.getConfig().USER_NEW_PASSWORD!, body);
     if (responseMap.responseCode == 200) {
       return true;
     } else {
@@ -188,19 +179,17 @@ class UserClient {
   }
 
   Future<bool> updateWalletAddressOnServer(
-      {@required String walletAddress}) async {
+      {required String walletAddress}) async {
     if (walletAddress == null)
       throw ValidationException("Invalid Wallet Address");
     var requestBody = {
       'walletAddress': walletAddress,
     };
     var body = json.encode(requestBody);
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
     ResponseMap responseMap = await APIRequestHelper().doPostRequest(
-        ApiConfig
-            .getConfig()
-            .ADD_WALLET_ADDRESS, body,
-        authToken: currentUser.userAccessToken);
+        ApiConfig.getConfig().ADD_WALLET_ADDRESS!, body,
+        authToken: currentUser!.userAccessToken);
 
     if (responseMap.responseCode == 200) {
       if (responseMap.body != null) {
@@ -213,15 +202,15 @@ class UserClient {
   }
 
   Future<bool> getOTP() async {
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
 
-    Map<String, String> requestBody = {"phoneNumber": currentUser.phoneNumber};
-
+    Map<String, String> requestBody = {"phoneNumber": currentUser!.phoneNumber};
+    print("object!:::::::$requestBody");
     ResponseMap response = await APIRequestHelper().doPostRequest(
-        ApiConfig
-            .getConfig()
-            .GET_OTP, json.encode(requestBody),
+        ApiConfig.getConfig().GET_OTP!, json.encode(requestBody),
         authToken: currentUser.userAccessToken);
+    print("object:::::::${response.responseCode}");
+    print("object:::::::${response.body}");
 
     if (response.responseCode == 200) {
       if (response.body != null) {
@@ -233,18 +222,16 @@ class UserClient {
     return false;
   }
 
-  Future<bool> verifyPhoneNumber({@required String otp}) async {
+  Future<bool> verifyPhoneNumber({required String otp}) async {
     if (otp == null)
       throw ValidationException("Verification code cannot be empty");
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
 
-    var requestBody = {"phoneNumber": currentUser.phoneNumber, "otp": otp};
+    var requestBody = {"phoneNumber": currentUser!.phoneNumber, "otp": otp};
 
     ResponseMap response = await APIRequestHelper().doPostRequest(
-        ApiConfig
-            .getConfig()
-            .VERIFY_OTP, json.encode(requestBody),
-        authToken: currentUser.userAccessToken);
+        ApiConfig.getConfig().VERIFY_OTP!, json.encode(requestBody),
+        authToken: currentUser!.userAccessToken);
 
     if (response.responseCode == 200) {
       if (response.body != null) {
@@ -256,12 +243,11 @@ class UserClient {
     return false;
   }
 
-  Future<String> checkReferralCode({@required String referralCode}) async {
+  Future<String> checkReferralCode({required String referralCode}) async {
     var requestBody = {"referralCode": referralCode};
 
-    http.Response response = await http.post(ApiConfig
-        .getConfig()
-        .CHECK_REFERRAL_CODE,
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().CHECK_REFERRAL_CODE!.toLowerCase()),
         body: jsonEncode(requestBody),
         headers: {
           "Authorization": "",
@@ -280,16 +266,16 @@ class UserClient {
   }
 
   Future<String> addReferral(
-      {@required String referralCode, @required String email}) async {
+      {required String referralCode, required String email}) async {
     var requestBody = {"toemail": email, "referralCode": referralCode};
 
-    http.Response response = await http
-        .post(ApiConfig
-        .getConfig()
-        .ADD_REFERRAL, body: jsonEncode(requestBody), headers: {
-      "Authorization": "",
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().ADD_REFERRAL!.toLowerCase()),
+        body: jsonEncode(requestBody),
+        headers: {
+          "Authorization": "",
+          "Content-Type": "application/json",
+        });
 
     if (response.statusCode == 200) {
       if (response.body != null) {
@@ -301,12 +287,11 @@ class UserClient {
     return response.body;
   }
 
-  Future<String> getAllReferral({@required String referralCode}) async {
+  Future<String> getAllReferral({required String referralCode}) async {
     var requestBody = {"referralCode": referralCode};
 
-    http.Response response = await http.post(ApiConfig
-        .getConfig()
-        .GET_ALL_REFERRAL,
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().GET_ALL_REFERRAL.toString()),
         body: jsonEncode(requestBody),
         headers: {
           "Authorization": "",
@@ -325,14 +310,13 @@ class UserClient {
   }
 
   Future<String> checkReferralStatus() async {
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
     var requestBody = {
-      "toemail": currentUser.email,
+      "toemail": currentUser!.email,
     };
 
-    http.Response response = await http.post(ApiConfig
-        .getConfig()
-        .CHECK_REFERRAL_STATUS,
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().CHECK_REFERRAL_STATUS.toString()),
         body: jsonEncode(requestBody),
         headers: {
           "Authorization": "",
@@ -350,15 +334,13 @@ class UserClient {
   }
 
   Future<String> contactUs(
-      {@required String subject, @required String message}) async {
-    User currentUser = await UserRepository().getUser();
+      {required String subject, required String message}) async {
+    User? currentUser = await UserRepository().getUser();
     var requestBody = {"contact_type": subject, "user_message": message};
 
     ResponseMap response = await APIRequestHelper().doPostRequest(
-        ApiConfig
-            .getConfig()
-            .CONTACT_US, json.encode(requestBody),
-        authToken: currentUser.userAccessToken);
+        ApiConfig.getConfig().CONTACT_US!, json.encode(requestBody),
+        authToken: currentUser!.userAccessToken);
 
     if (response.responseCode == 200) {
       if (response.body != null) {
@@ -371,15 +353,15 @@ class UserClient {
   }
 
   Future<List<User>> getUsers() async {
-    User currentUser = await UserRepository().getUser();
-    var requestBody = {"email": currentUser.email};
-    http.Response response = await http
-        .post(ApiConfig
-        .getConfig()
-        .GET_ALL_USERS, body: jsonEncode(requestBody), headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    User? currentUser = await UserRepository().getUser();
+    var requestBody = {"email": currentUser!.email};
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().GET_ALL_USERS.toString()),
+        body: jsonEncode(requestBody),
+        headers: {
+          "Authorization": "Bearer " + currentUser.userAccessToken,
+          "Content-Type": "application/json",
+        });
     var result = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
@@ -395,14 +377,13 @@ class UserClient {
     } else {
       throw Exception("Error: ${response.body}");
     }
+    return [];
   }
 
   Future<bool> checkUsername(String username) async {
     Map<String, dynamic> requestBody = {"username": username};
-    ResponseMap responseMap = await APIRequestHelper()
-        .doPostRequest(ApiConfig
-        .getConfig()
-        .CHECK_USERNAME, json.encode(requestBody));
+    ResponseMap responseMap = await APIRequestHelper().doPostRequest(
+        ApiConfig.getConfig().CHECK_USERNAME!, json.encode(requestBody));
 
     if (responseMap.responseCode == 200) {
       if (responseMap.body != null) {
@@ -418,16 +399,15 @@ class UserClient {
   }
 
   Future<List<Business>> getBusiness() async {
-    User currentUser = await UserRepository().getUser();
-    List<Business> business;
+    User? currentUser = await UserRepository().getUser();
+    List<Business> business = [];
 
-    http.Response response =
-    await http.get(ApiConfig
-        .getConfig()
-        .GET_ALL_BUSINESS, headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.get(
+        Uri.parse(ApiConfig.getConfig().GET_ALL_BUSINESS.toString()),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     print(response);
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
@@ -447,16 +427,15 @@ class UserClient {
   }
 
   Future<List<Business>> getMyBusiness() async {
-    User currentUser = await UserRepository().getUser();
-    List<Business> business;
+    User? currentUser = await UserRepository().getUser();
+    List<Business> business = [];
 
-    http.Response response =
-    await http.get(ApiConfig
-        .getConfig()
-        .GET_ALL_BUSINESS, headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.get(
+        Uri.parse(ApiConfig.getConfig().GET_ALL_BUSINESS.toString()),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     print(response);
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
@@ -476,10 +455,12 @@ class UserClient {
   }
 
   Future<List<Business>> getBusinessNearMe(
-      {double lat, double long, double maxDistance}) async {
-    User currentUser = await UserRepository().getUser();
-    List<Business> business;
-    if (maxDistance == null) maxDistance = 10000;
+      {required double lat,
+      required double long,
+      double maxDistance = 1000}) async {
+    User? currentUser = await UserRepository().getUser();
+    List<Business> business = [];
+    //if (maxDistance == null) maxDistance = 10000;
 
     final Map<String, String> queryParameters = {
       "latitude": lat.toString(),
@@ -488,13 +469,13 @@ class UserClient {
     };
     final uri = Uri(queryParameters: queryParameters);
 
-    http.Response response = await http
-        .get("${ApiConfig
-        .getConfig()
-        .GET_ALL_BUSINESS_NEAR_ME}?${uri.query}", headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.get(
+        Uri.parse(
+            "${ApiConfig.getConfig().GET_ALL_BUSINESS_NEAR_ME}?${uri.query}"),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     print(response);
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
@@ -513,21 +494,20 @@ class UserClient {
     return business;
   }
 
-  Future<User> getUserById({@required String userId}) async {
-    User currentUser = await UserRepository().getUser();
-    User user;
+  Future<User> getUserById({required String userId}) async {
+    User? currentUser = await UserRepository().getUser();
+    late User user;
     if (userId == null) throw ValidationException("User id is empty");
 
     final Map<String, String> queryParameters = {"id": userId};
     final uri = Uri(queryParameters: queryParameters);
 
-    http.Response response =
-    await http.get("${ApiConfig
-        .getConfig()
-        .GET_USER_BY_ID}?${uri.query}", headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.get(
+        Uri.parse("${ApiConfig.getConfig().GET_USER_BY_ID}?${uri.query}"),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
 
@@ -542,14 +522,14 @@ class UserClient {
   }
 
   Future<List<String>> getCategories() async {
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
 
-    http.Response response = await http.get(ApiConfig
-        .getConfig()
-        .GET_CATEGORIES, headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.get(
+        Uri.parse(ApiConfig.getConfig().GET_CATEGORIES.toString()),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
 
@@ -563,10 +543,11 @@ class UserClient {
     } else {
       throw Exception("Error: ${response.body}");
     }
+    return [];
   }
 
   Future<bool> addBusiness(Business business) async {
-    User currentUser = await UserRepository().getUser();
+    User? currentUser = await UserRepository().getUser();
     var requestBody = {
       "name": business.name,
       "email": business.email,
@@ -581,21 +562,21 @@ class UserClient {
         "zipCode": "11211"
       },
       "location": {
-        "latitude": business.location.coordinates[1],
-        "longitude": business.location.coordinates[0]
+        "latitude": business.location!.coordinates[1],
+        "longitude": business.location!.coordinates[0]
       },
       "category": business.category,
       "description": business.description,
       "foundationYear": business.foundationYear
     };
 
-    http.Response response = await http
-        .post(ApiConfig
-        .getConfig()
-        .ADD_BUSINESS, body: jsonEncode(requestBody), headers: {
-      "Authorization": "Bearer " + currentUser.userAccessToken,
-      "Content-Type": "application/json",
-    });
+    http.Response response = await http.post(
+        Uri.parse(ApiConfig.getConfig().ADD_BUSINESS.toString()),
+        body: jsonEncode(requestBody),
+        headers: {
+          "Authorization": "Bearer " + currentUser!.userAccessToken,
+          "Content-Type": "application/json",
+        });
     if (response.statusCode == 200) {
       return true;
     } else {

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:qr/qr.dart';
+//import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
-import 'package:toast/toast.dart';
 
 import '../../model/user.dart';
 import '../../util/global.dart';
@@ -15,9 +16,9 @@ class BuyTokenPage extends StatefulWidget {
 }
 
 class _BuyTokenPageState extends State<BuyTokenPage> {
-  double screenWidth, screenHeight;
+  double screenWidth = 0.0, screenHeight = 0.0;
   User currentUser = GlobalValue.getCurrentUser;
-  TextEditingController unitCT;
+  late TextEditingController unitCT;
   bool isApprovedTransaction = false;
   bool isLoading = false;
 
@@ -33,12 +34,12 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
     String purchaseUnit = unitCT.text;
 
     if (purchaseUnit.isEmpty) {
-      Toast.show("Enter unit for purchase", context);
+      Fluttertoast.showToast(msg: "Enter unit for purchase");
       return;
     }
 
     if (!isApprovedTransaction) {
-      Toast.show("Confirm approval of this transaction!", context);
+      Fluttertoast.showToast(msg: "Confirm approval of this transaction!");
       return;
     }
 
@@ -53,8 +54,8 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
 
   void copyAddress() {
     // copy the address
-    Clipboard.setData(ClipboardData(text: currentUser.walletAddress));
-    Toast.show("Copied to clipboard!", context);
+    Clipboard.setData(ClipboardData(text: currentUser.walletAddress ?? ''));
+    Fluttertoast.showToast(msg: "Copied to clipboard!");
   }
 
   void clickOnDone() {
@@ -134,7 +135,7 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                     //   height: 70,
                     //   decoration: BoxDecoration(
                     //       color: Colors.white,
-                    //       border: Border.all(color: Colors.grey[300])
+                    //       border: Border.all(color: Colors.grey.shade300)
                     //   ),
                     //   child: Row(
                     //     mainAxisSize: MainAxisSize.max,
@@ -168,7 +169,7 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                     //   height: 50,
                     //   decoration: BoxDecoration(
                     //       color: Colors.white,
-                    //       border: Border.all(color: Colors.grey[300])
+                    //       border: Border.all(color: Colors.grey.shade300)
                     //   ),
                     //   child: Row(
                     //     mainAxisSize: MainAxisSize.max,
@@ -199,7 +200,7 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                     //   height: 50,
                     //   decoration: BoxDecoration(
                     //       color: Colors.white,
-                    //       border: Border.all(color: Colors.grey[300])
+                    //       border: Border.all(color: Colors.grey.shade300)
                     //   ),
                     //   child: Row(
                     //     mainAxisSize: MainAxisSize.max,
@@ -244,11 +245,11 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                     Center(
                       child: Container(
                         child: Card(
-                          child: QrImage(
+                            /*  child: QrImage(
                             data: currentUser.walletAddress,
                             size: 250,
-                          ),
-                        ),
+                          ), */
+                            ),
                       ),
                     ),
                     Text('Ask your friend to scan QR code to transfer',
@@ -277,17 +278,19 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                       width: screenWidth,
                       padding: EdgeInsets.only(left: 10, right: 10),
                       child: Card(
-                        child: FlatButton(
+                        child: ElevatedButton(
                           child: Row(
                             children: <Widget>[
                               Expanded(
                                   flex: 90,
-                                  child: Text(currentUser.walletAddress,
+                                  child: Text(currentUser.walletAddress ?? '',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold))),
-                                          SizedBox(height: 05,),
+                              SizedBox(
+                                height: 05,
+                              ),
                               Expanded(
                                   flex: 10, child: Icon(Icons.content_copy)),
                             ],
@@ -295,13 +298,14 @@ class _BuyTokenPageState extends State<BuyTokenPage> {
                           onPressed: () {
                             copyAddress();
                           },
+                          style: ElevatedButton.styleFrom(elevation: 0),
                         ),
                       ),
                     ),
                     SizedBox(
                       height: 25,
                     ),
-                   // SizedBox(height: screenHeight * 0.1),
+                    // SizedBox(height: screenHeight * 0.1),
                     Container(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       child: GestureDetector(

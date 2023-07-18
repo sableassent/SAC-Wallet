@@ -1,12 +1,12 @@
 class Address {
   Address({
-    this.id,
-    this.houseNumber,
-    this.streetName,
-    this.city,
-    this.state,
-    this.country,
-    this.zipCode,
+    required this.id,
+    required this.houseNumber,
+    required this.streetName,
+    required this.city,
+    required this.state,
+    required this.country,
+    required this.zipCode,
   });
 
   String id;

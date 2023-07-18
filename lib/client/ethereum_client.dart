@@ -14,7 +14,7 @@ class EthereumClient {
     dbInitialize();
   }
 
-  User user;
+  late User user;
 
   dbInitialize() async {
     await DatabaseCreator().initDatabase();
@@ -22,7 +22,7 @@ class EthereumClient {
   }
 
   Future<List<TransactionsModel>> getTransactionHistory(
-      {@required String address}) async {
+      {required String address}) async {
     // Getting block no of previous transaction
     String startBlock = '0';
     var AllTransactions =
@@ -32,19 +32,12 @@ class EthereumClient {
     }
 
     //fetching new transactions
-    String url = ApiConfig.getConfig().ETHEREUM_ROPSTER_BASE_URL +
-        '/api?module=account&action=tokentx&contractaddress=' +
-        ApiConfig.getConfig().CONTRACT_ADDRESS +
-        '&address=' +
-        address +
-        '&startblock=' +
-        startBlock +
-        '&endblock=999999999&sort=asc&apikey=' +
-        ApiConfig.getConfig().ETHERSCAN_API_KEY;
+    String url =
+        "${ApiConfig.getConfig().ETHEREUM_ROPSTER_BASE_URL}/api?module=account&action=tokentx&contractaddress=${ApiConfig.getConfig().CONTRACT_ADDRESS}&address=$address&startblock=$startBlock&endblock=999999999&sort=asc&apikey=${ApiConfig.getConfig().ETHERSCAN_API_KEY}";
 
     print(url);
 
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     var result = jsonDecode(response.body);
 
     if (result != null) {
@@ -54,9 +47,7 @@ class EthereumClient {
       transactions = histories.map((item) {
         TransactionsModel t = TransactionsModel.fromJSON(item);
         if (t.from == user.walletAddress) {
-          if (t.to == ApiConfig
-              .getConfig()
-              .CONTRACT_ADDRESS) {
+          if (t.to == ApiConfig.getConfig().CONTRACT_ADDRESS) {
             t.type = "Fees";
             return t;
           }
@@ -74,12 +65,12 @@ class EthereumClient {
     }
 
     List<TransactionsModel> transactions =
-    await RepositoryServiceTransaction.getAllTransactions();
+        await RepositoryServiceTransaction.getAllTransactions();
     return transactions;
   }
 
   Future<List<TransactionsModel>> getTransactionHistoryfromDB(
-      {@required String address}) async {
+      {required String address}) async {
     List<TransactionsModel> transactions =
         await RepositoryServiceTransaction.getAllTransactions();
     if (transactions.length == 0) {
@@ -89,24 +80,12 @@ class EthereumClient {
     return transactions;
   }
 
-  Future<String> getBalance({@required String address}) async {
+  Future<String?> getBalance({required String address}) async {
     //fetching balance
-    String url = ApiConfig
-        .getConfig()
-        .ETHEREUM_ROPSTER_BASE_URL +
-        '/api?module=account&action=tokenbalance&contractaddress=' +
-        ApiConfig
-            .getConfig()
-            .CONTRACT_ADDRESS +
-        '&address=' +
-        address +
-        '&tag=latest&apikey=' +
-        ApiConfig
-            .getConfig()
-            .ETHERSCAN_API_KEY;
+    String url = "${ApiConfig.getConfig().ETHEREUM_ROPSTER_BASE_URL}/api?module=account&action=tokenbalance&contractaddress=${ApiConfig.getConfig().CONTRACT_ADDRESS}&address=$address&tag=latest&apikey=${ApiConfig.getConfig().ETHERSCAN_API_KEY}";
 
     print(url);
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     var result = jsonDecode(response.body);
 
     if (result != null) {

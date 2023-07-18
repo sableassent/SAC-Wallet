@@ -11,7 +11,7 @@ class Profit {
   String location;
   String status;
 
-  Profit({this.id, this.profitName, this.userName, this.userWalletAddress, this.email, this.phone, this.organization, this.location, this.status});
+  Profit({required this.id, required this.profitName, required this.userName, required this.userWalletAddress, required this.email, required this.phone, required this.organization, required this.location, required this.status});
 
   factory Profit.fromServer(Map<String, dynamic> snapshot) => Profit(
     id: snapshot[TextUtil.ID],

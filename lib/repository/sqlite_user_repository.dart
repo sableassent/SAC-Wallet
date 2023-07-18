@@ -2,10 +2,10 @@ import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/util/database_creator.dart';
 
 class RepositoryServiceUser {
-  static Future<User> getUser() async {
+  static Future<User?> getUser() async {
     final sql = '''SELECT * FROM ${DatabaseCreator.userTable}''';
 
-    final data = await db.rawQuery(sql);
+    final data = await db!.rawQuery(sql);
     if (data.length > 0) {
       return User.fromJson(data.first);
     } else {
@@ -15,9 +15,9 @@ class RepositoryServiceUser {
 
   static Future<void> addUser(User user) async {
     print(user.dbid);
-    await db.delete(DatabaseCreator.userTable,
+    await db!.delete(DatabaseCreator.userTable,
         where: "${DatabaseCreator.dbid} = 1");
-    await db.insert(
+    await db!.insert(
       DatabaseCreator.userTable,
       user.toJson(),
     );
@@ -29,13 +29,13 @@ class RepositoryServiceUser {
     ''';
 
     List<dynamic> params = [user.dbid];
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
-    DatabaseCreator.databaseLog('Delete user', sql, null, result, params);
+    DatabaseCreator.databaseLog('Delete user', sql,);
   }
 
   static Future<int> usersCount() async {
-    final data = await db
+    final List<Map<String, dynamic>> data = await db!
         .rawQuery('''SELECT COUNT(*) FROM ${DatabaseCreator.userTable}''');
 
     int count = data[0].values.elementAt(0);
@@ -51,9 +51,9 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [pin, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
-    DatabaseCreator.databaseLog('Update Pin', sql, null, result, params);
+    DatabaseCreator.databaseLog('Update Pin', sql);
     return result > 0;
   }
 
@@ -64,7 +64,7 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [user.dbid];
 
-    final result = await db.rawQuery(sql, params);
+    final result = await db!.rawQuery(sql, params);
     print(result);
 
     final currentUserMap = result[0];
@@ -85,10 +85,10 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [privateKey, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Update Private key', sql, null, result, params);
+        'Update Private key', sql);
     return result > 0;
   }
 
@@ -100,9 +100,9 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [mnemonicText, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
-    DatabaseCreator.databaseLog('Update Mnemonic', sql, null, result, params);
+    DatabaseCreator.databaseLog('Update Mnemonic', sql);
     return result > 0;
   }
 
@@ -115,10 +115,10 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [walletAddress, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Update Wallet Address', sql, null, result, params);
+        'Update Wallet Address', sql);
     return result > 0;
   }
 
@@ -132,10 +132,10 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [number, time, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Update Incorrect Attempt', sql, null, result, params);
+        'Update Incorrect Attempt', sql);
     return result > 0;
   }
 
@@ -143,7 +143,7 @@ class RepositoryServiceUser {
     return updateIncorrectAttempt(
         user,
         user.incorrectAttempts != null
-            ? (int.tryParse(user.incorrectAttempts) ?? 0) + 1
+            ? (int.tryParse(user.incorrectAttempts!) ?? 0) + 1
             : 1,
         time);
   }
@@ -157,10 +157,10 @@ class RepositoryServiceUser {
     ''';
     List<dynamic> params = [status, user.dbid];
 
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Update Phone Verification Status', sql, null, result, params);
+        'Update Phone Verification Status', sql);
     return result > 0;
   }
 }

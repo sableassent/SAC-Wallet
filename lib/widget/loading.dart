@@ -5,12 +5,12 @@ class LoadingScreen extends StatelessWidget {
   final double opacity;
   final Color color;
   final Widget progressIndicator;
-  final String mesage;
+  final String? mesage;
   final bool dismissible;
 
   LoadingScreen({
-    Key key,
-    @required this.inAsyncCall,
+    Key? key,
+    required this.inAsyncCall,
     this.opacity = 0.7,
     this.color = Colors.white,
     this.progressIndicator = const CircularProgressIndicator(),
@@ -33,7 +33,7 @@ class LoadingScreen extends StatelessWidget {
                 children: <Widget>[
                   CircularProgressIndicator(),
                   SizedBox(height: 20),
-                  Text(mesage, style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),)
+                  Text("$mesage", style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),)
                 ],
               ),
             )

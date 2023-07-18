@@ -1,7 +1,8 @@
 import 'package:country_code_picker/country_code.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/business.dart';
@@ -9,12 +10,11 @@ import 'package:sac_wallet/model/location.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
 import 'package:sac_wallet/util/api_config.dart';
-import 'package:toast/toast.dart';
 
 import '../../widget/loading.dart';
 
 GoogleMapsPlaces _places =
-GoogleMapsPlaces(apiKey: ApiConfig.getConfig().kGoogleApiKey);
+    GoogleMapsPlaces(apiKey: ApiConfig.getConfig().kGoogleApiKey);
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 
 class CreateBusinessPage extends StatefulWidget {
@@ -23,8 +23,8 @@ class CreateBusinessPage extends StatefulWidget {
 }
 
 class _CreateBusinessPageState extends State<CreateBusinessPage> {
-  double screenWidth, screenHeight;
-  TextEditingController nameCT,
+  double screenWidth = 0.0, screenHeight = 0.0;
+  late TextEditingController nameCT,
       descriptionCT,
       yearCT,
       phoneCT,
@@ -38,17 +38,17 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
   bool isLoading = false;
   String address = "";
   String countryCode = "";
-  String nameError,
+  String? nameError,
       descriptionError,
       yearError,
       phoneError,
       emailError,
       websiteError;
 
-  List<dynamic> Categories;
+  List<dynamic> Categories = [];
 
-  double lat, lng;
-  Mode _mode = Mode.overlay;
+  double lat = 0.0, lng = 0.0;
+  //Mode _mode = Mode.overlay;
 
   EdgeInsetsGeometry inputPadding =
       EdgeInsets.only(left: 12.0, bottom: 18, top: 18);
@@ -99,14 +99,14 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
         setState(() {
           isLoading = false;
         });
-        Toast.show("Successfully added your company data", context);
+        Fluttertoast.showToast(msg: "Successfully added your company data");
         Navigator.of(context).pop();
       }
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-      Toast.show("Failed!", context);
+      Fluttertoast.showToast(msg: "Failed!");
     }
   }
 
@@ -136,38 +136,36 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
   Future<void> _handlePressButton() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    Prediction p = await PlacesAutocomplete.show(
+    /* Prediction? p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: ApiConfig
-          .getConfig()
-          .kGoogleApiKey,
+      apiKey: ApiConfig.getConfig().kGoogleApiKey!,
       onError: onError,
       mode: _mode,
-    );
+    ); */
 
-    displayPrediction(p, homeScaffoldKey.currentState);
+    // displayPrediction(p!, homeScaffoldKey.currentState!);
   }
 
   Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
     if (p != null) {
       // get detail (lat/lng)
       PlacesDetailsResponse detail =
-      await _places.getDetailsByPlaceId(p.placeId);
-      lat = detail.result.geometry.location.lat;
-      lng = detail.result.geometry.location.lng;
+          await _places.getDetailsByPlaceId(p.placeId!);
+      lat = detail.result.geometry!.location.lat;
+      lng = detail.result.geometry!.location.lng;
       setState(() {
-        address = detail.result.formattedAddress;
+        address = detail.result.formattedAddress!;
       });
     }
   }
 
   void onError(PlacesAutocompleteResponse response) {
-    homeScaffoldKey.currentState.showSnackBar(
-      SnackBar(content: Text(response.errorMessage)),
+    ScaffoldMessenger.of(homeScaffoldKey.currentContext!).showSnackBar(
+      SnackBar(content: Text(response.errorMessage!)),
     );
   }
 
-  void _onCountryCodeInit(CountryCode countryCode) {
+  void _onCountryCodeInit(CountryCode? countryCode) {
     this.countryCode = countryCode.toString();
     print(countryCode.toString());
   }
@@ -264,7 +262,7 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
       });
       return false;
     } else if (!RegExp(
-        r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+            r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
         .hasMatch(emailCT.text)) {
       setState(() {
         emailError = 'Please enter a valid email Address';
@@ -292,14 +290,8 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
 
     return PinLockWrapper(
       child: Scaffold(
@@ -338,18 +330,18 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                           errorText: nameError,
                           contentPadding: inputPadding,
                           labelStyle:
-                          TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
+                              TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
                           border: new OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -369,19 +361,19 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                           labelText: "Description",
                           errorText: descriptionError,
                           labelStyle:
-                          TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
+                              TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
                           contentPadding: inputPadding,
                           border: new OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -394,7 +386,7 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -445,19 +437,19 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                           labelText: "Foundation Year",
                           errorText: yearError,
                           labelStyle:
-                          TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
+                              TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME),
                           contentPadding: inputPadding,
                           border: new OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -579,13 +571,13 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                           hintText: 'Enter Email',
                         ),
@@ -609,13 +601,13 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -637,13 +629,13 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -666,13 +658,13 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -695,13 +687,13 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                            BorderSide(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                            borderSide: BorderSide(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                 width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.black12, width: 1.0),
+                                BorderSide(color: Colors.black12, width: 1.0),
                           ),
                         ),
                       ),
@@ -714,7 +706,7 @@ class _CreateBusinessPageState extends State<CreateBusinessPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

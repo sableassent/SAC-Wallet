@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:sac_wallet/screens/main_page.dart';
 import 'package:sac_wallet/screens/verify_phone_number.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -34,10 +32,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   _openP2P() async {
     const url = 'https://p2pb2b.io?referral=5e70023e';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
-      Toast.show("Failed to load Terms and agreement", context);
+      Fluttertoast.showToast(msg: "Failed to load Terms and agreement");
     }
   }
 
@@ -53,7 +51,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     const pageDecoration = const PageDecoration(
       titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      //descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: Colors.white,
       imagePadding: EdgeInsets.zero,
     );
@@ -98,7 +96,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               size: 100,
             ),
           ),
-          footer: RaisedButton(
+          footer: ElevatedButton(
             onPressed: () {
               introKey.currentState?.animateScroll(0);
             },
@@ -106,9 +104,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               'Join',
               style: TextStyle(color: Colors.white),
             ),
-            color: Colors.lightBlue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.lightBlue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
           ),
           decoration: pageDecoration,
@@ -118,7 +118,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               "SableAssent's (SAC 1) Is Now Available For American Customers",
           body: "Stay up to date with updates from us",
           image: _buildImage('app_icon.png'),
-          footer: RaisedButton(
+          footer: ElevatedButton(
             onPressed: () {
               introKey.currentState?.animateScroll(0);
               _openP2P();
@@ -127,18 +127,20 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               'Buy Now',
               style: TextStyle(color: Colors.white),
             ),
-            color: Colors.lightBlue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.lightBlue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
           ),
           decoration: pageDecoration,
         ),
       ],
       onDone: () => _onIntroEnd(context),
-      //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
+      onSkip: () => _onIntroEnd(context), // You can override onSkip callback
       showSkipButton: true,
-      skipFlex: 0,
+      //skipFlex: 0,
       nextFlex: 0,
       skip: const Text('Skip'),
       next: const Icon(Icons.arrow_forward),

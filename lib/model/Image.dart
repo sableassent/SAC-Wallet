@@ -1,8 +1,8 @@
 class DBImage {
   DBImage({
-    this.createdAt,
-    this.id,
-    this.imageId,
+    required this.createdAt,
+    required this.id,
+    required this.imageId,
   });
 
   DateTime createdAt;

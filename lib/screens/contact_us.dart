@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/util/keyboard.dart';
-import 'package:toast/toast.dart';
 
 class ContactUs extends StatefulWidget {
   @override
@@ -12,8 +12,8 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactusPageState extends State<ContactUs> {
-  TextEditingController emailText, mainText;
-  double screenWidth, screenHeight;
+  late TextEditingController emailText, mainText;
+  double screenWidth = 0.0, screenHeight = 0.0;
   String selectedSubjectValue = "";
   final FocusNode _focusNodeOfMainText = FocusNode();
   List<String> subjectOptions = <String>[
@@ -35,9 +35,9 @@ class _ContactusPageState extends State<ContactUs> {
     String response = await UserRepository()
         .contactUs(subject: selectedSubjectValue, message: mainText.text);
     if (response == "Email Sent") {
-      Toast.show("Email Sent", context);
+      Fluttertoast.showToast(msg: "Email Sent");
     } else {
-      Toast.show("Email Not Sent!", context);
+      Fluttertoast.showToast(msg: "Email Not Sent!");
     }
   }
 
@@ -149,7 +149,7 @@ class _ContactusPageState extends State<ContactUs> {
                                       onChanged: (newValue) {
                                         setState(() {
                                           subjectIndex =
-                                              subjectOptions.indexOf(newValue);
+                                              subjectOptions.indexOf(newValue!);
                                           selectedSubjectValue = newValue;
                                           print(selectedSubjectValue);
                                         });

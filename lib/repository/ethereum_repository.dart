@@ -6,15 +6,15 @@ class EthereumRepository {
   final EthereumClient ethereumClient = new EthereumClient();
 
   Future<List<TransactionsModel>> getTransactionHistory(
-          {@required String address, int limit}) async =>
+          {required String address, int? limit}) async =>
       await ethereumClient.getTransactionHistory(address: address);
 
   Future<List<TransactionsModel>> getTransactionHistoryfromDB(
-          {@required String address}) async =>
+          {required String address}) async =>
       await ethereumClient.getTransactionHistoryfromDB(address: address);
 
-  Future<String> getBalance({@required String address}) async =>
-      await ethereumClient.getBalance(address: address);
+  Future<String> getBalance({required String address}) async =>
+      await ethereumClient.getBalance(address: address) ?? "";
 
   Future<bool> deleteAllTransactions() async =>
       await ethereumClient.deleteAllTransactions();
