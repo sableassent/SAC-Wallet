@@ -9,7 +9,7 @@ import 'package:sac_wallet/util/widget_file.dart';
 class BusinessListPage extends StatefulWidget {
   final String dropDownKey;
 
-  BusinessListPage({Key key, this.dropDownKey}) : super(key: key);
+  BusinessListPage({Key? key, required this.dropDownKey}) : super(key: key);
 
   BusinessListState createState() => BusinessListState();
 }
@@ -68,14 +68,14 @@ class BusinessListState extends State<BusinessListPage> {
   BusinessList(Future<List<Business>> getBusinesses) {
     return FutureBuilder(
         future: getBusinesses,
-        builder: (context, snap) {
+        builder: (context, AsyncSnapshot<List<Business>> snap) {
           if (snap.connectionState != ConnectionState.done) {
             return Container(
               child: Center(child: Text("Loading...")),
             );
           }
           if (snap.hasData) {
-            List<Business> business = snap.data;
+            List<Business> business = snap.data ?? [];
             return ListView.builder(
               shrinkWrap: true,
               padding: EdgeInsets.only(bottom: 10.0),
@@ -123,9 +123,9 @@ class BusinessListState extends State<BusinessListPage> {
                                 height: 05.0,
                               ),
                               Text(
-                                  '${business[index].address
+                                  '${business[index].address!
                                       .streetName} ${','} ${business[index]
-                                      .address.city}',
+                                      .address!.city}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 16,

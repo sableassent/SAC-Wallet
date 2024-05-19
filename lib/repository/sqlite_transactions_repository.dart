@@ -5,7 +5,7 @@ class RepositoryServiceTransaction {
   static Future<List<TransactionsModel>> getAllTransactions() async {
     final sql =
         '''SELECT * FROM ${DatabaseCreator.transactionsTable} ORDER BY ${DatabaseCreator.timeStamp} DESC''';
-    final List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+    final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
 
     // Convert the List<Map<String, dynamic> into a List<TransactionsModel>.
     return List.generate(maps.length, (i) {
@@ -38,14 +38,14 @@ class RepositoryServiceTransaction {
     WHERE ${DatabaseCreator.id} = ?''';
 
     List<dynamic> params = [id];
-    final data = await db.rawQuery(sql, params);
+    final data = await db!.rawQuery(sql, params);
 
     final transaction = TransactionsModel.fromJSON(data.first);
     return transaction;
   }
 
   static Future<void> addTransaction(TransactionsModel transaction) async {
-    await db.insert(
+    await db!.insert(
       'transactions',
       transaction.toMap(),
     );
@@ -57,7 +57,7 @@ class RepositoryServiceTransaction {
     ${transaction.contractAddress}, ${transaction.to}, ${transaction.value}, ${transaction.tokenName}, ${transaction.tokenSymbol}, ${transaction.tokenDecimal},
     ${transaction.transactionIndex}, ${transaction.gas}, ${transaction.gasPrice}, ${transaction.gasUsed}, ${transaction.cumulativeGasUsed}, ${transaction.input}, ${transaction.confirmations})''';
 
-    await db.rawQuery(sql);
+    await db!.rawQuery(sql);
   }
 
   static Future<void> deleteTransaction(TransactionsModel transaction) async {
@@ -66,10 +66,10 @@ class RepositoryServiceTransaction {
     ''';
 
     List<dynamic> params = [transaction.blockNumber];
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Delete transaction', sql, null, result, params);
+        'Delete transaction $result', sql);
   }
 
   static Future<void> updateTransaction(TransactionsModel transaction) async {
@@ -79,14 +79,14 @@ class RepositoryServiceTransaction {
     ''';
 
     List<dynamic> params = [transaction.tokenName, transaction.blockNumber];
-    final result = await db.rawUpdate(sql, params);
+    final result = await db!.rawUpdate(sql, params);
 
     DatabaseCreator.databaseLog(
-        'Update transaction', sql, null, result, params);
+        'Update transaction', sql);
   }
 
   static Future<int> transactionsCount() async {
-    final data = await db.rawQuery(
+    final List<Map<String, dynamic>> data = await db!.rawQuery(
         '''SELECT COUNT(*) FROM ${DatabaseCreator.transactionsTable}''');
 
     int count = data[0].values.elementAt(0);
@@ -97,13 +97,12 @@ class RepositoryServiceTransaction {
   static Future<void> deleteAllTransaction() async {
     final sql = '''DELETE FROM ${DatabaseCreator.transactionsTable}''';
 
-    final result = await db.rawUpdate(sql);
+    final result = await db!.rawUpdate(sql);
 
     DatabaseCreator.databaseLog(
       'Delete transaction',
       sql,
-      null,
-      result,
+      
     );
   }
 }

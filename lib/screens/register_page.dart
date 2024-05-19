@@ -1,12 +1,12 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/client/user_client.dart';
 import 'package:sac_wallet/exceptions/validation_exception.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/screens/login_page.dart';
 import 'package:sac_wallet/util/keyboard.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../widget/loading.dart';
@@ -17,8 +17,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  double screenWidth, screenHeight;
-  TextEditingController nameCT,
+  double screenWidth = 0.0, screenHeight = 0.0;
+  late TextEditingController nameCT,
       usernameCT,
       emailCT,
       phoneNumberCT,
@@ -28,8 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isUserAgreement = false;
   bool isLoading = false;
   String countryCode = "";
-  UserRepository userRepository;
-  String nameError,
+  late UserRepository userRepository;
+  String? nameError,
       usernameError,
       phoneNumberError,
       emailError,
@@ -55,9 +55,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool validateEmail() {
     if (emailCT.text.isEmpty) {
-      Toast.show("Enter your email", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your email",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       setState(() {
@@ -101,9 +102,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool validatePassword() {
     if (passwordCT.text.isEmpty) {
-      Toast.show("Enter your password", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your password",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       setState(() {
@@ -119,9 +121,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool validateConfPassword() {
     if (passwordCT.text.isEmpty) {
-      Toast.show("Enter your Confirm password", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your Confirm password",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       setState(() {
@@ -135,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return true;
   }
 
-  void _onCountryCodeInit(CountryCode countryCode) {
+  void _onCountryCodeInit(CountryCode? countryCode) {
     this.countryCode = countryCode.toString();
     print(countryCode.toString());
   }
@@ -160,104 +163,99 @@ class _RegisterPageState extends State<RegisterPage> {
     String confPassword = confPasswordCT.text;
     String referralCode = referralCodeCT.text;
 
-    if (!validateName() && !validateEmail() && !validatePassword() &&
-        !validateConfPassword() && !validatePhoneNumber() && username.isEmpty) {
-      Toast.show("Fill all forms", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+    if (!validateName() &&
+        !validateEmail() &&
+        !validatePassword() &&
+        !validateConfPassword() &&
+        !validatePhoneNumber() &&
+        username.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "Fill all forms",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       return;
     }
     if (!isUserAgreement) {
-      Toast.show(
-          "You should agree to User Agreement.",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "You should agree to User Agreement.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
-          textColor: Colors.white
-      );
+          textColor: Colors.white);
       return;
     }
 
     if (password != confPassword) {
-      Toast.show(
-          "Password and confirm password do not match.",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Password and confirm password do not match.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
-          textColor: Colors.white
-      );
+          textColor: Colors.white);
       return;
     }
 
     try {
       setLoading(true);
-      String checkReferralCode;
+      String? checkReferralCode;
       print(referralCode);
       if (referralCode != null && referralCode.trim() != "") {
         checkReferralCode =
-        await userRepository.checkReferralCode(referralCode: referralCode);
+            await userRepository.checkReferralCode(referralCode: referralCode);
       }
       if (checkReferralCode != "Invalid Referral Code!" ||
           referralCode.isEmpty) {
         bool isSuccess = await userRepository.register(
-            name: name,
-            username: username,
-            email: email,
-            phoneNumber: countryCode + phoneNumber,
+            name: name.trim(),
+            username: username.trim(),
+            email: email.trim().toLowerCase(),
+            phoneNumber: (countryCode + phoneNumber).trim(),
             password: password);
 
         print("Was registration successful ? ${isSuccess}");
 
         if (!isSuccess) {
-          Toast.show(
-              "Email or Password already in use",
-              context,
-              duration: Toast.LENGTH_LONG,
-              gravity: Toast.CENTER,
+          Fluttertoast.showToast(
+              msg: "Email or Password already in use",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
               backgroundColor: Colors.red,
-              textColor: Colors.white
-          );
-          Toast.show("Failed!", context);
+              textColor: Colors.white);
+          Fluttertoast.showToast(msg: "Failed!");
         } else {
           if (referralCode != null && referralCode.trim() != "") {
             String response = await userRepository.addReferral(
                 referralCode: referralCode, email: email);
 
-            Toast.show("Referral Added! Note: " + response, context,
-                duration: Toast.LENGTH_LONG,
-                gravity: Toast.CENTER,
+            Fluttertoast.showToast(
+                msg: "Referral Added! Note: " + response,
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
                 backgroundColor: Colors.greenAccent,
                 textColor: Colors.black);
           }
-          Toast.show("Successfully registered!", context);
+          Fluttertoast.showToast(msg: "Successfully registered!");
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => LoginPage()));
         }
       }
     } on ValidationException catch (e) {
-      Toast.show(
-          "Error: ${e.cause}",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Error: ${e.cause}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
-          textColor: Colors.white
-      );
+          textColor: Colors.white);
     } catch (e) {
-      Toast.show(
-          "Error: ${e}",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Error: ${e}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
-          textColor: Colors.white
-      );
-    }
-    finally {
+          textColor: Colors.white);
+    } finally {
       setLoading(false);
     }
   }
@@ -267,7 +265,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      Toast.show("Failed to load Terms and agreement", context);
+      Fluttertoast.showToast(msg: "Failed to load Terms and agreement");
     }
   }
 
@@ -281,7 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
           print("UserExists ${userExists}");
         });
       }).catchError((err) {
-        Toast.show("Error checking username", context);
+        Fluttertoast.showToast(msg: "Error checking username");
       });
     }
   }
@@ -305,15 +303,15 @@ class _RegisterPageState extends State<RegisterPage> {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-    const EdgeInsetsGeometry inputPadding = EdgeInsets.only(left: 12.0, bottom: 18, top: 18);
+    const EdgeInsetsGeometry inputPadding =
+        EdgeInsets.only(left: 12.0, bottom: 18, top: 18);
 
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        /* overflow: Overflow.visible, */
         children: <Widget>[
           SingleChildScrollView(
             child: Container(
-
               alignment: Alignment.center,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -321,17 +319,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 20),
-                  Image.asset(
-                      "assets/images/app_icon.png", width: screenWidth * 0.2,
-                      height: screenHeight * 0.1),
+                  Image.asset("assets/images/app_icon.png",
+                      width: screenWidth * 0.2, height: screenHeight * 0.1),
                   SizedBox(height: screenHeight * 0.01),
                   Container(
                     //padding: EdgeInsets.only(left: 10, right: 10),
                     margin: EdgeInsets.only(left: 10, right: 10),
                     width: screenWidth,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
+                    decoration: BoxDecoration(color: Colors.white),
 
                     child: TextField(
                       controller: nameCT,
@@ -342,18 +337,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         errorText: nameError,
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              10
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColor
-                              .NEW_MAIN_COLOR_SCHEME,
+                          borderSide: BorderSide(
+                              color: AppColor.NEW_MAIN_COLOR_SCHEME,
                               width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide:
-                          BorderSide(color: Colors.black12, width: 1.0),
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                       ),
                     ),
@@ -370,20 +363,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: TextInputType.text,
                       decoration: new InputDecoration(
                         labelText: "Username",
-                        errorText: userExists
-                            ? "Username already taken"
-                            : null,
+                        errorText: userExists ? "Username already taken" : null,
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide:
-                          BorderSide(color: Colors.blue, width: 1.0),
+                              BorderSide(color: Colors.blue, width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide:
-                          BorderSide(color: Colors.black12, width: 1.0),
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                       ),
                     ),
@@ -392,9 +383,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
                     width: screenWidth,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
+                    decoration: BoxDecoration(color: Colors.white),
                     child: TextField(
                       controller: emailCT,
                       keyboardType: TextInputType.emailAddress,
@@ -404,18 +393,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         errorText: emailError,
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              10
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColor
-                              .NEW_MAIN_COLOR_SCHEME,
+                          borderSide: BorderSide(
+                              color: AppColor.NEW_MAIN_COLOR_SCHEME,
                               width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.black12, width: 1.0),
+                          borderSide:
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                       ),
                     ),
@@ -423,9 +410,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(height: 10),
                   Row(
                     children: <Widget>[
-                      Expanded(child:
-                      CountryCodePicker(
-                        onChanged: _onCountryChange,
+                      Expanded(
+                        child: CountryCodePicker(
+                          onChanged: _onCountryChange,
                           onInit: _onCountryCodeInit,
                           // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                           initialSelection: 'US',
@@ -436,16 +423,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           showOnlyCountryWhenClosed: false,
                           // optional. aligns the flag and the Text left
                           alignLeft: false,
-                        ),),
+                        ),
+                      ),
                       Expanded(
                         flex: 3,
                         child: Container(
                           margin: EdgeInsets.only(left: 10, right: 10),
                           width: screenWidth,
-                          decoration: BoxDecoration(
-                              color: Colors.white
-                          ),
-
+                          decoration: BoxDecoration(color: Colors.white),
                           child: TextField(
                             controller: phoneNumberCT,
                             keyboardType: TextInputType.phone,
@@ -455,13 +440,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               errorText: phoneNumberError,
                               contentPadding: inputPadding,
                               border: new OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                    10
-                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.blue, width: 1.0),
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.0),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -478,28 +461,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     margin: EdgeInsets.only(left: 10, right: 10),
                     width: screenWidth,
                     height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
-
+                    decoration: BoxDecoration(color: Colors.white),
                     child: TextField(
                       controller: referralCodeCT,
                       keyboardType: TextInputType.text,
                       decoration: new InputDecoration(
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              10
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColor
-                              .NEW_MAIN_COLOR_SCHEME,
+                          borderSide: BorderSide(
+                              color: AppColor.NEW_MAIN_COLOR_SCHEME,
                               width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.black12, width: 1.0),
+                          borderSide:
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                         hintText: 'Enter Referral Code',
                       ),
@@ -509,9 +487,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
                     width: screenWidth,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
+                    decoration: BoxDecoration(color: Colors.white),
                     child: TextField(
                       controller: passwordCT,
                       obscureText: true,
@@ -522,18 +498,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         errorText: passwordError,
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              10
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColor
-                              .NEW_MAIN_COLOR_SCHEME,
+                          borderSide: BorderSide(
+                              color: AppColor.NEW_MAIN_COLOR_SCHEME,
                               width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black12,
-                              width: 1.0),
+                          borderSide:
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                       ),
                     ),
@@ -542,9 +516,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
                     width: screenWidth,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
+                    decoration: BoxDecoration(color: Colors.white),
                     child: TextField(
                       controller: confPasswordCT,
                       obscureText: true,
@@ -555,18 +527,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         errorText: confPasswordError,
                         contentPadding: inputPadding,
                         border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              10
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColor
-                              .NEW_MAIN_COLOR_SCHEME,
+                          borderSide: BorderSide(
+                              color: AppColor.NEW_MAIN_COLOR_SCHEME,
                               width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black12,
-                              width: 1.0),
+                          borderSide:
+                              BorderSide(color: Colors.black12, width: 1.0),
                         ),
                       ),
                     ),
@@ -577,9 +547,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     width: screenWidth,
                     height: 50,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.white
-                    ),
+                    decoration: BoxDecoration(color: Colors.white),
                     child: InkWell(
                       onTap: () {
                         setState(() {
@@ -595,22 +563,23 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                                border: Border.all(color: isUserAgreement
-                                    ? Colors.blue
-                                    : Colors.black45),
+                                border: Border.all(
+                                    color: isUserAgreement
+                                        ? Colors.blue
+                                        : Colors.black45),
                                 shape: BoxShape.circle,
-                                color: isUserAgreement ? Colors.blue : Colors
-                                    .white
-                            ),
+                                color: isUserAgreement
+                                    ? Colors.blue
+                                    : Colors.white),
                             child: Center(
-                              child: Icon(
-                                  Icons.check, color: Colors.white, size: 20),
+                              child: Icon(Icons.check,
+                                  color: Colors.white, size: 20),
                             ),
                           ),
                           SizedBox(width: 20),
                           Text("I agree to the user agreement.",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 15))
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15))
                         ],
                       ),
                     ),
@@ -627,11 +596,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: AppColor.NEW_MAIN_COLOR_SCHEME
-                      ),
+                          color: AppColor.NEW_MAIN_COLOR_SCHEME),
                       child: Center(
-                        child: Text("Register", style: TextStyle(color: Colors
-                            .white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        child: Text("Register",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
@@ -649,10 +620,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => LoginPage()));
                         },
-                        child: Text("LOGIN ", style: TextStyle(color: AppColor
-                            .NEW_MAIN_COLOR_SCHEME,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold)),
+                        child: Text("LOGIN ",
+                            style: TextStyle(
+                                color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
                       )
                     ],
                   ),
@@ -662,7 +634,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserAgreementPage()));
                     },
                     child: Text("View this app's user agreement",
-                        style: TextStyle(color: AppColor.NEW_MAIN_COLOR_SCHEME,
+                        style: TextStyle(
+                            color: AppColor.NEW_MAIN_COLOR_SCHEME,
                             fontSize: 13,
                             fontWeight: FontWeight.bold)),
                   ),

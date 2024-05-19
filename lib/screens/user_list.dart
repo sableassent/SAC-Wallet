@@ -17,10 +17,10 @@ class UserListPage extends StatefulWidget {
 
 class Debouncer {
   final int milliseconds;
-  VoidCallback action;
-  Timer _timer;
+  VoidCallback? action;
+  late Timer _timer;
 
-  Debouncer({this.milliseconds});
+  Debouncer({required this.milliseconds});
 
   run(VoidCallback action) {
     if (null != _timer) {
@@ -32,8 +32,8 @@ class Debouncer {
 
 class UserListPageState extends State<UserListPage> {
   final _debouncer = Debouncer(milliseconds: 500);
-  List<User> users = List();
-  List<User> filteredUsers = List();
+  List<User> users = [];
+  List<User> filteredUsers = [];
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class UserListPageState extends State<UserListPage> {
                           u.email
                               .toLowerCase()
                               .contains(string.toLowerCase()) ||
-                          u.walletAddress
+                          u.walletAddress!
                               .toLowerCase()
                               .contains(string.toLowerCase())))
                       .toList();
@@ -112,7 +112,7 @@ class UserListPageState extends State<UserListPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "S@" + filteredUsers[index].username,
+                                  "S@${filteredUsers[index].username}",
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.black,

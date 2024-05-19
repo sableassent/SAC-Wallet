@@ -19,7 +19,7 @@ class BusinessListMapViewState extends State<BusinessListMapView> {
   Set<Marker> _markers = new HashSet<Marker>();
   Map markers = {};
 
-  Position _currentPosition;
+  late Position _currentPosition;
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -72,20 +72,22 @@ class BusinessListMapViewState extends State<BusinessListMapView> {
           _controller.complete(controller);
         },
       ),
-
     );
   }
 
   _updatePosition(double lat, double long, double zoom) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(lat, long,), zoom: zoom)
-    ));
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(
+          lat,
+          long,
+        ),
+        zoom: zoom)));
     EasyDebounce.debounce(
         'update_markers_from_server', // <-- An ID for this particular debouncer
         Duration(milliseconds: 1500), // <-- The debounce duration
-            () => _populateNewData(lat, long, zoom) // <-- The target method
-    );
+        () => _populateNewData(lat, long, zoom) // <-- The target method
+        );
   }
 
   _populateNewData(double lat, double long, double zoom) {
@@ -94,8 +96,8 @@ class BusinessListMapViewState extends State<BusinessListMapView> {
         res.forEach((element) {
           _markers.add(Marker(
             markerId: MarkerId(element.id),
-            position: LatLng(element.location.coordinates[1],
-                element.location.coordinates[0]),
+            position: LatLng(element.location!.coordinates[1],
+                element.location!.coordinates[0]),
             infoWindow: InfoWindow(
                 title: '${element.name}',
                 snippet: '${element.category}',
@@ -109,20 +111,50 @@ class BusinessListMapViewState extends State<BusinessListMapView> {
     });
   }
 
-  _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()
-      ..forceAndroidLocationManager;
-
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-        print("Location ${position.longitude}, ${position.latitude}");
-      });
-      _updatePosition(position.latitude, position.longitude, 12.0);
-    }).catchError((e) {
-      print(e);
+  _getCurrentLocation() async {
+    Position position = await _determinePosition();
+    //..forceAndroidLocationManager;
+    setState(() {
+      _currentPosition = position;
+      print("Location ${position.longitude}, ${position.latitude}");
     });
+    _updatePosition(position.latitude, position.longitude, 12.0);
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 }

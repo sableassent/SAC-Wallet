@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
@@ -12,7 +13,6 @@ import 'package:sac_wallet/screens/wallet/send_token_page.dart';
 import 'package:sac_wallet/util/business_util.dart';
 import 'package:sac_wallet/util/launcher_util.dart';
 import 'package:sac_wallet/widget/image_slider.dart';
-import 'package:toast/toast.dart';
 
 // class BusinessDetails extends StatefulWidget {
 
@@ -39,8 +39,8 @@ Widget _BusinessDescription(String description) {
   );
 }
 
-Widget _InfoRow(Icon icon, String text, Function clickHandler,
-    {Icon rightIcon}) {
+Widget _InfoRow(Icon icon, String text, Function() clickHandler,
+    {Icon? rightIcon}) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 5.0),
     child: Row(
@@ -61,7 +61,7 @@ Widget _InfoRow(Icon icon, String text, Function clickHandler,
                 visible: rightIcon != null,
                 child: Expanded(
                   flex: 1,
-                  child: rightIcon,
+                  child: rightIcon ?? Container(),
                 ),
               )
             ],
@@ -76,16 +76,16 @@ Widget _MapView(Business business) {
   return GoogleMap(
     mapType: MapType.normal,
     initialCameraPosition: CameraPosition(
-        target: LatLng(
-            business.location.coordinates[1], business.location.coordinates[0]),
+        target: LatLng(business.location!.coordinates[1],
+            business.location!.coordinates[0]),
         zoom: 12.0),
     onCameraMove: (CameraPosition position) {},
     zoomGesturesEnabled: true,
     markers: new HashSet.from([
       Marker(
         markerId: MarkerId(business.id),
-        position: LatLng(
-            business.location.coordinates[1], business.location.coordinates[0]),
+        position: LatLng(business.location!.coordinates[1],
+            business.location!.coordinates[0]),
         infoWindow: InfoWindow(
             title: '${business.name}', snippet: '${business.category}'),
       )
@@ -93,13 +93,13 @@ Widget _MapView(Business business) {
   );
 }
 
-Widget _SocialMediaIcon({FaIcon icon, String link}) {
+Widget _SocialMediaIcon({required FaIcon icon, String? link}) {
   return Visibility(
     visible: link != null,
     child: IconButton(
       icon: icon,
       onPressed: () {
-        LauncherUtils.openUrl(link);
+        LauncherUtils.openUrl(link ?? '');
       },
     ),
   );
@@ -161,14 +161,14 @@ Widget _RatingWidget(double numStars) {
 Widget _OwnerDetails(String userId) {
   return FutureBuilder(
       future: UserClient().getUserById(userId: userId),
-      builder: (context, snap) {
+      builder: (context, AsyncSnapshot<User> snap) {
         if (snap.connectionState != ConnectionState.done) {
           return Container(
             child: Text("Loading"),
           );
         }
         if (snap.hasData) {
-          User user = snap.data;
+          User user = snap.data!;
           return Visibility(
               child: Column(
             children: <Widget>[
@@ -236,7 +236,8 @@ Widget _OwnerDetails(String userId) {
                                   walletAddress: user.walletAddress,
                                 )));
                       } else {
-                        Toast.show("The owner doesn't have a wallet", context);
+                        Fluttertoast.showToast(
+                            msg: "The owner doesn't have a wallet");
                       }
                     },
                   )),
@@ -258,20 +259,20 @@ class BusinessDetails extends StatelessWidget {
   String address(Business business) {
     String totalAddress = '';
 
-    if (business.address.houseNumber != null) {
-      totalAddress += '${business.address.houseNumber}';
+    if (business.address!.houseNumber != null) {
+      totalAddress += '${business.address!.houseNumber}';
     }
-    if (business.address.streetName != null) {
-      totalAddress += ' ${business.address.streetName}';
+    if (business.address!.streetName != null) {
+      totalAddress += ' ${business.address!.streetName}';
     }
-    if (business.address.city != null) {
-      totalAddress += ' ${business.address.city}';
+    if (business.address!.city != null) {
+      totalAddress += ' ${business.address!.city}';
     }
-    if (business.address.zipCode != null) {
-      totalAddress += ' - ${business.address.zipCode}';
+    if (business.address!.zipCode != null) {
+      totalAddress += ' - ${business.address!.zipCode}';
     }
-    if (business.address.country != null) {
-      totalAddress += ' ${business.address.country}';
+    if (business.address!.country != null) {
+      totalAddress += ' ${business.address!.country}';
     }
     return totalAddress;
   }
@@ -288,8 +289,8 @@ class BusinessDetails extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          LauncherUtils.openMap(business.location.coordinates[1],
-              business.location.coordinates[0]);
+          LauncherUtils.openMap(business.location!.coordinates[1],
+              business.location!.coordinates[0]);
         },
         backgroundColor: AppColor.NEW_MAIN_COLOR_SCHEME,
         child: Icon(Icons.directions_car),
@@ -312,13 +313,18 @@ class BusinessDetails extends StatelessWidget {
                     ),
                     Row(
                       children: <Widget>[
-                        Expanded(flex: 1, child: SizedBox(),),
-                        Expanded(flex: 4, child: Text(business.name,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 34,
-                                color: Colors.black87))),
+                        Expanded(
+                          flex: 1,
+                          child: SizedBox(),
+                        ),
+                        Expanded(
+                            flex: 4,
+                            child: Text(business.name,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 34,
+                                    color: Colors.black87))),
                       ],
                     ),
                     SizedBox(
@@ -327,42 +333,46 @@ class BusinessDetails extends StatelessWidget {
 //
                     Container(
                       padding: EdgeInsets.only(top: 10),
-                      child: Row(children: <Widget>[
-                        Expanded(flex: 1, child: SizedBox()),
-                        Expanded(flex: 4, child: Divider(
-                          height: 0.8,
-                          color: Colors.black26,))
-                      ],),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(flex: 1, child: SizedBox()),
+                          Expanded(
+                              flex: 4,
+                              child: Divider(
+                                height: 0.8,
+                                color: Colors.black26,
+                              ))
+                        ],
+                      ),
                     ),
-                    _InfoRow(Icon(Icons.location_on, color: Colors.blueAccent,),
-                        address(business), () {}),
+                    _InfoRow(
+                        Icon(
+                          Icons.location_on,
+                          color: Colors.blueAccent,
+                        ),
+                        address(business),
+                        () {}),
                     _InfoRow(Icon(Icons.call, color: Colors.green),
                         business.phoneNumber, () {
-                          LauncherUtils.launchCaller(business.phoneNumber);
-                        }),
+                      LauncherUtils.launchCaller(business.phoneNumber);
+                    }),
                     _InfoRow(Icon(Icons.timer, color: Colors.green),
                         'Weekdays 9AM - 8PM', () {}),
                     _InfoRow(Icon(Icons.category, color: Colors.purple),
                         business.category, () {}),
                     Container(
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        child: _BusinessDescription(business.description)
-                    ),
-                    Container(
-                        height: 300,
-                        child: _MapView(business)
-                    ),
+                        child: _BusinessDescription(business.description)),
+                    Container(height: 300, child: _MapView(business)),
                     Container(
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        child: _SocialMediaIcons(business)
-                    ),
+                        child: _SocialMediaIcons(business)),
                     Divider(
                       height: 0.8,
                       color: Colors.black26,
                     ),
                     _OwnerDetails(business.userId),
-                  ]
-              ),
+                  ]),
             ),
           )
         ],

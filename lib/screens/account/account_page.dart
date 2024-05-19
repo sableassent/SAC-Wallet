@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/util/global.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/user.dart';
@@ -33,7 +33,8 @@ class _AccountPageState extends State<AccountPage> {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: new AssetImage("assets/images/main_background.jpg"),
+                      image:
+                          new AssetImage("assets/images/main_background.jpg"),
                       fit: BoxFit.cover),
                 ),
               ),
@@ -48,23 +49,31 @@ class _AccountPageState extends State<AccountPage> {
                 margin: const EdgeInsets.only(top: 160),
                 child: Column(
                   children: <Widget>[
-                    Avatar(
-                      image: currentUser.photo == null
-                          ? new AssetImage("assets/images/default_profile.png")
-                          : CachedNetworkImageProvider(currentUser.photo),
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                      borderColor: Colors.grey.shade300,
-                      borderWidth: 4.0,
-                    ),
+                    currentUser.photo == null || currentUser.photo == ''
+                        ? Avatar(
+                            image:
+                                AssetImage("assets/images/default_profile.png"),
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            borderColor: Colors.grey.shade300,
+                            borderWidth: 4.0,
+                          )
+                        : Avatar(
+                            image:
+                                CachedNetworkImageProvider(currentUser.photo!),
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            borderColor: Colors.grey.shade300,
+                            borderWidth: 4.0,
+                          ),
                     Text(
                       currentUser.name,
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 5.0),
                     Text(
                       " ",
-                      style: Theme.of(context).textTheme.subtitle,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),
@@ -123,11 +132,12 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Facebook"),
-                              subtitle: Text("${currentUser.facebook_link == null ? "-" : currentUser.facebook_link} "),
+                              subtitle: Text(
+                                  "${currentUser.facebook_link == null ? "-" : currentUser.facebook_link} "),
                             ),
                             onTap: () {
                               if (currentUser.facebook_link != null)
-                                _launchURL(currentUser.facebook_link);
+                                _launchURL(currentUser.facebook_link!);
                             },
                           ),
                           GestureDetector(
@@ -138,11 +148,12 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Twitter"),
-                              subtitle: Text("${currentUser.twitter_link == null ? "-" : currentUser.twitter_link} "),
+                              subtitle: Text(
+                                  "${currentUser.twitter_link == null ? "-" : currentUser.twitter_link} "),
                             ),
                             onTap: () {
                               if (currentUser.twitter_link != null)
-                                _launchURL(currentUser.instagram_link);
+                                _launchURL(currentUser.instagram_link!);
                             },
                           ),
                           GestureDetector(
@@ -153,11 +164,12 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("Instagram"),
-                              subtitle: Text("${currentUser.instagram_link == null ? "-" : currentUser.instagram_link} "),
+                              subtitle: Text(
+                                  "${currentUser.instagram_link == null ? "-" : currentUser.instagram_link} "),
                             ),
                             onTap: () {
                               if (currentUser.instagram_link != null)
-                                _launchURL(currentUser.instagram_link);
+                                _launchURL(currentUser.instagram_link!);
                             },
                           ),
                           GestureDetector(
@@ -168,11 +180,12 @@ class SocialMedia extends StatelessWidget {
                                   width: 20,
                                   height: 20),
                               title: Text("LinkedIn"),
-                              subtitle: Text("${currentUser.linkedin_link == null ? "-" : currentUser.linkedin_link} "),
+                              subtitle: Text(
+                                  "${currentUser.linkedin_link == null ? "-" : currentUser.linkedin_link} "),
                             ),
                             onTap: () {
                               if (currentUser.linkedin_link != null)
-                                _launchURL(currentUser.linkedin_link);
+                                _launchURL(currentUser.linkedin_link!);
                             },
                           )
                         ],
@@ -208,11 +221,11 @@ class _UserInfoState extends State<UserInfo> {
   void copyToClipBoard(text) {
     if (text != null) {
       Clipboard.setData(ClipboardData(text: text));
-      Toast.show("Copied", context);
+      Fluttertoast.showToast(msg: "Copied");
     }
   }
 
-  _UserInfoState({@required this.currentUser});
+  _UserInfoState({required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +263,7 @@ class _UserInfoState extends State<UserInfo> {
                             subtitle: Text(
                                 widget.currentUser.walletAddress == null
                                     ? "-"
-                                    : widget.currentUser.walletAddress),
+                                    : widget.currentUser.walletAddress!),
                           ),
                           ListTile(
                             contentPadding: EdgeInsets.symmetric(
@@ -259,7 +272,7 @@ class _UserInfoState extends State<UserInfo> {
                             title: Text("Country"),
                             subtitle: Text(widget.currentUser.country == null
                                 ? "-"
-                                : widget.currentUser.country),
+                                : widget.currentUser.country!),
                           ),
                           ListTile(
                             leading: Icon(Icons.email),
@@ -274,7 +287,7 @@ class _UserInfoState extends State<UserInfo> {
                             subtitle: Text(
                                 widget.currentUser.description == null
                                     ? "-"
-                                    : widget.currentUser.description),
+                                    : widget.currentUser.description!),
                           ),
                         ],
                       ),
@@ -287,18 +300,19 @@ class _UserInfoState extends State<UserInfo> {
 }
 
 class Avatar extends StatelessWidget {
-  final ImageProvider<dynamic> image;
+  final ImageProvider image;
   final Color borderColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final double radius;
   final double borderWidth;
 
-  const Avatar({Key key,
-    @required this.image,
-    this.borderColor = Colors.grey,
-    this.backgroundColor,
-    this.radius = 30,
-    this.borderWidth = 5})
+  const Avatar(
+      {Key? key,
+      required this.image,
+      this.borderColor = Colors.grey,
+      this.backgroundColor,
+      this.radius = 30,
+      this.borderWidth = 5})
       : super(key: key);
 
   @override

@@ -3,7 +3,7 @@ import '../util/text_util.dart';
 class Company {
   String id;
   String companyName;
-  String description;
+ // String description;
   String userName;
   String userWalletAddress;
   String industry;
@@ -16,7 +16,7 @@ class Company {
   String twitterLink;
   String instagramLink;
 
-  Company({this.id, this.companyName, this.userName, this.userWalletAddress, this.industry, this.location, this.year, this.phone, this.email, this.website, this.facebookLink, this.twitterLink, this.instagramLink});
+  Company({required this.id, required this.companyName, required this.userName, required this.userWalletAddress, required this.industry, required this.location, required this.year, required this.phone, required this.email, required this.website, required this.facebookLink, required this.twitterLink, required this.instagramLink});
 
   
   factory Company.fromServer(Map<String, dynamic> snapshot) => Company(

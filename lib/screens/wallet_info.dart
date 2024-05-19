@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+//import 'package:printing/printing.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/util/pdf_util.dart';
-import 'package:toast/toast.dart';
 
 class WalletInfo extends StatefulWidget {
   @override
@@ -21,17 +21,17 @@ class WalletInfo extends StatefulWidget {
 class _CreateWalletPageState extends State<WalletInfo> {
   // Show/Hide the visibility of generate button
   bool isShareVisible = true;
-  String mnemonicText, privateKey;
-  List<String> arrayWords;
-  User user;
-  String data;
+  String? mnemonicText, privateKey;
+  List<String> arrayWords = [];
+  User? user;
+  String? data;
 
   @override
   void initState() {
     super.initState();
     user = GlobalValue.getCurrentUser;
     getDetails();
-    data = "Mnemonic: " + mnemonicText + "\n" + "Private Key: " + privateKey;
+    data = "Mnemonic: $mnemonicText" + "\n" + "Private Key: $privateKey";
   }
 
   void clickShareButton() {
@@ -48,9 +48,9 @@ class _CreateWalletPageState extends State<WalletInfo> {
 
   void getDetails() {
     setState(() {
-      mnemonicText = user.mnemonic;
-      arrayWords = user.mnemonic.split(' ');
-      privateKey = user.privateKey;
+      mnemonicText = user!.mnemonic;
+      arrayWords = user!.mnemonic!.split(' ');
+      privateKey = user!.privateKey;
     });
   }
 
@@ -58,24 +58,25 @@ class _CreateWalletPageState extends State<WalletInfo> {
   Future<void> clickGeneratePDFButton() async {
     // TODO:
     try {
-      pw.Document pdf = PdfUtil.generatePDF(data);
-      await Printing.layoutPdf(
-          onLayout: (PdfPageFormat format) async => pdf.save());
-      Toast.show("Generating PDF", context);
+      pw.Document pdf = PdfUtil.generatePDF(data!);
+      /*  await Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf.save()); */
+      Fluttertoast.showToast(msg: "Generating PDF");
     } catch (Exception) {
-      Toast.show("Error occurred while generating PDF", context);
+      Fluttertoast.showToast(msg: "Error occurred while generating PDF");
     }
   }
 
   Future<void> clickMailToButton() async {
     try {
-      pw.Document pdf = PdfUtil.generatePDF(data);
+      pw.Document pdf = PdfUtil.generatePDF(data!);
 
       // Write pdf to a temporary file
       final output = await getTemporaryDirectory();
       String tempPath = "${output.path}/sac.pdf";
       final file = File(tempPath);
-      await file.writeAsBytes(pdf.save());
+      final savedPdf = await pdf.save();
+      await file.writeAsBytes(savedPdf);
 
       final MailOptions mailOptions = MailOptions(
           body: "Please keep this secure.",
@@ -84,7 +85,7 @@ class _CreateWalletPageState extends State<WalletInfo> {
           attachments: [tempPath]);
       await FlutterMailer.send(mailOptions);
     } catch (Exception) {
-      Toast.show("Error occurred while sharing", context);
+      Fluttertoast.showToast(msg: "Error occurred while sharing");
     }
   }
 
@@ -101,7 +102,7 @@ class _CreateWalletPageState extends State<WalletInfo> {
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
-        body: Stack(overflow: Overflow.visible, children: <Widget>[
+        body: Stack(/* /* overflow: Overflow.visible, */ */ children: <Widget>[
           Container(
               child: SingleChildScrollView(
             child: Column(
@@ -126,7 +127,7 @@ class _CreateWalletPageState extends State<WalletInfo> {
                           shadowColor: Colors.black87,
                           child: Center(
                             child: Text(
-                              mnemonicText,
+                              "$mnemonicText",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -153,7 +154,7 @@ class _CreateWalletPageState extends State<WalletInfo> {
                           shadowColor: Colors.black87,
                           child: Center(
                             child: Text(
-                              privateKey,
+                              "$privateKey",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,

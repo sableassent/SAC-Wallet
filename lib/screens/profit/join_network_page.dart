@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
-import 'package:toast/toast.dart';
 
 import '../../model/profit.dart';
 import '../../model/user.dart';
@@ -16,14 +16,25 @@ class JoinNetworkPage extends StatefulWidget {
 }
 
 class _JoinNetworkPageState extends State<JoinNetworkPage> {
-
-  double screenWidth, screenHeight;
-  TextEditingController nameCT, phoneCT, emailCT, orgNameCT;
+  double screenWidth = 0.0, screenHeight = 0.0;
+  late TextEditingController nameCT, phoneCT, emailCT, orgNameCT;
   int statusIndex = 0, locationIndex = 0;
   bool isLoading = false;
 
-  List<String> statusList = <String>["Currently listed on the Sable Assent Registry", "Register Now(To partner, you must be currently be a Registered Black Business)"];
-  List<String> locationList = <String>["Africa", "N. America", "S. America", "Caribbean Islands", "Asia", "Antarctica", "Australia", "Europe"];
+  List<String> statusList = <String>[
+    "Currently listed on the Sable Assent Registry",
+    "Register Now(To partner, you must be currently be a Registered Black Business)"
+  ];
+  List<String> locationList = <String>[
+    "Africa",
+    "N. America",
+    "S. America",
+    "Caribbean Islands",
+    "Asia",
+    "Antarctica",
+    "Australia",
+    "Europe"
+  ];
 
   addNonProfitData() async {
     String name = nameCT.text;
@@ -31,23 +42,23 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
     String phone = phoneCT.text;
     String organization = orgNameCT.text;
 
-    if(name.isEmpty){
-      Toast.show("Enter name", context);
+    if (name.isEmpty) {
+      Fluttertoast.showToast(msg: "Enter name");
       return;
     }
 
-    if(phone.isEmpty){
-      Toast.show("Enter phone number", context);
+    if (phone.isEmpty) {
+      Fluttertoast.showToast(msg: "Enter phone number");
       return;
     }
 
-    if(email.isEmpty){
-      Toast.show("Enter email address", context);
+    if (email.isEmpty) {
+      Fluttertoast.showToast(msg: "Enter email address");
       return;
     }
 
-    if(organization.isEmpty){
-      Toast.show("Enter organization name", context);
+    if (organization.isEmpty) {
+      Fluttertoast.showToast(msg: "Enter organization name");
       return;
     }
 
@@ -59,28 +70,27 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
     User user = GlobalValue.getCurrentUser;
 
     Profit profit = new Profit(
-      id: "${random.nextInt(1000)}",
+        id: "${random.nextInt(1000)}",
         profitName: name,
         userName: user.name,
-        userWalletAddress: user.walletAddress,
+        userWalletAddress: user.walletAddress ?? '-',
         email: email,
         phone: phone,
         organization: organization,
         location: locationList[locationIndex],
         status: statusList[statusIndex]);
     bool isSuccess = true;
-    if(isSuccess){
+    if (isSuccess) {
       setState(() {
         isLoading = false;
       });
-      Toast.show("Successfully added your Non Profit data", context);
+      Fluttertoast.showToast(msg: "Successfully added your Non Profit data");
     } else {
       setState(() {
         isLoading = false;
       });
-      Toast.show("Failed!", context);
+      Fluttertoast.showToast(msg: "Failed!");
     }
-
   }
 
   @override
@@ -132,7 +142,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,7 +173,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,7 +204,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -225,7 +235,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -256,7 +266,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 50,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -283,7 +293,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     locationIndex =
-                                        locationList.indexOf(newValue);
+                                        locationList.indexOf(newValue!);
                                   });
                                 },
                               ),
@@ -298,7 +308,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                       height: 70,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey[300])),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -326,7 +336,7 @@ class _JoinNetworkPageState extends State<JoinNetworkPage> {
                                 value: statusList[statusIndex],
                                 onChanged: (newValue) {
                                   setState(() {
-                                    statusIndex = statusList.indexOf(newValue);
+                                    statusIndex = statusList.indexOf(newValue!);
                                   });
                                 },
                               ),

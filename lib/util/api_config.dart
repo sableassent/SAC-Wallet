@@ -1,77 +1,77 @@
 import 'package:flutter/cupertino.dart';
 
 class ApiConfig {
-  static ApiConfig staticConfig;
+  static ApiConfig? staticConfig;
 
   static ApiConfig getConfig() {
-    return staticConfig;
+    return staticConfig!;
   }
 
   String BASE_URL;
   String ETHEREUM_NET;
-  String REGISTRATION_URL;
-  String LOGIN_URL;
-  String USER_RESET_PASSWORD;
-  String USER_NEW_PASSWORD;
+  String? REGISTRATION_URL;
+  String? LOGIN_URL;
+  String? USER_RESET_PASSWORD;
+  String? USER_NEW_PASSWORD;
 
-  String GET_OTP;
+  String? GET_OTP;
 
-  String VERIFY_OTP;
+  String? VERIFY_OTP;
 
-  String ADD_WALLET_ADDRESS;
+  String? ADD_WALLET_ADDRESS;
 
-  String CHECK_REFERRAL_CODE;
+  String? CHECK_REFERRAL_CODE;
 
-  String ADD_REFERRAL;
+  String? ADD_REFERRAL;
 
-  String GET_ALL_REFERRAL;
+  String? GET_ALL_REFERRAL;
 
-  String CHECK_REFERRAL_STATUS;
+  String? CHECK_REFERRAL_STATUS;
 
-  String CONTACT_US;
+  String? CONTACT_US;
 
-  String GET_ALL_USERS;
+  String? GET_ALL_USERS;
 
-  String CHECK_USERNAME;
+  String? CHECK_USERNAME;
 
-  String GET_ALL_BUSINESS;
+  String? GET_ALL_BUSINESS;
 
-  String GET_MY_BUSINESS;
+  String? GET_MY_BUSINESS;
 
-  String GET_ALL_BUSINESS_NEAR_ME;
+  String? GET_ALL_BUSINESS_NEAR_ME;
 
-  String GET_USER_BY_ID;
+  String? GET_USER_BY_ID;
 
-  String GET_CATEGORIES;
+  String? GET_CATEGORIES;
 
-  String ADD_BUSINESS;
+  String? ADD_BUSINESS;
 
-  String CONTRACT_ADDRESS;
+  String? CONTRACT_ADDRESS;
 
-  String EXCHANGE_RATE_API;
+  String? EXCHANGE_RATE_API;
 
-  String ETHEREUM_ROPSTER_BASE_URL;
+  String? ETHEREUM_ROPSTER_BASE_URL;
 
-  String ETHERSCAN_API_KEY;
+  String? ETHERSCAN_API_KEY;
 
-  String ETHERLESS_TRANSFER;
+  String? ETHERLESS_TRANSFER;
 
-  String FEES_API;
+  String? FEES_API;
 
-  String NONCE_API;
+  String? NONCE_API;
 
-  String FILES_BASE;
+  String? FILES_BASE;
 
-  String kGoogleApiKey;
+  String? kGoogleApiKey;
 
-  Map<String, String> headers;
+  Map<String, String> headers = const {};
 
   ApiConfig(
-      {@required this.BASE_URL,
-      @required this.ETHEREUM_NET,
-      @required this.CONTRACT_ADDRESS,
-      @required this.kGoogleApiKey,
-      @required this.ETHERSCAN_API_KEY}) {
+      {required this.BASE_URL,
+      required this.ETHEREUM_NET,
+      required this.CONTRACT_ADDRESS,
+      required this.kGoogleApiKey,
+      required this.ETHERSCAN_API_KEY}) {
     if (staticConfig != null) {
       throw Exception("Multiple config initialization");
     }

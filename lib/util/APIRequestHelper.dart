@@ -11,10 +11,10 @@ class APIRequestHelper {
       final String url, final String apiKey) async {
     print("getting data from url: $url");
     int responseCode = 0;
-    String body;
-    String error;
+    String? body;
+    String? error;
     var response = await http.get(
-      url,
+      Uri.parse(url),
       headers: {"Authorization": apiKey},
     );
     responseCode = response.statusCode;
@@ -23,19 +23,19 @@ class APIRequestHelper {
     } else {
       //
     }
-    return ResponseMap(responseCode, body, error);
+    return ResponseMap(responseCode, body ?? '', error ?? '');
   }
 
   Future<ResponseMap> doPostRequest(final String url, final String requestBody,
-      {String authToken}) async {
+      {String? authToken}) async {
     int responseCode = 0;
-    String returnBody;
-    String error;
+    String? returnBody;
+    String? error;
     String authorization = "";
     if (authToken != null) authorization = "Bearer ${authToken}";
 
     var response = await http.post(
-      url,
+      Uri.parse(url),
       body: requestBody,
       headers: {
         "Authorization": authorization,
@@ -51,15 +51,15 @@ class APIRequestHelper {
 
     print(
         "Response from ${url} - ${response.body.toString()} - Code: ${response.statusCode}");
-    return ResponseMap(responseCode, returnBody, error);
+    return ResponseMap(responseCode, returnBody ?? '', error ?? '');
   }
 
 
   Future<ResponseMap> doDeleteRequest(final String url) async{
     int responseCode = 0;
-    String returnBody;
-    String error;
-    var response = await http.delete(url,
+    String? returnBody;
+    String? error;
+    var response = await http.delete(Uri.parse("$url"),
         headers: {"Authorization": "",
           "Content-Type": "application/json",
           "userType": ""}
@@ -68,6 +68,6 @@ class APIRequestHelper {
     if (response.statusCode == 200) {
       returnBody = response.body.toString();
     }
-    return ResponseMap(responseCode, returnBody, error);
+    return ResponseMap(responseCode, returnBody ?? '', error ?? '');
   }
 }

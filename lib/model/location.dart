@@ -1,8 +1,8 @@
 class MyLocation {
   MyLocation({
-    this.coordinates,
-    this.id,
-    this.type,
+    required this.coordinates,
+    this.id = '',
+    this.type = '',
   });
 
   List<double> coordinates;

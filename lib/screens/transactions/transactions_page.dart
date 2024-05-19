@@ -10,23 +10,23 @@ import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/widget/transactions/TransactionHistory.dart';
 
 class TransactionsPage extends StatefulWidget {
-  TransactionsPage({Key key}) : super(key: key);
+  TransactionsPage({Key? key}) : super(key: key);
 
   @override
   _TransactionsPageState createState() => _TransactionsPageState();
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  User currentUser;
+  User? currentUser;
 
-  Future<List<TransactionsModel>> transactions;
+  late Future<List<TransactionsModel>> transactions;
 
   @override
   void initState() {
     currentUser = GlobalValue.getCurrentUser;
-    print(currentUser.walletAddress);
+    print(currentUser!.walletAddress);
     transactions = EthereumRepository()
-        .getTransactionHistoryfromDB(address: currentUser.walletAddress);
+        .getTransactionHistoryfromDB(address: currentUser!.walletAddress!);
   }
 
   @override
@@ -68,10 +68,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                           return Container(
                             padding: EdgeInsets.all(0),
                             child: Container(
-                                child: TransactionHistory(snapshot.data)),
+                                child: TransactionHistory(snapshot.data!)),
                           );
                       }
-                      return null;
+                     // return null;
                     }),
               ],
             )),

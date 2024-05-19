@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
-import 'package:toast/toast.dart';
 
 class ConfirmationScreen extends StatefulWidget {
   final String txHash;
 
-  ConfirmationScreen({Key key, @required this.txHash}) : super(key: key);
+  ConfirmationScreen({Key? key, required this.txHash}) : super(key: key);
 
   @override
   _ConfirmationScreenState createState() =>
@@ -17,7 +17,7 @@ class ConfirmationScreen extends StatefulWidget {
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
   String txHash;
 
-  _ConfirmationScreenState({@required this.txHash}) : super();
+  _ConfirmationScreenState({required this.txHash}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                         ),
                         Expanded(
                           flex: 80,
-                          child: FlatButton(
+                          child: ElevatedButton(
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -103,7 +103,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                                 ]),
                             onPressed: () {
                               Clipboard.setData(ClipboardData(text: txHash));
-                              Toast.show("Copied to Clipboard", context);
+                              Fluttertoast.showToast(
+                                  msg: "Copied to Clipboard");
                             },
                           ),
                         )
@@ -195,7 +196,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   //             icon: Icon(Icons.content_copy),
                   //             onPressed: () {
                   //               Clipboard.setData(ClipboardData(text: txHash));
-                  //               Toast.show("Copied", context);
+                  //               Fluttertoast.showToast(msg: "Copied", context);
                   //             },
                   //           )),
                   //     ],

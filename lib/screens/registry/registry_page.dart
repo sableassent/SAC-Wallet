@@ -8,20 +8,21 @@ class RegistryPage extends StatefulWidget {
 }
 
 class RegistryPageState extends State<RegistryPage> {
-  TabController tabController;
+  TabController? tabController;
   String selectedSubjectValue = "";
   bool pressed = true;
   Widget appBarTitle = Text('');
 
   List<String> subjectOptions = <String>["Near Me", "My Business"];
   int subjectIndex = 0;
- 
- @override
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     selectedSubjectValue = "Near Me";
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +85,7 @@ class RegistryPageState extends State<RegistryPage> {
             value: subjectOptions[subjectIndex],
             onChanged: (newValue) {
               setState(() {
-                subjectIndex = subjectOptions.indexOf(newValue);
+                subjectIndex = subjectOptions.indexOf(newValue!);
                 selectedSubjectValue = newValue;
                 print(selectedSubjectValue);
               });
@@ -97,7 +98,7 @@ class RegistryPageState extends State<RegistryPage> {
 }
 
 // class RegistryPage extends StatelessWidget {
-//   double screenWidth, screenHeight;
+//   double screenWidth = 0.0, screenHeight = 0.0;
 //   @override
 //   Widget build(BuildContext context) {
 //     screenWidth = MediaQuery.of(context).size.width;

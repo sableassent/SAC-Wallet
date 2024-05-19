@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -15,12 +15,11 @@ import 'package:sac_wallet/util/eth_util.dart';
 import 'package:sac_wallet/util/pdf_util.dart';
 import 'package:sac_wallet/util/text_util.dart';
 import 'package:sac_wallet/widget/loading.dart';
-import 'package:toast/toast.dart';
 
 class CreateWallet extends StatefulWidget {
   final String passphrase;
 
-  CreateWallet({Key key, @required this.passphrase}) : super(key: key);
+  CreateWallet({Key? key, required this.passphrase}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CreateWalletPageState();
@@ -29,8 +28,8 @@ class CreateWallet extends StatefulWidget {
 class _CreateWalletPageState extends State<CreateWallet> {
   // Show/Hide the visibility of generate button
   bool isShareVisible = true;
-  String mnemonicText;
-  List<String> arrayWords;
+  String? mnemonicText;
+  List<String> arrayWords = [];
 
   bool isLoading = false;
 
@@ -69,12 +68,12 @@ class _CreateWalletPageState extends State<CreateWallet> {
     try {
       setLoading(true);
 
-      pw.Document pdf = PdfUtil.generatePDF(mnemonicText);
+      pw.Document pdf = PdfUtil.generatePDF(mnemonicText!);
       await Printing.layoutPdf(
           onLayout: (PdfPageFormat format) async => pdf.save());
-      Toast.show("Generating PDF", context);
+      Fluttertoast.showToast(msg: "Generating PDF");
     } catch (Exception) {
-      Toast.show("Error occurred while generating PDF", context);
+      Fluttertoast.showToast(msg: "Error occurred while generating PDF");
     } finally {
       setLoading(false);
     }
@@ -84,13 +83,14 @@ class _CreateWalletPageState extends State<CreateWallet> {
     try {
       setLoading(true);
 
-      pw.Document pdf = PdfUtil.generatePDF(mnemonicText);
+      pw.Document pdf = PdfUtil.generatePDF(mnemonicText!);
 
       // Write pdf to a temporary file
       final output = await getTemporaryDirectory();
       String tempPath = "${output.path}/sac.pdf";
       final file = File(tempPath);
-      await file.writeAsBytes(pdf.save());
+      final savedPdf = await pdf.save();
+      await file.writeAsBytes(savedPdf);
 
       final MailOptions mailOptions = MailOptions(
           body: "Please keep this secure.",
@@ -98,7 +98,7 @@ class _CreateWalletPageState extends State<CreateWallet> {
           attachments: [tempPath]);
       await FlutterMailer.send(mailOptions);
     } catch (Exception) {
-      Toast.show("Error occurred while sharing", context);
+      Fluttertoast.showToast(msg: "Error occurred while sharing");
     } finally {
       setLoading(false);
     }
@@ -109,7 +109,7 @@ class _CreateWalletPageState extends State<CreateWallet> {
     // await UserRepository().updateMnemonic(mnemonicText: mnemonicText.trim());
     try {
       setLoading(true);
-      String privateKey = EthUtil.generatePrivateKey(mnemonicText);
+      String privateKey = EthUtil.generatePrivateKey(mnemonicText!);
       String walletAddress = await EthUtil.generateWalletAddress(privateKey);
 
       UserRepository userRepository = new UserRepository();
@@ -117,12 +117,12 @@ class _CreateWalletPageState extends State<CreateWallet> {
           .updateWalletAddressOnServer(walletAddress: walletAddress);
       await userRepository.addPrivateKey(privateKey: privateKey);
       await userRepository.addWalletAddress(walletAddress: walletAddress);
-      await userRepository.updateMnemonic(mnemonicText: mnemonicText.trim());
+      await userRepository.updateMnemonic(mnemonicText: mnemonicText!.trim());
 
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => CreatePin()));
     } catch (Exception) {
-      Toast.show("An error occurred", context);
+      Fluttertoast.showToast(msg: "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -141,7 +141,7 @@ class _CreateWalletPageState extends State<CreateWallet> {
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
-        body: Stack(overflow: Overflow.visible, children: <Widget>[
+        body: Stack(/* overflow: Overflow.visible, */ children: <Widget>[
           Container(
               child: SingleChildScrollView(
             child: Column(
@@ -158,7 +158,7 @@ class _CreateWalletPageState extends State<CreateWallet> {
                           shadowColor: Colors.black87,
                           child: Center(
                             child: Text(
-                              mnemonicText,
+                              "$mnemonicText",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -186,11 +186,11 @@ class _CreateWalletPageState extends State<CreateWallet> {
                     child: Container(
                       // padding: EdgeInsets.only(left: 30, right: 30),
                       child: Row(
-                       // mainAxisAlignment: MainAxisAlignment.end,
+                        // mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Expanded(
                             flex: 50,
-                               child: Container(
+                            child: Container(
                               // padding: EdgeInsets.only(left: 30, right: 30),
                               child: GestureDetector(
                                   child: Container(
@@ -201,7 +201,8 @@ class _CreateWalletPageState extends State<CreateWallet> {
                                         color: AppColor.NEW_MAIN_COLOR_SCHEME,
                                       ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: <Widget>[
                                           Image.asset(
                                             "assets/images/printer.png",
@@ -230,7 +231,7 @@ class _CreateWalletPageState extends State<CreateWallet> {
                           ),
                           Expanded(
                             flex: 50,
-                                child: Container(
+                            child: Container(
                               // padding: EdgeInsets.only(left: 30, right: 30),
                               child: GestureDetector(
                                 child: Container(

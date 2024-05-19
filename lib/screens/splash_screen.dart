@@ -11,7 +11,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        /* overflow: Overflow.visible, */
         children: <Widget>[
           Container(
             alignment: Alignment.center,

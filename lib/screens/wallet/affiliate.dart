@@ -4,7 +4,7 @@ import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/screens/lock_wrapper.dart';
 import 'package:sac_wallet/util/global.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class Affiliate extends StatefulWidget {
   @override
@@ -13,20 +13,19 @@ class Affiliate extends StatefulWidget {
 
 class _AffiliateState extends State<Affiliate> {
   var referrals;
-  User currentUser;
+  User? currentUser;
 
   share(BuildContext context) {
-    final RenderBox box = context.findRenderObject();
+    final RenderBox box = context.findAncestorRenderObjectOfType()!;
     Share.share(
-        "Earn Rewards on User signing in with Referral Code and Verifying Phone Number!! Your Referral Code is " +
-            currentUser.referralCode,
+        "Earn Rewards on User signing in with Referral Code and Verifying Phone Number!! Your Referral Code is ${currentUser!.referralCode}",
         subject: "SAC1 Wallet App Referral",
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   getReferrals() async {
     var referralsResponse = await UserRepository()
-        .getAllReferral(referralCode: currentUser.referralCode);
+        .getAllReferral(referralCode: currentUser!.referralCode);
     setState(() {
       referrals = referralsResponse;
     });
@@ -143,7 +142,7 @@ class _AffiliateState extends State<Affiliate> {
                   height: 30,
                 ),
                 Text(
-                  "Your Referral Code is " + currentUser.referralCode,
+                  "Your Referral Code is " + currentUser!.referralCode,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(

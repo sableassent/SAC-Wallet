@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sac_wallet/Constants/AppColor.dart';
 import 'package:sac_wallet/model/user.dart';
 import 'package:sac_wallet/repository/user_repository.dart';
 import 'package:sac_wallet/screens/create_import_wallet.dart';
 import 'package:sac_wallet/util/global.dart';
 import 'package:sac_wallet/util/keyboard.dart';
-import 'package:toast/toast.dart';
 
 import '../widget/loading.dart';
 
@@ -15,11 +15,11 @@ class VerifyPhoneNumberPage extends StatefulWidget {
 }
 
 class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
-  double screenWidth, screenHeight;
-  TextEditingController otpCT;
-  UserRepository userRepository;
+  double screenWidth = 0.0, screenHeight = 0.0;
+  late TextEditingController otpCT;
+  late UserRepository userRepository;
   bool isLoading = false;
-  User user;
+  User? user;
 
   void setLoading(loading) => setState(() {
         isLoading = loading;
@@ -31,18 +31,20 @@ class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
       if (isSuccess) {
         setLoading(true);
 
-        Toast.show("Verification Code Sent!", context,
-            duration: Toast.LENGTH_LONG,
-            gravity: Toast.CENTER,
+        Fluttertoast.showToast(
+            msg: "Verification Code Sent!",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
             backgroundColor: Colors.greenAccent,
             textColor: Colors.black);
       } else {
         throw new Exception("Failed");
       }
     } catch (e) {
-      Toast.show("Verification Code Send Failed!", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Verification Code Send Failed!",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
     } finally {
@@ -53,9 +55,10 @@ class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
   verifyPhoneNumber() async {
     String otp = otpCT.text;
     if (otp.isEmpty) {
-      Toast.show("Enter your Verification Code", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Enter your Verification Code",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
       return;
@@ -67,19 +70,20 @@ class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
       if (isSuccess) {
         otpCT.clear();
         await userRepository.updatePhoneVerificationStatus();
-        GlobalValue.setCurrentUser = await userRepository.getUser();
+        GlobalValue.setCurrentUser = (await userRepository.getUser())!;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) => CreateImportWallet(),
             ),
-                (route) => false);
+            (route) => false);
       } else {
         throw new Exception("Network failed");
       }
     } catch (e) {
-      Toast.show("Code verification Failed!", context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
+      Fluttertoast.showToast(
+          msg: "Code verification Failed!",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
           textColor: Colors.white);
     } finally {
@@ -98,21 +102,15 @@ class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
 
     const EdgeInsetsGeometry inputPadding =
-    EdgeInsets.only(left: 12.0, bottom: 18, top: 18);
+        EdgeInsets.only(left: 12.0, bottom: 18, top: 18);
 
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        /* overflow: Overflow.visible, */
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -121,7 +119,7 @@ class _VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Verification Code has be sent to " + user.phoneNumber,
+                  "Verification Code has be sent to ${user!.phoneNumber}",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(

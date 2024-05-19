@@ -27,7 +27,7 @@ class _CreateImportWalletPageState extends State<CreateImportWallet> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Stack(overflow: Overflow.visible, children: <Widget>[
+        body: Stack(/* overflow: Overflow.visible, */ children: <Widget>[
           Container(
               alignment: Alignment.center,
               child: Column(

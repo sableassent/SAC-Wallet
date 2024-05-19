@@ -3,10 +3,14 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:sac_wallet/repository/sqlite_user_repository.dart';
 import 'package:sac_wallet/screens/contact_us.dart';
+import 'package:sac_wallet/screens/login_page.dart';
+import 'package:sac_wallet/screens/main_page.dart';
 import 'package:sac_wallet/screens/pin/verify_pin.dart';
 import 'package:sac_wallet/screens/wallet_info.dart';
 import 'package:sac_wallet/util/api_config.dart';
+import 'package:sac_wallet/util/global.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -79,6 +83,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       MaterialPageRoute(builder: (context) => ContactUs()));
                 }),
               ),
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1))),
+                child: _sideMenuRow(
+                    context,
+                    "Log Out",
+                    Icon(
+                      Icons.arrow_back_outlined,
+                      size: 32.0,
+                    ), () async {
+                  await RepositoryServiceUser.deleteUser(
+                      GlobalValue.getCurrentUser);
+                  final user = await RepositoryServiceUser.getUser();
+                  print(user == null);
+                  if (user == null) {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MainPage()));
+                  }
+                }),
+              ),
               SizedBox(height: 25),
               Container(
                 // decoration: BoxDecoration(
@@ -97,8 +122,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 
-  Widget _sideMenuRow(BuildContext context, String title, Icon icon,
-      Function function) {
+  Widget _sideMenuRow(
+      BuildContext context, String title, Icon icon, Function() function) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 10.0),
       child: GestureDetector(

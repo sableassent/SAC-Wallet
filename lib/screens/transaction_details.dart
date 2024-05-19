@@ -8,7 +8,7 @@ import 'package:sac_wallet/util/text_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TransactionDetails extends StatelessWidget {
-  TransactionsModel transaction, feesTransaction;
+  late TransactionsModel transaction, feesTransaction;
   List<TransactionsModel> transactions;
 
   TransactionDetails(this.transaction, this.transactions) {
@@ -37,17 +37,17 @@ class TransactionDetails extends StatelessWidget {
     }
     return transactionUser;
   }
- 
- String feesOfTransaction(TransactionsModel transaction){
-   String transactionFees = '';
-   if (transaction.type == 'Receive') {
+
+  String feesOfTransaction(TransactionsModel transaction) {
+    String transactionFees = '';
+    if (transaction.type == 'Receive') {
       transactionFees = '${transaction.gasUsed}';
     } else {
       transactionFees = '${transaction.to}';
     }
     return transactionFees;
+  }
 
- }
   @override
   Widget build(BuildContext context) {
     return PinLockWrapper(
@@ -277,7 +277,7 @@ class TransactionDetails extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Container(
-                                      child: FlatButton(
+                                      child: ElevatedButton(
                                     child: Text("Blockchain URL",
                                         textAlign: TextAlign.end,
                                         style: TextStyle(
@@ -285,10 +285,11 @@ class TransactionDetails extends StatelessWidget {
                                             fontSize: 18,
                                             fontWeight: FontWeight.normal)),
                                     onPressed: () {
-                                      launch(
-                                          "https://etherscan.io/tx/" +
+                                      launch("https://etherscan.io/tx/" +
                                           "${transaction.hash}");
                                     },
+                                    style:
+                                        ElevatedButton.styleFrom(elevation: 0),
                                   )),
                                 )
                               ],

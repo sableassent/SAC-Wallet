@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PinLockWrapper extends StatefulWidget {
   final Widget child;
 
-  const PinLockWrapper({@required this.child});
+  const PinLockWrapper({required this.child});
 
   @override
   _PinLockWrapperState createState() => _PinLockWrapperState();

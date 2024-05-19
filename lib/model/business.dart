@@ -15,24 +15,24 @@ String businessToJson(Business data) => json.encode(data.toJson());
 
 class Business {
   Business({
-    this.verification,
-    this.id,
-    this.name,
-    this.userId,
-    this.email,
-    this.phoneNumber,
-    this.address,
-    this.category,
-    this.websiteUrl,
-    this.twitterUrl,
-    this.instagramUrl,
-    this.facebookUrl,
-    this.description,
-    this.foundationYear,
-    this.location,
-    this.images,
-    this.createdAt,
-    this.updatedAt,
+    this.verification = '',
+    this.id = '',
+    this.name = '',
+    this.userId = '',
+    this.email = '',
+    this.phoneNumber = '',
+    this.address = null,
+    this.category = '',
+    this.websiteUrl = '',
+    this.twitterUrl = '',
+    this.instagramUrl = '',
+    this.facebookUrl = '',
+    this.description = '',
+    this.foundationYear = '',
+    this.location = null,
+    this.images = const [],
+    this.createdAt = null,
+    this.updatedAt = null,
   });
 
   String verification;
@@ -41,7 +41,7 @@ class Business {
   String userId;
   String email;
   String phoneNumber;
-  Address address;
+  Address? address;
   String category;
   String websiteUrl;
   String twitterUrl;
@@ -49,10 +49,10 @@ class Business {
   String facebookUrl;
   String description;
   String foundationYear;
-  MyLocation location;
+  MyLocation? location;
   List<DBImage> images;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Business.fromJson(Map<String, dynamic> json) => Business(
         verification: json["verification"],
@@ -84,7 +84,7 @@ class Business {
         "userId": userId,
         "email": email,
         "phoneNumber": phoneNumber,
-        "address": address.toJson(),
+        "address": address!.toJson(),
         "category": category,
         "websiteUrl": websiteUrl,
         "twitterUrl": twitterUrl,
@@ -92,9 +92,9 @@ class Business {
         "facebookUrl": facebookUrl,
         "description": description,
         "foundationYear": foundationYear,
-        "location": location.toJson(),
+        "location": location!.toJson(),
         "images": List<dynamic>.from(images.map((x) => x.toJson())),
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
+        "createdAt": createdAt!.toIso8601String(),
+        "updatedAt": updatedAt!.toIso8601String(),
       };
 }
