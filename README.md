@@ -29,7 +29,7 @@ Private SAC2 Token:
 
 ## Getting Started
 
-This application currently operates using our api you can see and test on postman here: [SAC-ERC20Token-API](https://documenter.getpostman.com/view/4404312/SW14Uwww?version=latest)
+This application currently operates using our api you can see and test on postman here: [SAC-ERC20Token-API]version=latest)
 
 The API communicates with our Smart Contract:
 PRESENT PUBLIC SMART CONTRACT:
@@ -38,36 +38,7 @@ Token Contract: 0x3e27A81e83567aD1A24ae67dEec3dAda8ce2c3ec on www.etherscan.io
 -------------------------------------------------------------------------
 The software development team will have private access to this github project workspace. The most stable version of the code is on the Master branch. Each team member will have access to the codebase on the github cloud. Each developer will be assigned their own branch and must create a github workspace directory on their own local devices.
 
-Please download github desktop here: [Github Desktop](https://desktop.github.com/). 
 
-Once downloaded a github folder directory will automatically be created. You will be sent a link to the repository you are assigned to based on your skill set.
-
-New code is first created on personal team member workspaces then committed to his or her assigned github repository. Team members should notify the team when an update has been committed through the [Trello Board: Coding Workflow](https://trello.com/b/AQStNHQh/coding-workflow), or the [slack group](https://join.slack.com/t/sableassentco-utk2422/shared_invite/zt-d6ih1e9g-czWC8T7C76Rj8ykMzffyEw) (please request an invite from admin if this slack link is no longer valid). 
-
-Admins will then test new code and merge stable changes to the master branch once approved. Every developer is responsible for keeping a daily log of tasks and submitting that report to the project lead (Guillermo or Kiel) during Thursday night sprints. Administrative team meetings will be conducted weekly, every Friday and Monday at 10am, or as needed, or upon request by the CEO; we currentyl use a google hangout group for these meetings. 
-
-For a guide on how to get your local Ethereum development environment up and running click here: [Ethereum Dev Tutorial](https://drive.google.com/open?id=12XUnUY4FmL74sxisb02egOv7_VSovxpGCVXhXZ4QJ_A).
-
-All coding tasks will be distributed on the [Trello Board:IT Admin Notes](https://trello.com/b/YK0grp6n/it-admin-notes). Always check there first for any assigned coding tasks under the “To Do” list.
-
-Please contact one of your software team Lead developers with any and all questions and concerns regarding the assigned tasks. 
-
-
-Team Lead: Guillermo Perry
-Server Administrator, Database Administrator, Enterprise Architect
-Phone: 305-791-7491
-Email: guillermo@sableassent.com
-
-Co-Lead: Kiel Mansa
-Solidity Specialist, WebSite Administrator, Tech Support Manager
-Phone: 470-543-2860
-Email: kiel@sableassent.com
-
-Team Reporting Schedule:
-Daily task logs are submitted to lead every Thursday.
-Admin meetings and updates are held on Fridays, & Mondays.
-New tasks, updates, and assisted coding is executed by leads on Tuesdays.
-Monthly reviews of all team members are done by corporate officers.
 
 
 A few resources to get you started if this is your first Flutter project:
